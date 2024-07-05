@@ -521,6 +521,9 @@ const Header = () => {
                             <li>
                                 <NavLink to="/apps/contacts">{t('contacts')}</NavLink>
                             </li>
+                            <li>
+                                <NavLink to="/apps/users">{t('users')}</NavLink>
+                            </li>
                             <li className="relative">
                                 <button type="button">
                                     {t('invoice')}
