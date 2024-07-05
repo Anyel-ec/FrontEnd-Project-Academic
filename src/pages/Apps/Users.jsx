@@ -18,114 +18,95 @@ const Users = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('Users'));
-    });
-    const [addContactModal, setAddContactModal] = useState(false);
+        fetchUsers();
+    }, []);
 
+    const [addContactModal, setAddContactModal] = useState(false);
     const [value, setValue] = useState('list');
     const [defaultParams] = useState({
         id: null,
-        name: '',
+        firstName: '',
+        lastName: '',
         email: '',
-
     });
-
     const [params, setParams] = useState(JSON.parse(JSON.stringify(defaultParams)));
-
-    const changeValue = (e) => {
-        const { value, id } = e.target;
-        setParams({ ...params, [id]: value });
-    };
-
     const [search, setSearch] = useState('');
-    const [contactList] = useState([
-        {
-            id: 1,
-            path: 'profile-35.png',
-            firstName: 'Alan',
-            lastName: 'Green',
-            email: 'alan@mail.com',
-            
-        },
-        {
-            id: 2,
-            path: 'profile-35.png',
-            firstName: 'Linda',
-            lastName: 'Nelson',
-            email: 'linda@mail.com',
-           
-        },
-        {
-            id: 3,
-            path: 'profile-35.png',
-            firstName: 'Lila',
-            lastName: 'Perry',
-            email: 'lila@mail.com',
-
-        },
-    ]);
-
-    const [filteredItems, setFilteredItems] = useState(contactList);
+    const [contactList, setContactList] = useState([]);
+    const [filteredItems, setFilteredItems] = useState([]);
 
     useEffect(() => {
         setFilteredItems(() => {
-            return contactList.filter((item) => {
-                return item.firstName.toLowerCase().includes(search.toLowerCase());
-            });
+            return contactList.filter((item) => item.firstName.toLowerCase().includes(search.toLowerCase()));
         });
     }, [search, contactList]);
 
-    const saveUser = () => {
+    const fetchUsers = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/api/v1/students');
+            const data = await response.json();
+            setContactList(data);
+            setFilteredItems(data);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        }
+    };
+
+    const saveUser = async () => {
         if (!params.firstName) {
             showMessage('First Name is required.', 'error');
-            return true;
+            return;
         }
         if (!params.lastName) {
             showMessage('Last Name is required.', 'error');
-            return true;
+            return;
         }
         if (!params.email) {
             showMessage('Email is required.', 'error');
-            return true;
+            return;
         }
 
-        if (params.id) {
-            //update user
-            let user = filteredItems.find((d) => d.id === params.id);
-            user.firstName = params.firstName;
-            user.lastName = params.lastName;
-            user.email = params.email;
-        } else {
-            //add user
-            let maxUserId = filteredItems.length ? filteredItems.reduce((max, character) => (character.id > max ? character.id : max), filteredItems[0].id) : 0;
-
-            let user = {
-                id: maxUserId + 1,
-                path: 'profile-35.png',
-                firstName: params.firstName,
-                lastName: params.lastName,
-                email: params.email,
-            };
-            filteredItems.splice(0, 0, user);
-            //   searchUsers();
+        try {
+            const method = params.id ? 'PUT' : 'POST';
+            const endpoint = params.id ? `http://localhost:8080/api/v1/students/${params.id}` : 'http://localhost:8080/api/v1/students';
+            const response = await fetch(endpoint, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(params),
+            });
+            if (response.ok) {
+                fetchUsers();
+                showMessage(`User has been ${params.id ? 'updated' : 'added'} successfully.`);
+                setAddContactModal(false);
+            } else {
+                showMessage(`Error ${params.id ? 'updating' : 'adding'} user.`, 'error');
+            }
+        } catch (error) {
+            console.error(`Error ${params.id ? 'updating' : 'adding'} user:`, error);
+            showMessage(`Error ${params.id ? 'updating' : 'adding'} user.`, 'error');
         }
-
-        showMessage('User has been saved successfully.');
-        setAddContactModal(false);
     };
 
     const editUser = (user = null) => {
-        const json = JSON.parse(JSON.stringify(defaultParams));
-        setParams(json);
-        if (user) {
-            let json1 = JSON.parse(JSON.stringify(user));
-            setParams(json1);
-        }
+        setParams(user ? { ...user } : JSON.parse(JSON.stringify(defaultParams)));
         setAddContactModal(true);
     };
-
-    const deleteUser = (user = null) => {
-        setFilteredItems(filteredItems.filter((d) => d.id !== user.id));
-        showMessage('User has been deleted successfully.');
+    const deleteUser = async (user) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/students/${user.studentId}`, {
+                method: 'DELETE',
+            });
+            if (response.ok) {
+                fetchUsers();
+                showMessage('User has been deleted successfully.');
+            } else {
+                showMessage('Error deleting user.', 'error');
+            }
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            showMessage('Error deleting user.', 'error');
+        }
     };
 
     const showMessage = (msg = '', type = 'success') => {
@@ -141,6 +122,11 @@ const Users = () => {
             title: msg,
             padding: '10px 20px',
         });
+    };
+
+    const changeValue = (e) => {
+        const { value, id } = e.target;
+        setParams({ ...params, [id]: value });
     };
 
     return (
@@ -187,26 +173,23 @@ const Users = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredItems.map((contact) => {
-                                    return (
-                                        <tr key={contact.id}>
-                                            <td>{contact.firstName}</td>
-                                            <td>{contact.lastName}</td>
-
-                                            <td>{contact.email}</td>
-                                            <td>
-                                                <div className="flex gap-4 items-center justify-center">
-                                                    <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editUser(contact)}>
-                                                        Edit
-                                                    </button>
-                                                    <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteUser(contact)}>
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
+                                {filteredItems.map((contact) => (
+                                    <tr key={contact.id}>
+                                        <td>{contact.firstName}</td>
+                                        <td>{contact.lastName}</td>
+                                        <td>{contact.email}</td>
+                                        <td>
+                                            <div className="flex gap-4 items-center justify-center">
+                                                <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editUser(contact)}>
+                                                    Edit
+                                                </button>
+                                                <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteUser(contact)}>
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
@@ -215,145 +198,128 @@ const Users = () => {
 
             {value === 'grid' && (
                 <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 mt-5 w-full">
-                    {filteredItems.map((contact) => {
-                        return (
-                            <div className="bg-white dark:bg-[#1c232f] rounded-md overflow-hidden text-center shadow relative" key={contact.id}>
-                                <div className="bg-white dark:bg-[#1c232f] rounded-md overflow-hidden text-center shadow relative">
-                                    <div
-                                        className="bg-white/40 rounded-t-md bg-center bg-cover p-6 pb-0 bg-"
-                                        style={{
-                                            backgroundImage: `url('/assets/images/notification-bg.png')`,
-                                            backgroundRepeat: 'no-repeat',
-                                            width: '100%',
-                                            height: '100%',
-                                        }}
-                                    >
-                                        <img className="object-contain w-4/5 max-h-40 mx-auto" src={`/assets/images/${contact.path}`} alt="contact_image" />
-                                    </div>
-                                    <div className="px-6 pb-24 -mt-10 relative">
-                                        <div className="shadow-md bg-white dark:bg-gray-900 rounded-md px-2 py-4">
-                                            <div className="text-xl">{contact.firstName}</div>
-                                            <div className="text-white-dark">{contact.role}</div>
-                                            <div className="flex items-center justify-between flex-wrap mt-6 gap-3">
-                                                <div className="flex-auto">
-                                                    <div className="text-info">{contact.posts}</div>
-                                                    <div>Posts</div>
-                                                </div>
-                                                <div className="flex-auto">
-                                                    <div className="text-info">{contact.following}</div>
-                                                    <div>Following</div>
-                                                </div>
-                                                <div className="flex-auto">
-                                                    <div className="text-info">{contact.followers}</div>
-                                                    <div>Followers</div>
-                                                </div>
-                                            </div>
-                                            <div className="mt-4">
-                                                <ul className="flex space-x-4 rtl:space-x-reverse items-center justify-center">
-                                                    <li>
-                                                        <button type="button" className="btn btn-outline-primary p-0 h-7 w-7 rounded-full">
-                                                            <IconFacebook />
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button type="button" className="btn btn-outline-primary p-0 h-7 w-7 rounded-full">
-                                                            <IconInstagram />
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button type="button" className="btn btn-outline-primary p-0 h-7 w-7 rounded-full">
-                                                            <IconLinkedin />
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button type="button" className="btn btn-outline-primary p-0 h-7 w-7 rounded-full">
-                                                            <IconTwitter />
-                                                        </button>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                    {filteredItems.map((contact) => (
+                        <div className="bg-white dark:bg-[#1c232f] rounded-md overflow-hidden text-center shadow relative" key={contact.id}>
+                            <div
+                                className="bg-white/40 rounded-t-md bg-center bg-cover p-6 pb-0"
+                                style={{
+                                    backgroundImage: `url('/assets/images/notification-bg.png')`,
+                                    backgroundRepeat: 'no-repeat',
+                                    width: '100%',
+                                    height: '100%',
+                                }}
+                            >
+                                <img className="object-contain w-4/5 max-h-40 mx-auto" src={`/assets/images/${contact.path}`} alt="contact_image" />
+                            </div>
+                            <div className="px-6 pb-24 -mt-10 relative">
+                                <div className="shadow-md bg-white dark:bg-gray-900 rounded-md px-2 py-4">
+                                    <div className="text-xl">{contact.firstName}</div>
+                                    <div className="text-white-dark">{contact.role}</div>
+                                    <div className="flex items-center justify-between flex-wrap mt-6 gap-3">
+                                        <div className="flex-auto">
+                                            <div className="text-info">{contact.posts}</div>
+                                            <div>Posts</div>
                                         </div>
-                                        <div className="mt-6 grid grid-cols-1 gap-4 ltr:text-left rtl:text-right">
-                                            <div className="flex items-center">
-                                                <div className="flex-none ltr:mr-2 rtl:ml-2">Email :</div>
-                                                <div className="truncate text-white-dark">{contact.email}</div>
-                                            </div>
-                                            <div className="flex items-center">
-                                                <div className="flex-none ltr:mr-2 rtl:ml-2">Phone :</div>
-                                                <div className="text-white-dark">{contact.phone}</div>
-                                            </div>
-                                            <div className="flex items-center">
-                                                <div className="flex-none ltr:mr-2 rtl:ml-2">Address :</div>
-                                                <div className="text-white-dark">{contact.location}</div>
-                                            </div>
+                                        <div className="flex-auto">
+                                            <div className="text-success">{contact.followers}</div>
+                                            <div>Followers</div>
                                         </div>
-                                    </div>
-                                    <div className="mt-6 flex gap-4 absolute bottom-0 w-full ltr:left-0 rtl:right-0 p-6">
-                                        <button type="button" className="btn btn-outline-primary w-1/2" onClick={() => editUser(contact)}>
-                                            Edit
-                                        </button>
-                                        <button type="button" className="btn btn-outline-danger w-1/2" onClick={() => deleteUser(contact)}>
-                                            Delete
-                                        </button>
+                                        <div className="flex-auto">
+                                            <div className="text-danger">{contact.following}</div>
+                                            <div>Following</div>
+                                        </div>
                                     </div>
                                 </div>
+                                <ul className="flex justify-center gap-4 mt-6">
+                                    <li>
+                                        <button type="button" className="bg-facebook">
+                                            <IconFacebook className="w-4 h-4" />
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" className="bg-twitter">
+                                            <IconTwitter className="w-4 h-4" />
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" className="bg-linkedin">
+                                            <IconLinkedin className="w-4 h-4" />
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" className="bg-instagram">
+                                            <IconInstagram className="w-4 h-4" />
+                                        </button>
+                                    </li>
+                                </ul>
                             </div>
-                        );
-                    })}
+                            <div className="flex justify-center gap-4 pb-6">
+                                <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editUser(contact)}>
+                                    Edit
+                                </button>
+                                <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteUser(contact)}>
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
 
             <Transition appear show={addContactModal} as={Fragment}>
-                <Dialog as="div" open={addContactModal} onClose={() => setAddContactModal(false)} className="relative z-[51]">
-                    <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
-                        <div className="fixed inset-0 bg-[black]/60" />
+                <Dialog as="div" open={addContactModal} onClose={() => setAddContactModal(false)}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="transition-opacity duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="transition-opacity duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-black bg-opacity-25" />
                     </Transition.Child>
                     <div className="fixed inset-0 overflow-y-auto">
-                        <div className="flex min-h-full items-center justify-center px-4 py-8">
+                        <div className="min-h-full flex items-center justify-center p-4">
                             <Transition.Child
                                 as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 scale-95"
-                                enterTo="opacity-100 scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 scale-100"
-                                leaveTo="opacity-0 scale-95"
+                                enter="transition-transform duration-300"
+                                enterFrom="scale-95"
+                                enterTo="scale-100"
+                                leave="transition-transform duration-200"
+                                leaveFrom="scale-100"
+                                leaveTo="scale-95"
                             >
-                                <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg text-black dark:text-white-dark">
-                                    <button
-                                        type="button"
-                                        onClick={() => setAddContactModal(false)}
-                                        className="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none"
-                                    >
+                                <Dialog.Panel className="panel border-0 p-0 rounded-lg w-full max-w-lg text-black dark:text-white-dark">
+                                    <button type="button" className="absolute top-3 ltr:right-3 rtl:left-3 text-white-dark hover:text-dark" onClick={() => setAddContactModal(false)}>
                                         <IconX />
                                     </button>
-                                    <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
-                                        {params.id ? 'Edit Contact' : 'Add Contact'}
-                                    </div>
                                     <div className="p-5">
+                                        <h4 className="text-lg font-medium mb-5">Add Contact</h4>
                                         <form>
-                                            <div className="mb-5">
-                                                <label htmlFor="name">First Name</label>
-                                                <input id="firstName" type="text" placeholder="Enter First Name" className="form-input" value={params.firstName} onChange={(e) => changeValue(e)} />
-                                            </div>
-                                            <div className="mb-5">
-                                                <label htmlFor="lastName">Last Name</label>
-                                                <input id="lastName" type="text" placeholder="Enter Last Name" className="form-input" value={params.lastName} onChange={(e) => changeValue(e)} />
-                                            </div>
-                                            <div className="mb-5">
-                                                <label htmlFor="email">Email</label>
-                                                <input id="email" type="email" placeholder="Enter Email" className="form-input" value={params.email} onChange={(e) => changeValue(e)} />
-                                            </div>      
-                                            
-                                            <div className="flex justify-end items-center mt-8">
-                                                <button type="button" className="btn btn-outline-danger" onClick={() => setAddContactModal(false)}>
-                                                    Cancel
-                                                </button>
-                                                <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={saveUser}>
-                                                    {params.id ? 'Update' : 'Add'}
-                                                </button>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                <div className="form-group">
+                                                    <label htmlFor="firstName">First Name</label>
+                                                    <input id="firstName" type="text" value={params.firstName} onChange={changeValue} className="form-input" />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label htmlFor="lastName">Last Name</label>
+                                                    <input id="lastName" type="text" value={params.lastName} onChange={changeValue} className="form-input" />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label htmlFor="email">Email</label>
+                                                    <input id="email" type="email" value={params.email} onChange={changeValue} className="form-input" />
+                                                </div>
                                             </div>
                                         </form>
+                                    </div>
+                                    <div className="bg-gray-100 dark:bg-gray-800 p-3 flex justify-end gap-2">
+                                        <button type="button" className="btn btn-outline-danger" onClick={() => setAddContactModal(false)}>
+                                            Cancel
+                                        </button>
+                                        <button type="button" className="btn btn-primary" onClick={saveUser}>
+                                            {params.id ? 'Update' : 'Add'}
+                                        </button>
                                     </div>
                                 </Dialog.Panel>
                             </Transition.Child>
