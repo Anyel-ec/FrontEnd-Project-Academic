@@ -1,25 +1,25 @@
 import { useState, Fragment, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import Swal from 'sweetalert2';
-import { useDispatch } from 'react-redux';
-import { setPageTitle } from '../../store/themeConfigSlice';
-import IconUserPlus from '../../components/Icon/IconUserPlus';
-import IconListCheck from '../../components/Icon/IconListCheck';
-import IconLayoutGrid from '../../components/Icon/IconLayoutGrid';
-import IconSearch from '../../components/Icon/IconSearch';
-import IconUser from '../../components/Icon/IconUser';
-import IconFacebook from '../../components/Icon/IconFacebook';
-import IconInstagram from '../../components/Icon/IconInstagram';
-import IconLinkedin from '../../components/Icon/IconLinkedin';
-import IconTwitter from '../../components/Icon/IconTwitter';
-import IconX from '../../components/Icon/IconX';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPageTitle } from '../../../store/themeConfigSlice';
+import IconUserPlus from '../../../components/Icon/IconUserPlus';
+import IconListCheck from '../../../components/Icon/IconListCheck';
+import IconLayoutGrid from '../../../components/Icon/IconLayoutGrid';
+import IconSearch from '../../../components/Icon/IconSearch';
+import IconX from '../../../components/Icon/IconX';
+import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/flatpickr.css';
 
 const Users = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('Users'));
         fetchUsers();
-    }, []);
+    }, [dispatch]);
+
+    const isRtl = useSelector((state) => state.themeConfig.rtlClass) === 'rtl';
+    // const [date1, setDate1] = useState('2022-07-05');
 
     const [addContactModal, setAddContactModal] = useState(false);
     const [value, setValue] = useState('list');
@@ -28,6 +28,11 @@ const Users = () => {
         firstName: '',
         lastName: '',
         email: '',
+        phone: '',
+        dateOfBirth: '',
+        dni: '',
+        gender: '',
+        acceptedTermsAndConditions: false,
     });
     const [params, setParams] = useState(JSON.parse(JSON.stringify(defaultParams)));
     const [search, setSearch] = useState('');
@@ -35,9 +40,7 @@ const Users = () => {
     const [filteredItems, setFilteredItems] = useState([]);
 
     useEffect(() => {
-        setFilteredItems(() => {
-            return contactList.filter((item) => item.firstName.toLowerCase().includes(search.toLowerCase()));
-        });
+        setFilteredItems(contactList.filter(item => item.firstName.toLowerCase().includes(search.toLowerCase())));
     }, [search, contactList]);
 
     const fetchUsers = async () => {
@@ -51,18 +54,23 @@ const Users = () => {
         }
     };
 
+    const requiredFields = {
+        firstName: 'First Name',
+        lastName: 'Last Name',
+        email: 'Email',
+        phone: 'Phone',
+        dateOfBirth: 'Date Of Birth',
+        dni: 'DNI',
+        gender: 'Gender',
+        acceptedTermsAndConditions: 'Accepted Terms And Conditions',
+    };
+
     const saveUser = async () => {
-        if (!params.firstName) {
-            showMessage('First Name is required.', 'error');
-            return;
-        }
-        if (!params.lastName) {
-            showMessage('Last Name is required.', 'error');
-            return;
-        }
-        if (!params.email) {
-            showMessage('Email is required.', 'error');
-            return;
+        for (const field in requiredFields) {
+            if (!params[field]) {
+                showMessage(`${requiredFields[field]} is required.`, 'error');
+                return;
+            }
         }
 
         try {
@@ -92,6 +100,7 @@ const Users = () => {
         setParams(user ? { ...user } : JSON.parse(JSON.stringify(defaultParams)));
         setAddContactModal(true);
     };
+
     const deleteUser = async (user) => {
         try {
             const response = await fetch(`http://localhost:8080/api/v1/students/${user.studentId}`, {
@@ -125,12 +134,13 @@ const Users = () => {
     };
 
     const changeValue = (e) => {
-        const { value, id } = e.target;
-        setParams({ ...params, [id]: value });
+        const { id, value, type, checked } = e.target;
+        setParams({ ...params, [id]: type === 'checkbox' ? checked : value });
     };
 
     return (
         <div>
+
             <div className="flex items-center justify-between flex-wrap gap-4">
                 <h2 className="text-xl">Users</h2>
                 <div className="flex sm:flex-row flex-col sm:items-center sm:gap-3 gap-4 w-full sm:w-auto">
@@ -160,6 +170,7 @@ const Users = () => {
                     </div>
                 </div>
             </div>
+
             {value === 'list' && (
                 <div className="mt-5 panel p-0 border-0 overflow-hidden">
                     <div className="table-responsive">
@@ -169,6 +180,11 @@ const Users = () => {
                                     <th>First Name</th>
                                     <th>Last Name</th>
                                     <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Date Of Birth</th>
+                                    <th>DNI</th>
+                                    <th>Gender</th>
+                                    <th>Accepted Terms</th>
                                     <th className="!text-center">Actions</th>
                                 </tr>
                             </thead>
@@ -178,6 +194,11 @@ const Users = () => {
                                         <td>{contact.firstName}</td>
                                         <td>{contact.lastName}</td>
                                         <td>{contact.email}</td>
+                                        <td>{contact.phone}</td>
+                                        <td>{contact.dateOfBirth}</td>
+                                        <td>{contact.dni}</td>
+                                        <td>{contact.gender}</td>
+                                        <td>{contact.acceptedTermsAndConditions ? 'Yes' : 'No'}</td>
                                         <td>
                                             <div className="flex gap-4 items-center justify-center">
                                                 <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editUser(contact)}>
@@ -196,75 +217,6 @@ const Users = () => {
                 </div>
             )}
 
-            {value === 'grid' && (
-                <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 mt-5 w-full">
-                    {filteredItems.map((contact) => (
-                        <div className="bg-white dark:bg-[#1c232f] rounded-md overflow-hidden text-center shadow relative" key={contact.id}>
-                            <div
-                                className="bg-white/40 rounded-t-md bg-center bg-cover p-6 pb-0"
-                                style={{
-                                    backgroundImage: `url('/assets/images/notification-bg.png')`,
-                                    backgroundRepeat: 'no-repeat',
-                                    width: '100%',
-                                    height: '100%',
-                                }}
-                            >
-                                <img className="object-contain w-4/5 max-h-40 mx-auto" src={`/assets/images/${contact.path}`} alt="contact_image" />
-                            </div>
-                            <div className="px-6 pb-24 -mt-10 relative">
-                                <div className="shadow-md bg-white dark:bg-gray-900 rounded-md px-2 py-4">
-                                    <div className="text-xl">{contact.firstName}</div>
-                                    <div className="text-white-dark">{contact.role}</div>
-                                    <div className="flex items-center justify-between flex-wrap mt-6 gap-3">
-                                        <div className="flex-auto">
-                                            <div className="text-info">{contact.posts}</div>
-                                            <div>Posts</div>
-                                        </div>
-                                        <div className="flex-auto">
-                                            <div className="text-success">{contact.followers}</div>
-                                            <div>Followers</div>
-                                        </div>
-                                        <div className="flex-auto">
-                                            <div className="text-danger">{contact.following}</div>
-                                            <div>Following</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <ul className="flex justify-center gap-4 mt-6">
-                                    <li>
-                                        <button type="button" className="bg-facebook">
-                                            <IconFacebook className="w-4 h-4" />
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button type="button" className="bg-twitter">
-                                            <IconTwitter className="w-4 h-4" />
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button type="button" className="bg-linkedin">
-                                            <IconLinkedin className="w-4 h-4" />
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button type="button" className="bg-instagram">
-                                            <IconInstagram className="w-4 h-4" />
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="flex justify-center gap-4 pb-6">
-                                <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editUser(contact)}>
-                                    Edit
-                                </button>
-                                <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteUser(contact)}>
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
 
             <Transition appear show={addContactModal} as={Fragment}>
                 <Dialog as="div" open={addContactModal} onClose={() => setAddContactModal(false)}>
@@ -299,6 +251,10 @@ const Users = () => {
                                         <form>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div className="form-group">
+                                                    <label htmlFor="dni">DNI</label>
+                                                    <input id="dni" type="text" value={params.dni} onChange={changeValue} className="form-input" />
+                                                </div>
+                                                <div className="form-group">
                                                     <label htmlFor="firstName">First Name</label>
                                                     <input id="firstName" type="text" value={params.firstName} onChange={changeValue} className="form-input" />
                                                 </div>
@@ -309,6 +265,35 @@ const Users = () => {
                                                 <div className="form-group">
                                                     <label htmlFor="email">Email</label>
                                                     <input id="email" type="email" value={params.email} onChange={changeValue} className="form-input" />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label htmlFor="phone">Phone</label>
+                                                    <input id="phone" type="text" value={params.phone} onChange={changeValue} className="form-input" />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label htmlFor="dateOfBirth">Date of Birth</label>
+                                                    <Flatpickr
+                                                        id="dateOfBirth"
+                                                        value={params.dateOfBirth}
+                                                        options={{ dateFormat: 'Y-m-d', position: isRtl ? 'auto right' : 'auto left' }}
+                                                        className="form-input"
+                                                        onChange={(date) => setParams({ ...params, dateOfBirth: date[0] })}
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label htmlFor="gender">Gender</label>
+                                                    <select id="gender" className="form-select" value={params.gender} onChange={changeValue} required>
+                                                        <option value="">Select Gender</option>
+                                                        <option value="male">Male</option>
+                                                        <option value="female">Female</option>
+                                                        <option value="other">Other</option>
+                                                    </select>
+                                                </div>
+                                                <div className="form-group flex items-center">
+                                                    <label className="flex items-center">
+                                                        <input id="acceptedTermsAndConditions" type="checkbox" className="form-checkbox" checked={params.acceptedTermsAndConditions} onChange={changeValue} />
+                                                        <span className="ml-2">Accept Terms and Conditions</span>
+                                                    </label>
                                                 </div>
                                             </div>
                                         </form>
