@@ -3,18 +3,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPageTitle } from '../../../store/themeConfigSlice';
-import { 
-    IconUserPlus, 
-    IconListCheck, 
-    IconLayoutGrid, 
-    IconSearch, 
-    IconUser, 
-    IconFacebook, 
-    IconInstagram, 
-    IconLinkedin, 
-    IconTwitter, 
-    IconX 
-} from '../../../components/Icon';
+import { IconUserPlus, IconListCheck, IconLayoutGrid, IconUser, IconX, IconSearch } from './IconImports';
+
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 
@@ -152,6 +142,7 @@ const Users = () => {
                             <IconSearch className="mx-auto" />
                         </button>
                     </div>
+
                 </div>
             </div>
             {value === 'list' && (
@@ -178,6 +169,7 @@ const Users = () => {
                                                     <IconUser className="w-4.5 h-4.5" />
                                                 </div>
                                             )}
+
                                             <div>{contact.name}</div>
                                         </td>
                                         <td>{contact.email}</td>
@@ -279,6 +271,7 @@ const Users = () => {
                                         className="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none"
                                     >
                                         <IconX />
+
                                     </button>
                                     <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
                                         {params.id ? 'Edit Contact' : 'Add Contact'}
