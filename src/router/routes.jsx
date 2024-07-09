@@ -140,7 +140,7 @@ const routes = [
         element: <Contacts />,
     },
     {
-        path: '/apps/users',
+        path: '/apps/users/users',
         element: <Users />,
     },
     {
