@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8080/api/v1/alumnos'; // Asegúrate de que la URL sea correcta
+const API_BASE_URL = 'http://localhost:8080/api/v1/alumnos';
 
 export const getAllStudents = async () => {
     const response = await fetch(`${API_BASE_URL}/`);
@@ -18,7 +18,10 @@ export const saveStudent = async (student) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(student),
     });
-    if (!response.ok) throw new Error('Error saving student');
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Error saving student');
+    }
     return response.json();
 };
 

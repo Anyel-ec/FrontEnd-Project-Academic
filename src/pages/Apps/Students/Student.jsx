@@ -3,79 +3,83 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import { setPageTitle } from '../../../store/themeConfigSlice';
-import UserList from './UserList';
-import UserGrid from './UserGrid';
-import UserForm from './UserForm';
+import StudentList from './StudentList';
+import StudentGrid from './StudentGrid';
+import StudentForm from './StudentForm';
 import { IconUserPlus, IconListCheck, IconLayoutGrid, IconSearch, IconX } from './IconImports';
-import { getAllStudents, saveStudent, updateStudent, deleteStudent } from '../../api';
+import { getAllStudents, saveStudent, updateStudent, deleteStudent } from './api';
 
-const Users = () => {
+const Student = () => {
     const dispatch = useDispatch();
     const isRtl = useSelector((state) => state.themeConfig.rtlClass === 'rtl');
-    
     useEffect(() => {
-        dispatch(setPageTitle('Users'));
-        fetchUsers();
+        dispatch(setPageTitle('Student'));
+        fetchStudent();
     }, [dispatch]);
 
     const [addContactModal, setAddContactModal] = useState(false);
     const [date1, setDate1] = useState('2022-07-05');
     const [value, setValue] = useState('list');
     const [params, setParams] = useState({
-        id: null,
-        name: '',
+        studentCode: '',
+        dni: '',
+        firstNames: '',
+        lastName: '',
+        middleName: '',
+        birthDate: '',
         email: '',
         phone: '',
-        role: '',
-        location: ''
+        address: ''
     });
     const [search, setSearch] = useState('');
-    const [users, setUsers] = useState([]);
+    const [Student, setStudent] = useState([]);
 
-    const fetchUsers = async () => {
+    const fetchStudent = async () => {
         try {
             const data = await getAllStudents();
-            setUsers(data);
+            setStudent(data);
         } catch (error) {
-            console.error('Error fetching users:', error);
+            console.error('Error fetching Student:', error);
         }
     };
 
-    const saveUser = async () => {
-        const { name, email, phone, role, id } = params;
-        if (!name || !email || !phone || !role) {
+    const saveStudent = async () => {
+        const { id, birthDate, ...restParams } = params;
+        const payload = { ...restParams, birthDate: date1 };
+        if (!params.studentCode || !params.dni || !params.firstNames || !params.lastName || !params.middleName || !params.email || !params.phone || !params.address) {
             showMessage('All fields are required.', 'error');
             return;
         }
 
         try {
             if (id) {
-                await updateStudent(id, params);
+                await updateStudent(id, payload);
             } else {
-                await saveStudent(params);
+                await saveStudent(payload);
             }
-            showMessage('User has been saved successfully.');
-            fetchUsers();
+            showMessage('Student has been saved successfully.');
+            fetchStudent();
             setAddContactModal(false);
         } catch (error) {
-            console.error('Error saving user:', error);
-            showMessage('Error saving user.', 'error');
+            console.error('Error saving student:', error);
+            showMessage('Error saving student.', 'error');
         }
     };
 
-    const editUser = (user = {}) => {
-        setParams(user);
+    const editStudent = (student = {}) => {
+        setParams(student);
+        setDate1(student.birthDate);
         setAddContactModal(true);
     };
 
-    const deleteUserHandler = async (user) => {
+    const deleteStudentHandler = async (student) => {
         try {
-            await deleteStudent(user.id);
-            showMessage('User has been deleted successfully.');
-            fetchUsers();
+            await deleteStudent(student.id);
+            showMessage('Student has been deleted successfully.');
+            fetchStudent();
         } catch (error) {
-            console.error('Error deleting user:', error);
-            showMessage('Error deleting user.', 'error');
+            console.error('Error deleting student:', error);
+            showMessage('Error deleting student.', 'error');
         }
     };
 
@@ -94,10 +98,10 @@ const Users = () => {
     return (
         <div>
             <div className="flex items-center justify-between flex-wrap gap-4">
-                <h2 className="text-xl">Users</h2>
+                <h2 className="text-xl">Student</h2>
                 <div className="flex sm:flex-row flex-col sm:items-center sm:gap-3 gap-4 w-full sm:w-auto">
                     <div className="flex gap-3">
-                        <button className="btn btn-primary" onClick={() => editUser()}>
+                        <button className="btn btn-primary" onClick={() => editStudent()}>
                             <IconUserPlus className="ltr:mr-2 rtl:ml-2" /> Add Contact
                         </button>
                         <button className={`btn btn-outline-primary p-2 ${value === 'list' && 'bg-primary text-white'}`} onClick={() => setValue('list')}>
@@ -108,15 +112,15 @@ const Users = () => {
                         </button>
                     </div>
                     <div className="relative">
-                        <input type="text" placeholder="Search Users" className="form-input py-2 ltr:pr-11 rtl:pl-11 peer" value={search} onChange={(e) => setSearch(e.target.value)} />
+                        <input type="text" placeholder="Search Student" className="form-input py-2 ltr:pr-11 rtl:pl-11 peer" value={search} onChange={(e) => setSearch(e.target.value)} />
                         <button type="button" className="absolute ltr:right-[11px] rtl:left-[11px] top-1/2 -translate-y-1/2 peer-focus:text-primary">
                             <IconSearch className="mx-auto" />
                         </button>
                     </div>
                 </div>
             </div>
-            {value === 'list' && <UserList users={users.filter(user => user.name.toLowerCase().includes(search.toLowerCase()))} editUser={editUser} deleteUser={deleteUserHandler} />}
-            {value === 'grid' && <UserGrid users={users.filter(user => user.name.toLowerCase().includes(search.toLowerCase()))} editUser={editUser} deleteUser={deleteUserHandler} />}
+            {value === 'list' && <StudentList Student={Student.filter(student => student.firstNames.toLowerCase().includes(search.toLowerCase()))} editStudent={editStudent} deletestudent={deleteStudentHandler} />}
+            {value === 'grid' && <StudentGrid Student={Student.filter(student => student.firstNames.toLowerCase().includes(search.toLowerCase()))} editStudent={editStudent} deletestudent={deleteStudentHandler} />}
             
             <Transition appear show={addContactModal} as={Fragment}>
                 <Dialog as="div" open={addContactModal} onClose={() => setAddContactModal(false)} className="relative z-[51]">
@@ -145,13 +149,13 @@ const Users = () => {
                                     <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
                                         {params.id ? 'Edit Contact' : 'Add Contact'}
                                     </div>
-                                    <UserForm 
+                                    <StudentForm 
                                         params={params} 
                                         setParams={setParams} 
                                         date={date1} 
                                         setDate={setDate1} 
                                         isRtl={isRtl} 
-                                        saveUser={saveUser} 
+                                        saveStudent={saveStudent} 
                                         closeModal={() => setAddContactModal(false)} 
                                     />
                                 </Dialog.Panel>
@@ -164,4 +168,4 @@ const Users = () => {
     );
 };
 
-export default Users;
+export default Student;
