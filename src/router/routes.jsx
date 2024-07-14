@@ -1,4 +1,6 @@
 import { lazy } from 'react';
+import Students from '../pages/Apps/Students';
+import Teachers from '../pages/Apps/Teachers';
 
 const Index = lazy(() => import('../pages/Index'));
 const Analytics = lazy(() => import('../pages/Analytics'));
@@ -8,7 +10,6 @@ const Todolist = lazy(() => import('../pages/Apps/Todolist'));
 const Mailbox = lazy(() => import('../pages/Apps/Mailbox'));
 const Notes = lazy(() => import('../pages/Apps/Notes'));
 const Contacts = lazy(() => import('../pages/Apps/Contacts'));
-const Users = lazy(() => import('../pages/Apps/Users/Users'));
 const Chat = lazy(() => import('../pages/Apps/Chat'));
 const Scrumboard = lazy(() => import('../pages/Apps/Scrumboard'));
 const Calendar = lazy(() => import('../pages/Apps/Calendar'));
@@ -108,11 +109,21 @@ const routes = [
         path: '/',
         element: <Index />,
     },
-    // {
-    //     path: '/index',
-    //     element: <Index />,
-    // },
-    // analytics page
+    ///---INICIO----------------------------------------------------------------/////
+
+
+    ////////
+
+    {
+        path: 'apps/estudiantes',
+        element: <Students  />,
+    },
+    {
+        path: 'apps/docentes',
+        element: <Teachers  />,
+    },
+
+    ///---FIN----------------------------------------------------------------/////
     {
         path: '/analytics',
         element: <Analytics />,
@@ -139,10 +150,7 @@ const routes = [
         path: '/apps/contacts',
         element: <Contacts />,
     },
-    {
-        path: '/apps/users',
-        element: <Users />,
-    },
+
     {
         path: '/apps/mailbox',
         element: <Mailbox />,
