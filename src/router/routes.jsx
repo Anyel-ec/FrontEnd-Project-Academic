@@ -8,7 +8,8 @@ const Todolist = lazy(() => import('../pages/Apps/Todolist'));
 const Mailbox = lazy(() => import('../pages/Apps/Mailbox'));
 const Notes = lazy(() => import('../pages/Apps/Notes'));
 const Contacts = lazy(() => import('../pages/Apps/Contacts'));
-const Students = lazy(() => import('../pages/Apps/Students/Student'));
+const Docentes = lazy(() => import('../pages/Apps/Docentes'));
+const Alumnos = lazy(() => import('../pages/Apps/Alumnos/Alumnos'));
 const Chat = lazy(() => import('../pages/Apps/Chat'));
 const Scrumboard = lazy(() => import('../pages/Apps/Scrumboard'));
 const Calendar = lazy(() => import('../pages/Apps/Calendar'));
@@ -140,8 +141,12 @@ const routes = [
         element: <Contacts />,
     },
     {
-        path: '/apps/students/student',
-        element: <Students />,
+        path: '/apps/docentes',
+        element: <Docentes />,
+    },
+    {
+        path: '/apps/alumnos/alumnos',
+        element: <Alumnos />,
     },
     {
         path: '/apps/mailbox',
