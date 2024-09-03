@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 import Students from '../pages/Apps/Student/Students';
-import Teachers from '../pages/Apps/Teachers';
+import Teachers from '../pages/Apps/Teacher/Teachers';
 import TitleReservation from '../pages/Apps/Steps/TitleReservation';
 import StudentCareer from '../pages/Apps/Assignment/StudentCareer';
 import TeacherCareer from '../pages/Apps/Assignment/TeacherCareer';

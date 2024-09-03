@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { setPageTitle, toggleRTL } from '../../store/themeConfigSlice';
+import { setPageTitle } from '../../store/themeConfigSlice';
 import IconMail from '../../components/Icon/IconMail';
 import IconLockDots from '../../components/Icon/IconLockDots';
 import AuthService from '../../../src/api/AuthService';
@@ -11,6 +11,7 @@ const LoginCover = () => {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         dispatch(setPageTitle('Iniciar Sesión'));
@@ -22,6 +23,10 @@ const LoginCover = () => {
         if (isSuccess) {
             navigate('/');
         }
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
 
     return (
@@ -38,9 +43,6 @@ const LoginCover = () => {
                     <div className="relative hidden w-full items-center justify-center bg-[linear-gradient(225deg,rgba(239,18,98,1)_0%,rgba(67,97,238,1)_100%)] p-5 lg:inline-flex lg:max-w-[835px] xl:-ms-28 ltr:xl:skew-x-[14deg] rtl:xl:skew-x-[-14deg]">
                         <div className="absolute inset-y-0 w-8 from-primary/10 via-transparent to-transparent ltr:-right-10 ltr:bg-gradient-to-r rtl:-left-10 rtl:bg-gradient-to-l xl:w-16 ltr:xl:-right-20 rtl:xl:-left-20"></div>
                         <div className="ltr:xl:-skew-x-[14deg] rtl:xl:skew-x-[14deg]">
-                            {/* <Link to="/" className="w-48 block lg:w-72 ms-10">
-                                <img src="/assets/images/auth/logo-white.svg" alt="Logo" className="w-full" />
-                            </Link> */}
                             <div className="mt-24 hidden w-full max-w-[430px] lg:block">
                                 <img src="/assets/images/logo.png" alt="Imagen de Portada" className="w-full" />
                             </div>
@@ -63,7 +65,7 @@ const LoginCover = () => {
                                     <div className="relative text-white-dark">
                                         <input
                                             id="username"
-                                            type="username"
+                                            type="text"
                                             placeholder="Ingresa tu usuario"
                                             className="form-input ps-10 placeholder:text-white-dark"
                                             value={username}
@@ -79,14 +81,29 @@ const LoginCover = () => {
                                     <div className="relative text-white-dark">
                                         <input
                                             id="Password"
-                                            type="password"
+                                            type={showPassword ? "text" : "password"}
                                             placeholder="Ingresa tu contraseña"
-                                            className="form-input ps-10 placeholder:text-white-dark"
+                                            className="form-input ps-10 pe-10 placeholder:text-white-dark"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                         />
                                         <span className="absolute start-4 top-1/2 -translate-y-1/2">
                                             <IconLockDots fill={true} />
+                                        </span>
+                                        <span
+                                            className="absolute end-4 top-1/2 -translate-y-1/2 cursor-pointer text-white-dark"
+                                            onClick={togglePasswordVisibility}
+                                        >
+                                            {showPassword ? (
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12m0 2a2 2 0 11-4 0 2 2 0 014 0zm7-2c0 3.866-4.477 7-10 7S2 13.866 2 10s4.477-7 10-7 10 3.134 10 7zM15.54 14.94A3 3 0 018.46 9.06M6.02 6.02a16.018 16.018 0 0111.96 11.96M9.41 9.41l1.42 1.42m4.66 4.66l1.42 1.42M2.93 2.93l18.36 18.36" />
+                                                </svg>
+                                            ) : (
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5c-5 0-9 4-9 9s4 9 9 9 9-4 9-9-4-9-9-9z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v4m0 4h.01" />
+                                                </svg>
+                                            )}
                                         </span>
                                     </div>
                                 </div>

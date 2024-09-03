@@ -7,7 +7,7 @@ import careerService from "../../../api/careerService";
 import Header from "./Header";
 import StudentTable from "./StudentTable";
 import StudentModal from "./StudentModal";
-import { showMessage } from "./showMessage";
+import { showMessage } from "../showMessage";
 
 const Students = () => {
     const dispatch = useDispatch();

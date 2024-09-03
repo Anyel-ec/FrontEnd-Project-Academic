@@ -171,7 +171,7 @@ const Sidebar = () => {
 
 
                                         {/* Modulo de asignaciones a carreras ------------------------------------------ inicio */}
-                                        <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
+                                        {/* <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                             <IconMinus className="w-4 h-5 flex-none hidden" />
                                             <span>Asignaciones</span>
                                         </h2>
@@ -195,7 +195,7 @@ const Sidebar = () => {
                                                     </NavLink>
                                                 </li>
                                             </ul>
-                                        </li>
+                                        </li> */}
                                         {/* Modulo de asignaciones a carreras --------------------------------fin */}
 
 
