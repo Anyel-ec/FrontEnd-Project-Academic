@@ -10,11 +10,10 @@ const getAuthToken = () => {
 };
 
 const getTeachers = async () => {
-    console.log(TEACHER_API_URL);
     try {
         const response = await axios.get(TEACHER_API_URL, {
             headers: {
-                'Authorization': `Bearer ${getAuthToken()}`
+                Authorization: `Bearer ${getAuthToken()}`
             }
         });
         return response.data.map((teacherData) => new Teacher(
@@ -39,7 +38,7 @@ const addTeacher = async (teacher) => {
     try {
         const response = await axios.post(TEACHER_API_URL, teacher, {
             headers: {
-                'Authorization': `Bearer ${getAuthToken()}`
+                Authorization: `Bearer ${getAuthToken()}`
             }
         });
         return new Teacher(
@@ -52,7 +51,7 @@ const addTeacher = async (teacher) => {
             response.data.institutionalEmail,
             response.data.phone,
             response.data.address,
-            response.data.careeer
+            response.data.career
         );
     } catch (error) {
         console.error("Error adding teacher", error);
@@ -64,7 +63,7 @@ const editTeacher = async (id, teacher) => {
     try {
         const response = await axios.put(`${TEACHER_API_URL}${id}`, teacher, {
             headers: {
-                'Authorization': `Bearer ${getAuthToken()}`
+                Authorization: `Bearer ${getAuthToken()}`
             }
         });
         return new Teacher(
@@ -77,7 +76,7 @@ const editTeacher = async (id, teacher) => {
             response.data.institutionalEmail,
             response.data.phone,
             response.data.address,
-            response.data.careeer,
+            response.data.career,
 
         );
     } catch (error) {
@@ -90,7 +89,7 @@ const deleteTeacher = async (id) => {
     try {
         const response = await axios.delete(`${TEACHER_API_URL}${id}`, {
             headers: {
-                'Authorization': `Bearer ${getAuthToken()}`
+                Authorization: `Bearer ${getAuthToken()}`
             }
         });
         return response.data;

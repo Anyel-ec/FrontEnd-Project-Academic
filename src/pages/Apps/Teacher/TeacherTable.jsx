@@ -39,7 +39,6 @@ const TeacherTable = ({ teachers, onEdit, onDelete }) => {
                                     <td>{teacher.institutionalEmail}</td>
                                     <td>{teacher.phone}</td>
                                     <td>{teacher.career?.name || 'Sin asignar'}</td>
-                                    {console.log(teacher.career)}
                                     <td>
                                         <div className="flex gap-4 items-center justify-center">
                                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => onEdit(teacher)}>

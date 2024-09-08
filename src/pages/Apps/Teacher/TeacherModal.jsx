@@ -6,8 +6,72 @@ import Flatpickr from 'react-flatpickr';
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import Select from 'react-select';
 import IconX from '../../../components/Icon/IconX';
+const lightModeStyles = {
+    control: (provided, state) => ({
+        ...provided,
+        backgroundColor: '#F7F9FC', // Fondo claro
+        color: '#333', // Texto oscuro
+        borderColor: '#D1D5DB', // Borde gris claro
+        padding: '0rem 0.5rem',
 
-const customStyles = {
+        borderRadius: '0.5rem',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        fontSize: '0.475rem',
+        '&:hover': {
+            borderColor: '#A0AEC0', // Borde gris más oscuro al hacer hover
+        },
+        '&:focus-within': {
+            outline: 'none',
+            borderColor: '#3182CE', // Borde azul al enfocarse
+            boxShadow: '0 0 0 2px rgba(49, 130, 206, 0.5)', // Sombra azul suave
+        },
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        backgroundColor: state.isSelected ? '#3182CE' : '#F7F9FC', // Fondo azul para opción seleccionada, claro para el resto
+        color: state.isSelected ? '#fff' : '#2D3748', // Blanco para opción seleccionada, oscuro para el resto
+        padding: '0 0.5em 0 0.5rem',
+        fontSize: '0.875rem',
+        '&:hover': {
+            backgroundColor: '#63B3ED', // Fondo azul claro al hacer hover
+            color: '#fff', // Texto blanco al hacer hover
+        },
+    }),
+    singleValue: (provided) => ({
+        ...provided,
+        color: '#2D3748', // Texto oscuro para el valor seleccionado
+        fontSize: '0.875rem',
+    }),
+    menu: (provided) => ({
+        ...provided,
+        backgroundColor: '#F7F9FC', // Fondo claro del menú
+        borderRadius: '0.5rem',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        borderColor: '#E2E8F0', // Borde gris claro
+        padding: '0',
+        marginTop: '1px',
+        marginBottom: '0',
+        overflow: 'hidden',
+    }),
+    placeholder: (provided) => ({
+        ...provided,
+        color: '#A0AEC0', // Texto gris para el placeholder
+        fontSize: '0.875rem',
+    }),
+    dropdownIndicator: (provided) => ({
+        ...provided,
+        color: '#718096', // Indicador gris
+    }),
+    indicatorSeparator: () => ({
+        display: 'none', // Sin separador
+    }),
+    menuList: (provided) => ({
+        ...provided,
+        padding: '0',
+    }),
+};
+
+const darkModeStyles = {
     control: (provided, state) => ({
         ...provided,
         backgroundColor: '#121E32',
@@ -72,7 +136,11 @@ const customStyles = {
         padding: '0', // Elimina el padding del contenedor de las opciones
     }),
 };
+// Por ejemplo, una variable que indica si está en modo oscuro
+const isDarkMode = false; // Aquí pones la lógica real para saber si es modo oscuro
 
+// Usamos los estilos correspondientes dependiendo del modo
+const styles = isDarkMode ? darkModeStyles : lightModeStyles;
 const validationSchema = Yup.object().shape({
     dni: Yup.string().required('DNI es requerido').length(8, 'DNI debe tener 8 caracteres'),
     firstNames: Yup.string()
@@ -154,7 +222,7 @@ const TeacherModal = ({ isOpen, onClose, onSave, teacher, careerOptions }) => {
                                                 <label htmlFor="career">Carrera</label>
                                                 <Select
                                                     name="career"
-                                                    styles={customStyles}
+                                                    styles={styles}
                                                     placeholder="Selecciona una carrera"
                                                     options={careerOptions}
                                                     onChange={(option) => setFieldValue('career', option)}

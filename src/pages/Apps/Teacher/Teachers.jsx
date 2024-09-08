@@ -31,6 +31,7 @@ const Teachers = () => {
                 label: career.name,
                 data: career,
             }));
+            
             setCareerOptions(options);
         } catch (error) {
             console.error("Error fetching careers:", error);
@@ -80,8 +81,6 @@ const Teachers = () => {
                 setContactList((prev) => [addedTeacher, ...prev]);
                 showMessage("Docente agregado exitosamente.");
             }
-            fetchCareers();
-            fetchTeachers();
             resetForm();
             closeModal();
         } catch (error) {
