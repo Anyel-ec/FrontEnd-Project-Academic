@@ -36,7 +36,7 @@ const Students = () => {
             console.error("Error fetching careers:", error);
         }
     }, []);
-
+    
     const fetchStudents = useCallback(async () => {
         try {
             const data = await studentService.getStudents();

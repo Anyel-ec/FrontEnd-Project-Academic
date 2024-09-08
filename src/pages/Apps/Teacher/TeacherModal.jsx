@@ -7,6 +7,72 @@ import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import Select from 'react-select';
 import IconX from '../../../components/Icon/IconX';
 
+const customStyles = {
+    control: (provided, state) => ({
+        ...provided,
+        backgroundColor: '#121E32',
+        color: '#798099',
+        borderColor: '#17263C',
+        padding: '0rem 0.5rem', // Reducir el padding para hacer el control más pequeño
+
+        borderRadius: '0.5rem',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        fontSize: '0.475rem', // Reducir el tamaño de la fuente (equivalente a text-sm en Tailwind)
+        '&:hover': {
+        },
+        '&:focus-within': {
+            outline: 'none',
+            borderColor: '#243778',
+            boxShadow: '0 0 0 2px rgba(18, 30, 50, 0.5)',
+        },
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        backgroundColor: state.isSelected ? '#1967D2' : '#121E32',
+        color: state.isSelected ? '#fff' : '#888E8D',
+        padding: '0 0.5em 0 0.5rem', // Reducir el padding de las opciones
+        fontSize: '0.875rem', // Reducir el tamaño de la fuente
+        '&:hover': {
+            backgroundColor: '#1967D2',
+            color: '#fff',
+        },
+    }),
+    singleValue: (provided) => ({
+        ...provided,
+        color: '#888E8D',
+        fontSize: '0.875rem', // Reducir el tamaño de la fuente del valor seleccionado
+    }),
+    menu: (provided) => ({
+        ...provided,
+        backgroundColor: '#121E32',
+        borderRadius: '0.5rem',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        borderColor: '#fff',
+        padding: '0',
+        marginTop: '1px', // Asegura que no haya margen superior
+        marginBottom: '0', // Asegura que no haya margen inferior
+        overflow: 'hidden', // Evita que los elementos sobresalgan del menú
+    }),
+    placeholder: (provided) => ({
+        ...provided,
+        color: '#646B7A',
+        
+        fontSize: '0.875rem', // Reducir el tamaño de la fuente del placeholder
+    }),
+    dropdownIndicator: (provided) => ({
+        ...provided,
+        
+        color: '#5F6675',
+    }),
+    indicatorSeparator: () => ({
+        display: 'none', // Ocultar el separador de los indicadores
+    }),
+    menuList: (provided) => ({
+        ...provided,
+        padding: '0', // Elimina el padding del contenedor de las opciones
+    }),
+};
+
 const validationSchema = Yup.object().shape({
     dni: Yup.string().required('DNI es requerido').length(8, 'DNI debe tener 8 caracteres'),
     firstNames: Yup.string()
@@ -55,6 +121,8 @@ const TeacherModal = ({ isOpen, onClose, onSave, teacher, careerOptions }) => {
                                         institutionalEmail: teacher?.institutionalEmail || '',
                                         phone: teacher?.phone || '',
                                         address: teacher?.address || '',
+                                        career: careerOptions.find((option) => option.value === teacher?.career?.id) || null,
+
                                     }}
                                     enableReinitialize={true}
                                     validationSchema={validationSchema}
@@ -81,6 +149,18 @@ const TeacherModal = ({ isOpen, onClose, onSave, teacher, careerOptions }) => {
                                                 <label htmlFor="middleName">Apellido Materno</label>
                                                 <Field name="middleName" type="text" id="middleName" placeholder="Ingrese el apellido materno" maxLength={50} className="form-input" />
                                                 <ErrorMessage name="middleName" component="div" className="text-danger mt-1" />
+                                            </div>
+                                            <div className={submitCount && errors.career ? 'has-error' : ''}>
+                                                <label htmlFor="career">Carrera</label>
+                                                <Select
+                                                    name="career"
+                                                    styles={customStyles}
+                                                    placeholder="Selecciona una carrera"
+                                                    options={careerOptions}
+                                                    onChange={(option) => setFieldValue('career', option)}
+                                                    value={values.career}
+                                                />
+                                                <ErrorMessage name="career" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className={submitCount && errors.birthDate ? 'has-error' : 'col-span-1'}>
                                                 <label htmlFor="birthDate">Fecha de Nacimiento</label>

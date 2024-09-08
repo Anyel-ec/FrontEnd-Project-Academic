@@ -13,7 +13,7 @@ const StudentTable = ({ students, onEdit, onDelete }) => {
                 <table className="table-striped table-hover">
                     <thead>
                         <tr>
-                            <th></th> {/* Columna para los iconos */}
+                            <th></th>
                             <th>Código</th>
                             <th>DNI</th>
                             <th>Nombre</th>
@@ -29,30 +29,23 @@ const StudentTable = ({ students, onEdit, onDelete }) => {
                             <React.Fragment key={student.id}>
                                 <tr>
                                     <td onClick={() => handleRowClick(student.id)} style={{ cursor: 'pointer' }}>
-                                        <p className='text-xl' >  {expandedRow === student.id ? "-" : "+"}</p>
+                                        <p className="text-xl"> {expandedRow === student.id ? '-' : '+'}</p>
                                     </td>
                                     <td>{student.studentCode}</td>
                                     <td>{student.dni}</td>
                                     <td>{student.firstNames}</td>
-                                    <td>{student.lastName} {student.middleName}</td>
-                                    <td>{student.career?.name || "Sin asignar"}</td>
+                                    <td>
+                                        {student.lastName} {student.middleName}
+                                    </td>
+                                    <td>{student.career?.name || 'Sin asignar'}</td>
                                     <td>{student.email}</td>
                                     <td>{student.phone}</td>
-                                   
                                     <td>
                                         <div className="flex gap-4 items-center justify-center">
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-outline-primary"
-                                                onClick={() => onEdit(student)}
-                                            >
+                                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => onEdit(student)}>
                                                 Editar
                                             </button>
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-outline-danger"
-                                                onClick={() => onDelete(student)}
-                                            >
+                                            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => onDelete(student)}>
                                                 Eliminar
                                             </button>
                                         </div>
@@ -60,12 +53,11 @@ const StudentTable = ({ students, onEdit, onDelete }) => {
                                 </tr>
                                 {expandedRow === student.id && (
                                     <tr className="expanded-row">
-                                        <td colSpan="10"> {/* Aumenta el colSpan para incluir la columna de iconos */}
-                                            <div className="p-3 flex flex-col">
-                                                {/* Información adicional */}
+                                        <td colSpan="10">
+                                            <div className="p-3 flex gap-5">
                                                 <strong>Dirección:</strong> {student.address || 'No disponible'}
                                                 <strong>Fecha de Nacimiento:</strong> {student.birthDate || 'No disponible'}
-                                                <strong>Género:</strong> {student.gender === true ? "Masculino" : "Femenino"}
+                                                <strong>Género:</strong> {student.gender === true ? 'Masculino' : 'Femenino'}
                                             </div>
                                         </td>
                                     </tr>

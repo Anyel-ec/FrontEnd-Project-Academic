@@ -58,7 +58,12 @@ const Teachers = () => {
 
     const saveTeacher = async (values, { resetForm }) => {
         const payload = {
-            ...values
+            ...values,
+            career: {
+                id: values.career.value,
+                name: values.career.label,
+                faculty: values.career.data.faculty,
+            },
         };
 
         try {
@@ -75,6 +80,8 @@ const Teachers = () => {
                 setContactList((prev) => [addedTeacher, ...prev]);
                 showMessage("Docente agregado exitosamente.");
             }
+            fetchCareers();
+            fetchTeachers();
             resetForm();
             closeModal();
         } catch (error) {

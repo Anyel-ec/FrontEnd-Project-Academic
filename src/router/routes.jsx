@@ -2,8 +2,6 @@ import { lazy } from 'react';
 import Students from '../pages/Apps/Student/Students';
 import Teachers from '../pages/Apps/Teacher/Teachers';
 import TitleReservation from '../pages/Apps/Steps/TitleReservation';
-import StudentCareer from '../pages/Apps/Assignment/StudentCareer';
-import TeacherCareer from '../pages/Apps/Assignment/TeacherCareer';
 import ThesisAdvisory from '../pages/Apps/ThesisAdvisory';
 import ProtectedRoute from '../security/ProtectedRoute ';
 import AuthRoute from '../security/AuthRoute ';
@@ -166,22 +164,7 @@ const routes = [
             </ProtectedRoute>
         ),
     },
-    {
-        path: 'apps/asignacion/estudiante-carrera',
-        element: (
-            <ProtectedRoute>
-                <StudentCareer />
-            </ProtectedRoute>
-        ),
-    },
-    {
-        path: 'apps/asignacion/docente-carrera',
-        element: (
-            <ProtectedRoute>
-                <TeacherCareer />
-            </ProtectedRoute>
-        ),
-    },
+
     {
         path: 'apps/asesoria-tesis',
         element: (

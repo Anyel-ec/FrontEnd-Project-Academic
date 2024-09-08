@@ -17,8 +17,6 @@ const login = async (username, password) => {
             const token = response.data.mensaje;
             // Guardar el token en localStorage
             localStorage.setItem('token', token);
-            console.log("Token guardado en localStorage", token);
-
             // Ahora obtener los datos del usuario
             const userResponse = await axios.get(`${USER_API_URL}${username}`, {
                 headers: {

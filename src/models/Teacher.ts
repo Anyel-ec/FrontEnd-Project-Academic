@@ -8,6 +8,7 @@ class Teacher {
     institutionalEmail: string;
     phone: string;
     address: string;
+    career:  string;  // Añadimos la carrera como un objeto, puede ser null
 
     constructor(
         id: number,
@@ -18,7 +19,8 @@ class Teacher {
         birthDate: string,
         institutionalEmail: string,
         phone: string,
-        address: string
+        address: string,
+        career: string   // Agregamos el objeto carrera
     ) {
         this.id = id;
         this.dni = dni;
@@ -29,7 +31,9 @@ class Teacher {
         this.institutionalEmail = institutionalEmail;
         this.phone = phone;
         this.address = address;
+        this.career = career;  // Asignamos la carrera en el constructor
     }
 }
 
 export default Teacher;
+    

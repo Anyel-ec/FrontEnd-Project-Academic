@@ -6,6 +6,7 @@ const TeacherTable = ({ teachers, onEdit, onDelete }) => {
     const handleRowClick = (id) => {
         setExpandedRow(expandedRow === id ? null : id);
     };
+
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
             <div className="table-responsive">
@@ -18,6 +19,7 @@ const TeacherTable = ({ teachers, onEdit, onDelete }) => {
                             <th>Apellidos</th>
                             <th>Correo Institucional</th>
                             <th>Celular</th>
+                            <th>Carrera</th>
                             <th className="!text-center">Acciones</th>
                         </tr>
                     </thead>
@@ -36,6 +38,8 @@ const TeacherTable = ({ teachers, onEdit, onDelete }) => {
 
                                     <td>{teacher.institutionalEmail}</td>
                                     <td>{teacher.phone}</td>
+                                    <td>{teacher.career?.name || 'Sin asignar'}</td>
+                                    {console.log(teacher.career)}
                                     <td>
                                         <div className="flex gap-4 items-center justify-center">
                                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => onEdit(teacher)}>

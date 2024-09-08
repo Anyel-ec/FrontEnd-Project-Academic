@@ -1,7 +1,7 @@
 import IconUserPlus from "../../../components/Icon/IconUserPlus";
 import IconSearch from "../../../components/Icon/IconSearch";
 
-const Header = ({ search, setSearch, onAddStudent }) => {
+const Header = ({ search, setSearch, onAddTeacher }) => {
     return (
         <div className="flex items-center justify-between flex-wrap gap-4">
             <h2 className="text-xl">Docentes</h2>
@@ -10,7 +10,7 @@ const Header = ({ search, setSearch, onAddStudent }) => {
                     <button
                         type="button"
                         className="btn btn-primary"
-                        onClick={onAddStudent}
+                        onClick={onAddTeacher}
                     >
                         <IconUserPlus className="ltr:mr-2 rtl:ml-2" />
                         Agregar docentes

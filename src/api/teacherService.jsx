@@ -26,7 +26,8 @@ const getTeachers = async () => {
             teacherData.birthDate,
             teacherData.institutionalEmail,
             teacherData.phone,
-            teacherData.address
+            teacherData.address,
+            teacherData.career
         ));
     } catch (error) {
         console.error("Error fetching teachers", error);
@@ -50,7 +51,8 @@ const addTeacher = async (teacher) => {
             response.data.birthDate,
             response.data.institutionalEmail,
             response.data.phone,
-            response.data.address
+            response.data.address,
+            response.data.careeer
         );
     } catch (error) {
         console.error("Error adding teacher", error);
@@ -74,7 +76,9 @@ const editTeacher = async (id, teacher) => {
             response.data.birthDate,
             response.data.institutionalEmail,
             response.data.phone,
-            response.data.address
+            response.data.address,
+            response.data.careeer,
+
         );
     } catch (error) {
         console.error("Error editing teacher", error);
