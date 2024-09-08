@@ -6,72 +6,10 @@ import Flatpickr from 'react-flatpickr';
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import Select from 'react-select';
 import IconX from '../../../components/Icon/IconX';
+import { HandleMode } from '../styles/selectStyles';
+const isDarkMode = true; // O la lógica para determinar el modo (puede ser gestionada por estado o contexto)
 
-const customStyles = {
-    control: (provided, state) => ({
-        ...provided,
-        backgroundColor: '#121E32',
-        color: '#798099',
-        borderColor: '#17263C',
-        padding: '0rem 0.5rem', // Reducir el padding para hacer el control más pequeño
-
-        borderRadius: '0.5rem',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-        fontSize: '0.475rem', // Reducir el tamaño de la fuente (equivalente a text-sm en Tailwind)
-        '&:hover': {
-        },
-        '&:focus-within': {
-            outline: 'none',
-            borderColor: '#243778',
-            boxShadow: '0 0 0 2px rgba(18, 30, 50, 0.5)',
-        },
-    }),
-    option: (provided, state) => ({
-        ...provided,
-        backgroundColor: state.isSelected ? '#1967D2' : '#121E32',
-        color: state.isSelected ? '#fff' : '#888E8D',
-        padding: '0 0.5em 0 0.5rem', // Reducir el padding de las opciones
-        fontSize: '0.875rem', // Reducir el tamaño de la fuente
-        '&:hover': {
-            backgroundColor: '#1967D2',
-            color: '#fff',
-        },
-    }),
-    singleValue: (provided) => ({
-        ...provided,
-        color: '#888E8D',
-        fontSize: '0.875rem', // Reducir el tamaño de la fuente del valor seleccionado
-    }),
-    menu: (provided) => ({
-        ...provided,
-        backgroundColor: '#121E32',
-        borderRadius: '0.5rem',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-        borderColor: '#fff',
-        padding: '0',
-        marginTop: '1px', // Asegura que no haya margen superior
-        marginBottom: '0', // Asegura que no haya margen inferior
-        overflow: 'hidden', // Evita que los elementos sobresalgan del menú
-    }),
-    placeholder: (provided) => ({
-        ...provided,
-        color: '#646B7A',
-        
-        fontSize: '0.875rem', // Reducir el tamaño de la fuente del placeholder
-    }),
-    dropdownIndicator: (provided) => ({
-        ...provided,
-        
-        color: '#5F6675',
-    }),
-    indicatorSeparator: () => ({
-        display: 'none', // Ocultar el separador de los indicadores
-    }),
-    menuList: (provided) => ({
-        ...provided,
-        padding: '0', // Elimina el padding del contenedor de las opciones
-    }),
-};
+const styles = HandleMode(isDarkMode); // Llamamos a la función con el valor de isDarkMode
 
 const validationSchema = Yup.object().shape({
     studentCode: Yup.string().length(6, 'Debe tener exactamente 6 caracteres').required('Campo requerido'),
@@ -164,7 +102,7 @@ const StudentModal = ({ isOpen, onClose, onSave, student, careerOptions }) => {
                                                 <label htmlFor="career">Carrera</label>
                                                 <Select
                                                     name="career"
-                                                    styles={customStyles}
+                                                    styles={styles}
                                                     placeholder="Selecciona una carrera"
                                                     options={careerOptions}
                                                     onChange={(option) => setFieldValue('career', option)}
@@ -178,8 +116,8 @@ const StudentModal = ({ isOpen, onClose, onSave, student, careerOptions }) => {
                                                     {({ field }) => (
                                                         <Flatpickr
                                                             {...field}
-                                                            placeholder='Ingrese la fecha'
-                                                            value={field.value || ''}   
+                                                            placeholder="Ingrese la fecha"
+                                                            value={field.value || ''}
                                                             options={{
                                                                 dateFormat: 'Y-m-d',
                                                                 position: 'auto left',
