@@ -61,6 +61,11 @@ export const lightModeStyles = {
         ...provided,
         padding: '0',
     }),
+    input: (provided) => ({
+        ...provided,
+        color: '#A0AEC0',
+        fontSize: '12px',  // Cambiar el tamaño del texto que se ingresa en el input
+    }),
 };
 
 // Estilos para Modo Oscuro
@@ -123,6 +128,11 @@ export const darkModeStyles = {
     menuList: (provided) => ({
         ...provided,
         padding: '0',
+    }),
+    input: (provided) => ({
+        ...provided,
+        color: '#A0AEC0',
+        fontSize: '13px',  // Cambiar el tamaño del texto que se ingresa en el input
     }),
 };
 // Función para manejar los modos (claro/oscuro)
