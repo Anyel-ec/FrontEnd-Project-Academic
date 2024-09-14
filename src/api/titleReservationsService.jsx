@@ -39,6 +39,7 @@ const addTitleReservation = async (titlereservation) => {
         const response = await axios.post(TITLERESERVATION_API_URL, titlereservation, {
             headers: {
                 Authorization: `Bearer ${getAuthToken()}`,
+                
             },
         });
         return new TitleReservation(
@@ -46,9 +47,7 @@ const addTitleReservation = async (titlereservation) => {
             response.data.meetsRequirements,
             response.data.student,
             response.data.project,
-            response.data.observations,
-            response.data.createdAt,
-            response.data.updatedAt
+            response.data.observations
         );
     } catch (error) {
         if (error.response && error.response.status === 409) {
@@ -70,9 +69,7 @@ const editTitleReservation = async (id, titlereservation) => {
             response.data.meetsRequirements,
             response.data.student,
             response.data.project,
-            response.data.observations,
-            response.data.createdAt,
-            response.data.updatedAt
+            response.data.observations
         );
     } catch (error) {
         if (error.response && error.response.status === 409) {
