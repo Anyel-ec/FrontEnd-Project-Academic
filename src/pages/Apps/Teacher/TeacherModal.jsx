@@ -7,12 +7,7 @@ import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import Select from 'react-select';
 import IconX from '../../../components/Icon/IconX';
 import { HandleMode } from '../styles/selectStyles';
-
-
-const isDarkMode = false; // O la lógica para determinar el modo (puede ser gestionada por estado o contexto)
-
-const styles = HandleMode(isDarkMode); // Llamamos a la función con el valor de isDarkMode
-
+import { useSelector } from 'react-redux'; // O useContext si usas contexto
 
 const validationSchema = Yup.object().shape({
     dni: Yup.string().required('DNI es requerido').length(8, 'DNI debe tener 8 caracteres'),
@@ -38,6 +33,8 @@ const validationSchema = Yup.object().shape({
 });
 
 const TeacherModal = ({ isOpen, onClose, onSave, teacher, careerOptions }) => {
+    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');  // Obtener el tema desde Redux
+    const styles = HandleMode(isDarkMode);  // Aplicar los estilos según el modo
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" open={isOpen} onClose={onClose} className="relative z-[51]">

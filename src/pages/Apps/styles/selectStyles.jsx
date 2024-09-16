@@ -1,14 +1,16 @@
 // Estilos para Modo Claro
 export const lightModeStyles = {
-    control: (provided) => ({
+    control: (provided, state) => ({
         ...provided,
-        backgroundColor: '#F7F9FC',
-        color: '#333',
+        backgroundColor: state.isDisabled ? '#E7E8EE' : '#F7F9FC',
+        color: state.isDisabled ? '#fff' : '#333',
         borderColor: '#D1D5DB',
         padding: '0rem 0.5rem',
         borderRadius: '0.5rem',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-        fontSize: '0.475rem',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',  
+        fontSize: '0.875rem', // Mantener consistencia con el tamaño de la fuente
+        cursor: state.isDisabled ? 'not-allowed' : 'default',
+        pointerEvents: 'auto',
         '&:hover': {
             borderColor: '#A0AEC0',
         },
@@ -22,7 +24,7 @@ export const lightModeStyles = {
         ...provided,
         backgroundColor: state.isSelected ? '#3182CE' : '#F7F9FC',
         color: state.isSelected ? '#fff' : '#2D3748',
-        padding: '0 0.5em 0 0.5rem',
+        padding: '0 0.5em',
         fontSize: '0.875rem',
         '&:hover': {
             backgroundColor: '#63B3ED',
@@ -64,7 +66,7 @@ export const lightModeStyles = {
     input: (provided) => ({
         ...provided,
         color: '#A0AEC0',
-        fontSize: '12px',  // Cambiar el tamaño del texto que se ingresa en el input
+        fontSize: '0.875rem',  // Tamaño de fuente consistente
     }),
 };
 
@@ -72,14 +74,15 @@ export const lightModeStyles = {
 export const darkModeStyles = {
     control: (provided, state) => ({
         ...provided,
-        backgroundColor: '#121E32',
-        color: '#798099',
+        backgroundColor: state.isDisabled ? '#20273C' : '#121E32',
+        color: state.isDisabled ? '#999999' : '#798099',
         borderColor: '#17263C',
         padding: '0rem 0.5rem',
         borderRadius: '0.5rem',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-        fontSize: '0.475rem',
-        '&:hover': {},
+        fontSize: '0.875rem',  // Tamaño de fuente consistente
+        cursor: state.isDisabled ? 'not-allowed' : 'default',
+        pointerEvents: 'auto',
         '&:focus-within': {
             outline: 'none',
             borderColor: '#243778',
@@ -90,7 +93,7 @@ export const darkModeStyles = {
         ...provided,
         backgroundColor: state.isSelected ? '#1967D2' : '#121E32',
         color: state.isSelected ? '#fff' : '#888E8D',
-        padding: '0 0.5em 0 0.5rem',
+        padding: '0 0.5em',
         fontSize: '0.875rem',
         '&:hover': {
             backgroundColor: '#1967D2',
@@ -132,9 +135,10 @@ export const darkModeStyles = {
     input: (provided) => ({
         ...provided,
         color: '#A0AEC0',
-        fontSize: '13px',  // Cambiar el tamaño del texto que se ingresa en el input
+        fontSize: '0.875rem',  // Tamaño de fuente consistente
     }),
 };
+
 // Función para manejar los modos (claro/oscuro)
 export const HandleMode = (isDarkMode) => {
     return isDarkMode ? darkModeStyles : lightModeStyles;

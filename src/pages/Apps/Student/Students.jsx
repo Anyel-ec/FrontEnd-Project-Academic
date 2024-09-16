@@ -4,7 +4,7 @@ import { setPageTitle } from "../../../store/themeConfigSlice";
 import Swal from "sweetalert2";
 import studentService from "../../../api/studentService";
 import careerService from "../../../api/careerService";
-import Header from "./Header";
+import Header from "./StudentHeader";
 import StudentTable from "./StudentTable";
 import StudentModal from "./StudentModal";
 import { showMessage } from "../showMessage";

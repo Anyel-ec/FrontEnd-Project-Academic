@@ -1,7 +1,7 @@
 import { lazy } from 'react';
-import Students from '../pages/Apps/Student/Students';
+import Students from '../pages/Apps/Student/Students';  
 import Teachers from '../pages/Apps/Teacher/Teachers';
-import TitleReservation from '../pages/Apps/Steps/TitleReservation';
+import TitleReservation from '../pages/Apps/Steps/One/TitleReservation';
 import ThesisAdvisory from '../pages/Apps/ThesisAdvisory';
 import ProtectedRoute from '../security/ProtectedRoute ';
 import AuthRoute from '../security/AuthRoute ';
