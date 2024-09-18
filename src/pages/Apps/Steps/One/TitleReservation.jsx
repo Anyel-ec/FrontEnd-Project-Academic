@@ -7,9 +7,8 @@ import careerService from '../../../../api/careerService';
 import studentService from '../../../../api/studentService';
 import titleReservationsService from '../../../../api/titleReservationsService';
 import SelectCareer from './SelectCareer';
-import SelectStudent from './SelectStudent';
+import MultiSelectStudent from './MultiSelectStudent'; // Componente MultiSelect
 import ReservationTable from './ReservationTable';
-// import ToggleSwitch from './ToggleSwitch';
 import { HandleMode } from '../../styles/selectStyles';
 
 const isDarkMode = true; // O la lógica para determinar el modo (puede ser gestionada por estado o contexto)
@@ -17,7 +16,7 @@ const styles = HandleMode(isDarkMode);
 
 const validationSchema = Yup.object().shape({
     career: Yup.object().nullable().required('Debes seleccionar una carrera'),
-    student: Yup.object().nullable().required('Debes seleccionar un estudiante'),
+    students: Yup.array().min(1, 'Debes seleccionar al menos un estudiante').max(2, 'Solo puedes seleccionar hasta dos estudiantes'),
 });
 
 const TitleReservation = () => {
@@ -102,24 +101,27 @@ const TitleReservation = () => {
         setIsProjectEnabled(!isProjectEnabled); // Alternar el valor de "project"
     };
 
-    const addTitleReservation = async (studentId) => {
+    const addTitleReservations = async (selectedStudents) => {
         try {
-            const newReservation = await titleReservationsService.addTitleReservation({
-                student: { id: studentId },
-                project: isProjectEnabled, // Enviar si el proyecto está habilitado o no
-            });
-            if (!newReservation) throw new Error('No se recibió una nueva reservación.');
-
+            const promises = selectedStudents.map((student) =>
+                titleReservationsService.addTitleReservation({
+                    student: { id: student.value },
+                    project: isProjectEnabled, // Enviar si el proyecto está habilitado o no
+                })
+            );
+            await Promise.all(promises);
             await fetchTitleReservations(); // Actualiza las reservaciones
 
-            // Filtrar el estudiante recién agregado para que no aparezca en el select
-            const updatedStudentList = studentOptions.filter((student) => student.value !== String(studentId));
+            // Filtrar los estudiantes recién agregados para que no aparezcan en el select
+            const updatedStudentList = studentOptions.filter(
+                (student) => !selectedStudents.some((selected) => selected.value === student.value)
+            );
             setFilteredStudentOptions(updatedStudentList);
 
             setApiError(null);
         } catch (error) {
-            console.error('Error adding title reservation:', error);
-            setApiError('Error al agregar la reservación.');
+            console.error('Error adding title reservations:', error);
+            setApiError('Error al agregar las reservaciones.');
         }
     };
 
@@ -134,8 +136,7 @@ const TitleReservation = () => {
             // Resetear el formulario si es necesario
             resetForm(); // Limpia el formulario después de eliminar
         } catch (error) {
-            // console.error('Error deleting title reservation:', error);
-            setApiError('Error al eliminar la reservación.');
+            // setApiError('Error al eliminar la reservación.');
         }
     };
     
@@ -145,13 +146,13 @@ const TitleReservation = () => {
             <h1 className="text-2xl font-bold mb-5">Reservaciones de Títulos</h1>
 
             <Formik
-                initialValues={{ career: null, student: null }}
+                initialValues={{ career: null, students: [] }} // Cambiado a un array de estudiantes
                 validationSchema={validationSchema}
                 enableReinitialize={true}
                 onSubmit={(values, { setSubmitting, resetForm }) => {
-                    const studentId = values.student?.value;
-                    if (studentId) {
-                        addTitleReservation(studentId)
+                    const selectedStudents = values.students; // Obtenemos los estudiantes seleccionados
+                    if (selectedStudents.length > 0) {
+                        addTitleReservations(selectedStudents)
                             .then(() => {
                                 resetForm(); // Limpia el formulario después de guardar
                                 setSubmitting(false);
@@ -164,7 +165,7 @@ const TitleReservation = () => {
             >
                 {({ errors, submitCount, values, setFieldValue, isSubmitting }) => (
                     <Form className="flex flex-row items-center gap-4">
-                        {/* SelectCareer y SelectStudent */}
+                        {/* SelectCareer y MultiSelectStudent */}
                         <SelectCareer
                             options={careerOptions}
                             value={values.career}
@@ -173,8 +174,15 @@ const TitleReservation = () => {
                             errors={errors}
                             submitCount={submitCount}
                         />
-                        <SelectStudent options={filteredStudentOptions} value={values.student} setFieldValue={setFieldValue} isDisabled={!values.career} errors={errors} submitCount={submitCount} />
-                        {/* <ToggleSwitch isChecked={isProjectEnabled} onChange={handleToggleChange} /> */}
+                        <MultiSelectStudent
+                            options={filteredStudentOptions}
+                            value={values.students}
+                            setFieldValue={setFieldValue}
+                            maxSelectable={2} // Límite de 2 estudiantes
+                            isDisabled={!values.career}
+                            errors={errors}
+                            submitCount={submitCount}
+                        />
                         <button type="submit" className="bg-blue-500 text-white font-bold py-2 px-4 mt-5 rounded hover:bg-blue-700" disabled={isSubmitting}>
                             {isSubmitting ? 'Guardando...' : 'Guardar'}
                         </button>
