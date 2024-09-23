@@ -1,6 +1,5 @@
 import axios from 'axios';
 import AppEnvironments from '../config/AppEnvironments';
-import TitleReservation from '../models/TitleReservation';
 
 const TITLERESERVATION_API_URL = `${AppEnvironments.baseUrl}api/v1/reservas_titulo/`;
 
@@ -9,6 +8,7 @@ const getAuthToken = () => {
     return localStorage.getItem('token');
 };
 
+// Obtener todas las reservas de título
 const getTitleReservations = async () => {
     try {
         const response = await axios.get(TITLERESERVATION_API_URL, {
@@ -16,24 +16,15 @@ const getTitleReservations = async () => {
                 Authorization: `Bearer ${getAuthToken()}`,
             },
         });
-        return response.data.map(
-            (titlereservationData) =>
-                new TitleReservation(
-                    titlereservationData.id,
-                    titlereservationData.meetsRequirements,
-                    titlereservationData.student,
-                    titlereservationData.project,
-                    titlereservationData.observations,
-                    titlereservationData.createdAt,
-                    titlereservationData.updatedAt
-                )
-        );
+        console.log("La respuesta es: ", response.data);
+        return response.data;
     } catch (error) {
         console.error('Error fetching titlereservations', error);
         throw error;
     }
 };
 
+// Añadir una nueva reserva de título
 const addTitleReservation = async (titlereservation) => {
     try {
         const response = await axios.post(TITLERESERVATION_API_URL, titlereservation, {
@@ -43,35 +34,22 @@ const addTitleReservation = async (titlereservation) => {
         });
 
         if (response.data) {
-            return new TitleReservation(
-                response.data.id,
-                response.data.meetsRequirements,
-                response.data.student,
-                response.data.project,
-                response.data.observations
-            );
+            return response.data;
         } else {
             throw new Error('El servidor no devolvió datos en la respuesta.');
         }
     } catch (error) {
         console.error('Error en addTitleReservation:', error.response ? error.response.data : error.message);
 
-        if (error.response) {
-            // Si es un error de duplicidad (409 Conflict)
-            if (error.response.status === 409) {
-                throw new Error('Duplicidad de datos: ' + error.response.data.message);
-            }
-
-            // Si hay otro tipo de error en la respuesta del servidor
-            throw new Error(`Error en la solicitud: ${error.response.status} - ${error.response.data.message || 'Error desconocido'}`);
+        if (error.response && error.response.status === 409) {
+            throw new Error('Duplicidad de datos: ' + error.response.data.message);
         }
 
-        // Si es un error en la configuración de la solicitud o un error desconocido
         throw new Error('Error inesperado: ' + error.message);
     }
-}
+};
 
-
+// Editar una reserva de título existente
 const editTitleReservation = async (id, titlereservation) => {
     try {
         const response = await axios.put(`${TITLERESERVATION_API_URL}${id}`, titlereservation, {
@@ -79,13 +57,7 @@ const editTitleReservation = async (id, titlereservation) => {
                 Authorization: `Bearer ${getAuthToken()}`,
             },
         });
-        return new TitleReservation(
-            response.data.id,
-            response.data.meetsRequirements,
-            response.data.student,
-            response.data.project,
-            response.data.observations
-        );
+        return response.data;
     } catch (error) {
         if (error.response && error.response.status === 409) {
             throw new Error('Duplicidad de datos: ' + error.response.data.message);
@@ -94,6 +66,7 @@ const editTitleReservation = async (id, titlereservation) => {
     }
 };
 
+// Eliminar una reserva de título
 const deleteTitleReservation = async (id) => {
     try {
         const response = await axios.delete(`${TITLERESERVATION_API_URL}${id}`, {
@@ -106,7 +79,7 @@ const deleteTitleReservation = async (id) => {
         console.error('Error deleting titlereservation', error);
         throw error;
     }
-};
+};  
 
 export default {
     getTitleReservations,

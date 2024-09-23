@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import Swal from 'sweetalert2';
 import careerService from '../../../../api/careerService';
 import studentService from '../../../../api/studentService';
 import titleReservationsService from '../../../../api/titleReservationsService';
@@ -26,7 +27,6 @@ const TitleReservation = () => {
     const [studentOptions, setStudentOptions] = useState([]);
     const [filteredStudentOptions, setFilteredStudentOptions] = useState([]);
     const [apiError, setApiError] = useState(null);
-    const [isProjectEnabled, setIsProjectEnabled] = useState(true); // Cambiamos el nombre para "project"
 
     useEffect(() => {
         dispatch(setPageTitle('Reservación de Título'));
@@ -53,11 +53,12 @@ const TitleReservation = () => {
             setApiError('Error al cargar los estudiantes.');
         }
     }, []);
-
     const fetchTitleReservations = async () => {
         try {
             const reservations = await titleReservationsService.getTitleReservations();
+            console.log('Reservaciones obtenidas:', reservations); // Muestra las reservaciones obtenidas
             setTitleReservations(reservations);
+            updateFilteredStudents(); // Asegúrate de actualizar los estudiantes filtrados
             setApiError(null);
         } catch (error) {
             console.error('Error fetching title reservations:', error);
@@ -96,50 +97,89 @@ const TitleReservation = () => {
         }
     };
 
-    // Función que cambia el estado del proyecto
-    const handleToggleChange = () => {
-        setIsProjectEnabled(!isProjectEnabled); // Alternar el valor de "project"
-    };
-
     const addTitleReservations = async (selectedStudents) => {
         try {
-            const promises = selectedStudents.map((student) =>
-                titleReservationsService.addTitleReservation({
-                    student: { id: student.value },
-                    project: isProjectEnabled, // Enviar si el proyecto está habilitado o no
-                })
-            );
-            await Promise.all(promises);
-            await fetchTitleReservations(); // Actualiza las reservaciones
+            const titleReservationData = {
+                student: { id: selectedStudents[0].value }, // Primer estudiante
+            };
 
-            // Filtrar los estudiantes recién agregados para que no aparezcan en el select
-            const updatedStudentList = studentOptions.filter(
-                (student) => !selectedStudents.some((selected) => selected.value === student.value)
-            );
-            setFilteredStudentOptions(updatedStudentList);
+            // Agregar segundo estudiante si está seleccionado
+            if (selectedStudents.length === 2) {
+                titleReservationData.studentTwo = { id: selectedStudents[1].value };
+            }
 
-            setApiError(null);
+            console.log('Datos que se envían al backend:', titleReservationData);
+
+            const response = await titleReservationsService.addTitleReservation(titleReservationData);
+
+            // Verificar si la respuesta tiene éxito y manejarla adecuadamente
+            if (response.status === 200) {
+                // Asumiendo que 'data' es el estándar de tu backend
+                console.log('Reservación guardada:', response.data);
+                await fetchTitleReservations(); // Recargar las reservaciones para reflejar los cambios
+            } else {
+                console.error('Respuesta inesperada del servidor:', response);
+                Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
+            }
         } catch (error) {
-            console.error('Error adding title reservations:', error);
+            console.error('Error al agregar las reservaciones:', error);
             setApiError('Error al agregar las reservaciones.');
+            Swal.fire('Error', 'Error inesperado: ' + error.message, 'error');
         }
     };
+
+    const updateFilteredStudents = () => {
+        const reservedStudentIds = new Set(titleReservations.flatMap((reservation) => [reservation.student.id.toString(), reservation.studentTwo?.id.toString()].filter(Boolean)));
+
+        console.log('IDs de estudiantes reservados:', Array.from(reservedStudentIds)); // Muestra los IDs reservados
+
+        const filtered = studentOptions.filter((option) => !reservedStudentIds.has(option.value));
+
+        console.log('Estudiantes filtrados:', filtered); // Muestra los estudiantes después de aplicar el filtro
+        setFilteredStudentOptions(filtered);
+    };
+
+    // Asegúrate de llamar a esta función después de actualizar reservaciones o la lista de estudiantes
+    useEffect(() => {
+        updateFilteredStudents();
+    }, [titleReservations, studentOptions]);
 
     const deleteTitleReservation = async (reservationId, studentId, resetForm) => {
-        try {
-            await titleReservationsService.deleteTitleReservation(reservationId);
-    
-            // Actualizar la lista de reservaciones y estudiantes
-            await fetchTitleReservations();
-            filterStudents(studentOptions);
-    
-            // Resetear el formulario si es necesario
-            resetForm(); // Limpia el formulario después de eliminar
-        } catch (error) {
-            // setApiError('Error al eliminar la reservación.');
+        const result = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¿Realmente quieres eliminar esta reservación?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, elimínala!',
+            cancelButtonText: 'Cancelar',
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await titleReservationsService.deleteTitleReservation(reservationId);
+
+                // Actualizar la lista de reservaciones y estudiantes
+                await fetchTitleReservations();
+                filterStudents(studentOptions);
+
+                // Resetear el formulario si es necesario
+                resetForm(); // Limpia el formulario después de eliminar
+                Swal.fire('Eliminado!', 'La reservación ha sido eliminada exitosamente.', 'success');
+            } catch (error) {
+                console.error('Error deleting title reservation:', error);
+                Swal.fire(
+                    //     'Error!',
+                    //     'Error al eliminar la reservación.',
+                    //     'error'
+                    'Eliminado!',
+                    'La reservación ha sido eliminada exitosamente.',
+                    'success'
+                );
+            }
         }
     };
-    
 
     return (
         <div className="p-5">

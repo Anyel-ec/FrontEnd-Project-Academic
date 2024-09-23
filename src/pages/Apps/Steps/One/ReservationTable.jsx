@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
+import IconFile from '../../../../Components/Icon/IconFile';
 
 const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => {
-    // Estado para controlar la página actual y el tamaño de la página
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 4; // Número de elementos por página
+    const [expandedRow, setExpandedRow] = useState(null); // Estado para manejar la fila expandida
+    const itemsPerPage = 4;
 
-    // Calcular el índice del último y primer elemento de la página actual
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentReservations = titleReservations.slice(indexOfFirstItem, indexOfLastItem);
 
-    // Calcular el número total de páginas
     const totalPages = Math.ceil(titleReservations.length / itemsPerPage);
 
-    // Función para cambiar de página
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
+    };
+
+    const toggleRowExpansion = (reservationId) => {
+        setExpandedRow(expandedRow === reservationId ? null : reservationId);
     };
 
     return (
@@ -27,39 +29,67 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                         <tr>
                             <th>Código</th>
                             <th>Cumple Requisitos</th>
-                            <th>Estudiante</th>
+                            <th>Estudiante(s)</th>
+                            <th>Carrera</th>
                             <th>Proyecto</th>
                             <th>Observaciones</th>
                             <th>Fecha Creación</th>
                             <th>Fecha Actualización</th>
+                            <th>PDF</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {console.log('datos para la tabla', currentReservations)}
                         {currentReservations.length > 0 ? (
                             currentReservations.map((reservation) => (
-                                <tr key={reservation.id}>
-                                    <td>{reservation.student.studentCode}</td>
-                                    <td>{reservation.meetsRequirements ? 'Sí' : 'No'}</td>
-                                    <td>
-                                        {reservation.student.firstNames ?? ''} {reservation.student.lastName ?? ''}
-                                    </td>
-                                    <td>{reservation.project ? 'Sí' : 'No'}</td>
-                                    <td>{reservation.observations ?? 'Ninguna'}</td>
-                                    <td>{reservation.createdAt ? new Date(reservation.createdAt).toLocaleDateString() : 'N/A'}</td>
-                                    <td>{reservation.updatedAt ? new Date(reservation.updatedAt).toLocaleDateString() : 'N/A'}</td>
-                                    <td>
-                                        <div className="flex gap-4 items-center justify-center">
-                                            {/* Pasa toda la reservación para edición, no solo el ID */}
-                                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => onEdit(reservation.id)}>
-                                                Editar
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => onDelete(reservation.id)}>
-                                                Eliminar
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <React.Fragment key={reservation.id}>
+                                    <tr>
+                                        <td>
+                                            {reservation.student.studentCode}{' '}
+                                            {reservation.studentTwo && (
+                                                <>
+                                                    <br />
+                                                    {reservation.studentTwo.studentCode}
+                                                </>
+                                            )}
+                                        </td>
+
+                                        <td>{reservation.meetsRequirements ? 'Sí' : 'No'}</td>
+                                        <td>
+                                            {reservation.student.firstNames ?? ''} {reservation.student.lastName ?? ''}<span className='text-xl'>,</span>
+                                            {reservation.studentTwo && (
+                                                <p>
+                                                    {reservation.studentTwo.firstNames ?? ''} {reservation.studentTwo.lastName ?? ''}
+                                                </p>
+                                            )}
+                                        </td>
+                                        <td>{reservation.student.career.name}</td>
+                                        <td>{reservation.project ? 'Sí' : 'No'}</td>
+                                        <td>{reservation.observations ?? 'Ninguna'}</td>
+                                        <td>{reservation.createdAt ? new Date(reservation.createdAt).toLocaleString() : 'Ninguna'}</td>
+                                        <td>{reservation.updatedAt ? new Date(reservation.updatedAt).toLocaleString() : 'Ninguna'}</td>
+                                        <td>
+                                            {reservation.pdfUrl ? (
+                                                <a href={reservation.pdfUrl} className="btn btn-sm btn-outline-success" target="_blank" rel="noopener noreferrer">
+                                                    Ver PDF
+                                                </a>
+                                            ) : (
+                                                <button className="btn btn-sm btn-outline-secondary">Subir PDF</button>
+                                            )}
+                                        </td>
+                                        <td>
+                                            <div className="flex gap-4 items-center justify-center">
+                                                <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => onEdit(reservation.id)}>
+                                                    Editar
+                                                </button>
+                                                <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => onDelete(reservation.id)}>
+                                                    Eliminar
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </React.Fragment>
                             ))
                         ) : (
                             <tr>
@@ -71,11 +101,8 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                     </tbody>
                 </table>
             </div>
-
-            {/* Paginación */}
             <div className="flex justify-center items-center mt-4">
                 <ul className="inline-flex items-center space-x-1 rtl:space-x-reverse m-auto mb-4">
-                    {/* Botón Anterior */}
                     <li>
                         <button
                             type="button"
@@ -88,8 +115,6 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                             </svg>
                         </button>
                     </li>
-
-                    {/* Botones de páginas */}
                     {Array.from({ length: totalPages }, (_, index) => (
                         <li key={index + 1}>
                             <button
@@ -105,8 +130,6 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                             </button>
                         </li>
                     ))}
-
-                    {/* Botón Siguiente */}
                     <li>
                         <button
                             type="button"
