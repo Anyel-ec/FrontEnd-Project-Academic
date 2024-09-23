@@ -65,7 +65,6 @@ const TitleReservation = () => {
             setApiError('Error al cargar las reservaciones de títulos.');
         }
     };
-
     const fetchCareers = useCallback(async () => {
         try {
             const careers = await careerService.getCareers();
@@ -180,7 +179,6 @@ const TitleReservation = () => {
             }
         }
     };
-
     return (
         <div className="p-5">
             <h1 className="text-2xl font-bold mb-5">Reservaciones de Títulos</h1>

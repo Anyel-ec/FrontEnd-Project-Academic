@@ -1,23 +1,26 @@
 import React, { useState } from 'react';
-import IconFile from '../../../../Components/Icon/IconFile';
+import TitleUpload from '../TitleUpload'; // Asegúrate de que el path de importación es correcto
 
 const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [expandedRow, setExpandedRow] = useState(null); // Estado para manejar la fila expandida
+    const [pdfData, setPdfData] = useState(null); // Estado para almacenar los datos del PDF en base64
+
     const itemsPerPage = 4;
+    const totalPages = Math.ceil(titleReservations.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentReservations = titleReservations.slice(indexOfFirstItem, indexOfLastItem);
 
-    const totalPages = Math.ceil(titleReservations.length / itemsPerPage);
-
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
+    const handlePDFUploadSuccess = (base64Data) => {
+        setPdfData(base64Data);
+        console.log('PDF cargado y convertido a Base64:', base64Data);
     };
 
-    const toggleRowExpansion = (reservationId) => {
-        setExpandedRow(expandedRow === reservationId ? null : reservationId);
+    const handlePDFUploadFailure = (error) => {
+        console.error('Error al cargar el PDF:', error);
     };
 
     return (
@@ -40,64 +43,60 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                         </tr>
                     </thead>
                     <tbody>
-                        {console.log('datos para la tabla', currentReservations)}
-                        {currentReservations.length > 0 ? (
-                            currentReservations.map((reservation) => (
-                                <React.Fragment key={reservation.id}>
-                                    <tr>
-                                        <td>
-                                            {reservation.student.studentCode}{' '}
-                                            {reservation.studentTwo && (
-                                                <>
-                                                    <br />
-                                                    {reservation.studentTwo.studentCode}
-                                                </>
-                                            )}
-                                        </td>
+                    {currentReservations.length > 0 ? (
+                        currentReservations.map((reservation) => (
+                            <tr key={reservation.id}>
+                                <td>
+                                    {reservation.student.studentCode}{' '}
+                                    {reservation.studentTwo && (
+                                        <>
+                                            <br />
+                                            {reservation.studentTwo.studentCode}
+                                        </>
+                                    )}
+                                </td>
 
-                                        <td>{reservation.meetsRequirements ? 'Sí' : 'No'}</td>
-                                        <td>
-                                            {reservation.student.firstNames ?? ''} {reservation.student.lastName ?? ''}<span className='text-xl'>,</span>
-                                            {reservation.studentTwo && (
-                                                <p>
-                                                    {reservation.studentTwo.firstNames ?? ''} {reservation.studentTwo.lastName ?? ''}
-                                                </p>
-                                            )}
-                                        </td>
-                                        <td>{reservation.student.career.name}</td>
-                                        <td>{reservation.project ? 'Sí' : 'No'}</td>
-                                        <td>{reservation.observations ?? 'Ninguna'}</td>
-                                        <td>{reservation.createdAt ? new Date(reservation.createdAt).toLocaleString() : 'Ninguna'}</td>
-                                        <td>{reservation.updatedAt ? new Date(reservation.updatedAt).toLocaleString() : 'Ninguna'}</td>
-                                        <td>
-                                            {reservation.pdfUrl ? (
-                                                <a href={reservation.pdfUrl} className="btn btn-sm btn-outline-success" target="_blank" rel="noopener noreferrer">
-                                                    Ver PDF
-                                                </a>
-                                            ) : (
-                                                <button className="btn btn-sm btn-outline-secondary">Subir PDF</button>
-                                            )}
-                                        </td>
-                                        <td>
-                                            <div className="flex gap-4 items-center justify-center">
-                                                <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => onEdit(reservation.id)}>
-                                                    Editar
-                                                </button>
-                                                <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => onDelete(reservation.id)}>
-                                                    Eliminar
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </React.Fragment>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="8" className="px-4 py-2 text-center">
-                                    No hay reservaciones disponibles
+                                <td>{reservation.meetsRequirements ? 'Sí' : 'No'}</td>
+                                <td>
+                                    {reservation.student.firstNames ?? ''} {reservation.student.lastName ?? ''}
+                                    {reservation.studentTwo && (
+                                        <p>
+                                            {reservation.studentTwo.firstNames ?? ''} {reservation.studentTwo.lastName ?? ''}
+                                        </p>
+                                    )}
+                                </td>
+
+                                <td>{reservation.student.career.name}</td>
+                                <td>{reservation.project ? 'Sí' : 'No'}</td>
+                                <td>{reservation.observations || 'Ninguna'}</td>
+                                <td>{new Date(reservation.createdAt).toLocaleString()}</td>
+                                <td>{new Date(reservation.updatedAt).toLocaleString()}</td>
+                                <td className=' gap-4 '>
+                                    {pdfData ? (
+                                        <a href={`data:application/pdf;base64,${pdfData}`} target="_blank" rel="noopener noreferrer" className="">
+                                            Ver
+                                        </a>
+                                    ) : (
+                                        <TitleUpload onUploadSuccess={handlePDFUploadSuccess} onUploadFailure={handlePDFUploadFailure} />
+                                    )}
+                                </td>
+                                <td className="flex gap-4 items-center justify-center">
+                                    <button onClick={() => onEdit(reservation.id)} className="btn btn-sm btn-outline-primary">
+                                        Editar
+                                    </button>
+                                    <button onClick={() => onDelete(reservation.id)} className="btn btn-sm btn-outline-danger">
+                                        Eliminar
+                                    </button>
                                 </td>
                             </tr>
-                        )}
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="10" className="px-4 py-2 text-center">
+                                No hay reservaciones disponibles
+                            </td>
+                        </tr>
+                    )}
                     </tbody>
                 </table>
             </div>
