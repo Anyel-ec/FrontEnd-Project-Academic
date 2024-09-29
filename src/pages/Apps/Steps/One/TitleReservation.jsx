@@ -123,12 +123,12 @@ const TitleReservation = () => {
             const response = await titleReservationsService.addTitleReservation(titleReservationData);
 
             // Verificar si la respuesta tiene éxito y manejarla adecuadamente
-            if (response.status === 200) {
-                console.log('Reservación guardada:', response.data);
-                await fetchTitleReservations(); // Recargar las reservaciones para reflejar los cambios
-            } else {
+            if (!response) {
                 console.error('Respuesta inesperada del servidor:', response);
                 Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
+            } else {
+                Swal.fire('Error', 'Estudiante agregado correctamente', 'success');
+                await fetchTitleReservations(); // Recargar las reservaciones para reflejar los cambios
             }
         } catch (error) {
             console.error('Error al agregar las reservaciones:', error);
@@ -167,13 +167,9 @@ const TitleReservation = () => {
         if (result.isConfirmed) {
             try {
                 await titleReservationsService.deleteTitleReservation(reservationId);
-
                 // Actualizar la lista de reservaciones y estudiantes
                 await fetchTitleReservations();
                 filterStudents(studentOptions);
-
-                // Resetear el formulario si es necesario
-                resetForm(); // Limpia el formulario después de eliminar
                 Swal.fire('Eliminado!', 'La reservación ha sido eliminada exitosamente.', 'success');
             } catch (error) {
                 console.error('Error al eliminar la reservación:', error);

@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
+
+// Función para obtener el token de autenticación del localStorage
 const getAuthToken = () => {
     return localStorage.getItem('token');
 };
+
 const TitleUpload = ({ reservaId }) => {
     const [file, setFile] = useState(null); // Almacena el archivo seleccionado
     const [base64String, setBase64String] = useState(''); // Almacena el PDF en Base64
     const [pdfDocumentId, setPdfDocumentId] = useState(null); // Almacena el id del documento PDF desde la base de datos
+
     // Verifica que reservaId no sea undefined antes de usarlo
     useEffect(() => {
         if (!reservaId) {
@@ -27,13 +31,6 @@ const TitleUpload = ({ reservaId }) => {
                     throw new Error('Error al cargar la reservación.');
                 }
                 return response.json();
-            })
-            .then((data) => {
-                if (data.pdfDocumentId) {
-                    setPdfDocumentId(data.pdfDocumentId); // Actualiza el ID del PDF si existe
-                } else {
-                    setPdfDocumentId(null); // Si no hay PDF, lo marcamos como null
-                }
             })
             .catch((error) => {
                 console.error('Error al cargar la reservación:', error);
@@ -123,6 +120,7 @@ const TitleUpload = ({ reservaId }) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${getAuthToken()}`, // Envía el token de autenticación
             },
             body: JSON.stringify(documentData),
         })
@@ -138,7 +136,7 @@ const TitleUpload = ({ reservaId }) => {
                     title: 'Archivo cargado con éxito',
                     text: 'El archivo ha sido guardado correctamente.',
                 });
-                // Actualizar el id del PDF document
+                // Actualizar el id del PDF document sin necesidad de recargar la página
                 setPdfDocumentId(data.pdfDocumentId);
             })
             .catch((error) => {
@@ -169,7 +167,7 @@ const TitleUpload = ({ reservaId }) => {
                     title: 'PDF eliminado',
                     text: 'El archivo PDF ha sido eliminado con éxito.',
                 });
-                setPdfDocumentId(null); // Limpiar el ID del documento PDF
+                setPdfDocumentId(null); // Limpiar el ID del documento PDF sin recargar la página
             })
             .catch((error) => {
                 console.error('Error al eliminar el PDF:', error);

@@ -77,7 +77,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                                 <td className='gap-4'>
                                     {pdfDataMap[reservation.id] ? (
                                         <a href={`data:application/pdf;base64,${pdfDataMap[reservation.id]}`} target="_blank" rel="noopener noreferrer" className="">
-                                            Ver PDF
+                                            Ver
                                         </a>
                                     ) : (
                                         <TitleUpload
