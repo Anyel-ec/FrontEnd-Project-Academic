@@ -12,9 +12,12 @@ import MultiSelectStudent from './MultiSelectStudent'; // Componente MultiSelect
 import ReservationTable from './ReservationTable';
 import { HandleMode } from '../../styles/selectStyles';
 
-const isDarkMode = true; // O la lógica para determinar el modo (puede ser gestionada por estado o contexto)
+
+
+const isDarkMode = true; // Lógica para determinar el modo oscuro (puede ser gestionada por estado o contexto)
 const styles = HandleMode(isDarkMode);
 
+// Validación con Yup para el formulario
 const validationSchema = Yup.object().shape({
     career: Yup.object().nullable().required('Debes seleccionar una carrera'),
     students: Yup.array().min(1, 'Debes seleccionar al menos un estudiante').max(2, 'Solo puedes seleccionar hasta dos estudiantes'),
@@ -28,6 +31,7 @@ const TitleReservation = () => {
     const [filteredStudentOptions, setFilteredStudentOptions] = useState([]);
     const [apiError, setApiError] = useState(null);
 
+    // Fetch de carreras, estudiantes y reservaciones al montar el componente
     useEffect(() => {
         dispatch(setPageTitle('Reservación de Título'));
         fetchCareers();
@@ -35,7 +39,7 @@ const TitleReservation = () => {
         fetchTitleReservations();
     }, [dispatch]);
 
-    // Esta función obtiene los estudiantes
+    // Fetch para obtener los estudiantes
     const fetchStudents = useCallback(async () => {
         try {
             const students = await studentService.getStudents();
@@ -49,11 +53,13 @@ const TitleReservation = () => {
             filterStudents(options); // Filtra los estudiantes según las reservaciones
             setApiError(null);
         } catch (error) {
-            console.error('Error fetching students:', error);
+            console.error('Error al obtener los estudiantes:', error);
             setApiError('Error al cargar los estudiantes.');
         }
-    }, []);
-    const fetchTitleReservations = async () => {
+    }, [titleReservations]); // Dependencia para filtrar los estudiantes una vez que las reservaciones son obtenidas
+
+    // Fetch para obtener las reservaciones de título
+    const fetchTitleReservations = useCallback(async () => {
         try {
             const reservations = await titleReservationsService.getTitleReservations();
             console.log('Reservaciones obtenidas:', reservations); // Muestra las reservaciones obtenidas
@@ -61,10 +67,12 @@ const TitleReservation = () => {
             updateFilteredStudents(); // Asegúrate de actualizar los estudiantes filtrados
             setApiError(null);
         } catch (error) {
-            console.error('Error fetching title reservations:', error);
+            console.error('Error al obtener las reservaciones de títulos:', error);
             setApiError('Error al cargar las reservaciones de títulos.');
         }
-    };
+    }, [studentOptions]); // Dependencia de los estudiantes
+
+    // Fetch para obtener las carreras
     const fetchCareers = useCallback(async () => {
         try {
             const careers = await careerService.getCareers();
@@ -76,26 +84,29 @@ const TitleReservation = () => {
             setCareerOptions(options);
             setApiError(null);
         } catch (error) {
-            console.error('Error fetching careers:', error);
+            console.error('Error al obtener las carreras:', error);
             setApiError('Error al cargar las carreras.');
         }
     }, []);
 
+    // Filtra los estudiantes que ya tienen reservaciones
     const filterStudents = (students) => {
         const reservedStudentIds = titleReservations.map((reservation) => reservation.student.id);
         const filtered = students.filter((student) => !reservedStudentIds.includes(parseInt(student.value)));
         setFilteredStudentOptions(filtered); // Filtra los estudiantes
     };
 
+    // Filtrar los estudiantes por carrera
     const filterStudentsByCareer = (careerId) => {
         if (!careerId) {
-            setFilteredStudentOptions([]);
+            setFilteredStudentOptions([]); // Vacía la lista si no hay carrera seleccionada
         } else {
             const filtered = studentOptions.filter((student) => student.careerId === careerId);
             filterStudents(filtered);
         }
     };
 
+    // Agregar reservaciones de título
     const addTitleReservations = async (selectedStudents) => {
         try {
             const titleReservationData = {
@@ -113,7 +124,6 @@ const TitleReservation = () => {
 
             // Verificar si la respuesta tiene éxito y manejarla adecuadamente
             if (response.status === 200) {
-                // Asumiendo que 'data' es el estándar de tu backend
                 console.log('Reservación guardada:', response.data);
                 await fetchTitleReservations(); // Recargar las reservaciones para reflejar los cambios
             } else {
@@ -127,22 +137,21 @@ const TitleReservation = () => {
         }
     };
 
+    // Actualizar los estudiantes filtrados
     const updateFilteredStudents = () => {
         const reservedStudentIds = new Set(titleReservations.flatMap((reservation) => [reservation.student.id.toString(), reservation.studentTwo?.id.toString()].filter(Boolean)));
-
-        console.log('IDs de estudiantes reservados:', Array.from(reservedStudentIds)); // Muestra los IDs reservados
-
         const filtered = studentOptions.filter((option) => !reservedStudentIds.has(option.value));
-
-        console.log('Estudiantes filtrados:', filtered); // Muestra los estudiantes después de aplicar el filtro
         setFilteredStudentOptions(filtered);
     };
 
     // Asegúrate de llamar a esta función después de actualizar reservaciones o la lista de estudiantes
     useEffect(() => {
-        updateFilteredStudents();
+        if (titleReservations.length > 0 || studentOptions.length > 0) {
+            updateFilteredStudents();
+        }
     }, [titleReservations, studentOptions]);
 
+    // Eliminar una reservación de título
     const deleteTitleReservation = async (reservationId, studentId, resetForm) => {
         const result = await Swal.fire({
             title: '¿Estás seguro?',
@@ -167,18 +176,12 @@ const TitleReservation = () => {
                 resetForm(); // Limpia el formulario después de eliminar
                 Swal.fire('Eliminado!', 'La reservación ha sido eliminada exitosamente.', 'success');
             } catch (error) {
-                console.error('Error deleting title reservation:', error);
-                Swal.fire(
-                    //     'Error!',
-                    //     'Error al eliminar la reservación.',
-                    //     'error'
-                    'Eliminado!',
-                    'La reservación ha sido eliminada exitosamente.',
-                    'success'
-                );
+                console.error('Error al eliminar la reservación:', error);
+                Swal.fire('Error', 'Error al eliminar la reservación.', 'error');
             }
         }
     };
+
     return (
         <div className="p-5">
             <h1 className="text-2xl font-bold mb-5">Reservaciones de Títulos</h1>

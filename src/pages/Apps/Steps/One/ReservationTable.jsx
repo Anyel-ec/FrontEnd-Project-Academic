@@ -3,7 +3,7 @@ import TitleUpload from '../TitleUpload'; // Asegúrate de que el path de import
 
 const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [pdfData, setPdfData] = useState(null); // Estado para almacenar los datos del PDF en base64
+    const [pdfDataMap, setPdfDataMap] = useState({}); // Mapea cada reserva a su PDF en base64
 
     const itemsPerPage = 4;
     const totalPages = Math.ceil(titleReservations.length / itemsPerPage);
@@ -12,11 +12,14 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentReservations = titleReservations.slice(indexOfFirstItem, indexOfLastItem);
+    const currentReservations = titleReservations.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
 
-    const handlePDFUploadSuccess = (base64Data) => {
-        setPdfData(base64Data);
-        console.log('PDF cargado y convertido a Base64:', base64Data);
+    const handlePDFUploadSuccess = (reservationId, base64Data) => {
+        setPdfDataMap((prev) => ({
+            ...prev,
+            [reservationId]: base64Data, // Mapea el PDF a la reserva correspondiente
+        }));
+        console.log('PDF cargado y convertido a Base64 para la reserva:', reservationId);
     };
 
     const handlePDFUploadFailure = (error) => {
@@ -71,13 +74,17 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                                 <td>{reservation.observations || 'Ninguna'}</td>
                                 <td>{new Date(reservation.createdAt).toLocaleString()}</td>
                                 <td>{new Date(reservation.updatedAt).toLocaleString()}</td>
-                                <td className=' gap-4 '>
-                                    {pdfData ? (
-                                        <a href={`data:application/pdf;base64,${pdfData}`} target="_blank" rel="noopener noreferrer" className="">
-                                            Ver
+                                <td className='gap-4'>
+                                    {pdfDataMap[reservation.id] ? (
+                                        <a href={`data:application/pdf;base64,${pdfDataMap[reservation.id]}`} target="_blank" rel="noopener noreferrer" className="">
+                                            Ver PDF
                                         </a>
                                     ) : (
-                                        <TitleUpload onUploadSuccess={handlePDFUploadSuccess} onUploadFailure={handlePDFUploadFailure} />
+                                        <TitleUpload
+                                            reservaId={reservation.id} // Pasa el ID de la reservación al componente de carga
+                                            onUploadSuccess={(base64Data) => handlePDFUploadSuccess(reservation.id, base64Data)} // Mapea el PDF a la reservación correspondiente
+                                            onUploadFailure={handlePDFUploadFailure}
+                                        />
                                     )}
                                 </td>
                                 <td className="flex gap-4 items-center justify-center">
