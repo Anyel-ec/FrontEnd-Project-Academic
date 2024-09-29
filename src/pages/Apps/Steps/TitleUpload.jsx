@@ -32,6 +32,13 @@ const TitleUpload = ({ reservaId }) => {
                 }
                 return response.json();
             })
+            .then((data) => {
+                if (!data.pdfDocumentId) {
+                    setPdfDocumentId(null); // Si no hay PDF, lo marcamos como null
+                } else {
+                    setPdfDocumentId(data.pdfDocumentId); // Actualiza el ID del PDF si existe
+                }
+            })
             .catch((error) => {
                 console.error('Error al cargar la reservación:', error);
             });
