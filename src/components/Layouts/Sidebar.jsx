@@ -73,10 +73,9 @@ const Sidebar = () => {
                 title: 'Error',
                 text: 'No se encontraron los datos del usuario. Inicia sesión nuevamente.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                confirmButtonText: 'Aceptar',
             });
         }
-
     }, []);
 
     useEffect(() => {
@@ -111,8 +110,7 @@ const Sidebar = () => {
                             <li className="menu nav-item">
                                 <button type="button" className={`${currentMenu === 'dashboard' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('dashboard')}>
                                     <div className="flex items-center">
-                                        <IconMenuDashboard
-                                            className="group-hover:!text-primary shrink-0" />
+                                        <IconMenuDashboard className="group-hover:!text-primary shrink-0" />
                                         <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('dashboard')}</span>
                                     </div>
 
@@ -169,7 +167,6 @@ const Sidebar = () => {
                                         </li>
                                         {/* Modulo de administrador --------------------------------fin */}
 
-
                                         {/* Modulo de asignaciones a carreras ------------------------------------------ inicio */}
                                         {/* <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                             <IconMinus className="w-4 h-5 flex-none hidden" />
@@ -197,7 +194,6 @@ const Sidebar = () => {
                                             </ul>
                                         </li> */}
                                         {/* Modulo de asignaciones a carreras --------------------------------fin */}
-
 
                                         {/* modulo de pasos ------------------------------------------ inicio   */}
                                         <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
@@ -231,7 +227,9 @@ const Sidebar = () => {
                                                     <li className="nav-item">
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('2: Constancia de Filtro')}</span>
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('2: Constancia de Filtro')}
+                                                                </span>
                                                             </div>
                                                         </NavLink>
                                                     </li>
@@ -247,7 +245,9 @@ const Sidebar = () => {
                                                     <li className="nav-item">
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('4: Designación de Jurados')}</span>
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('4: Designación de Jurados')}
+                                                                </span>
                                                             </div>
                                                         </NavLink>
                                                     </li>
@@ -255,7 +255,9 @@ const Sidebar = () => {
                                                     <li className="nav-item">
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('5: Recomposición Jurados')}</span>
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('5: Recomposición Jurados')}
+                                                                </span>
                                                             </div>
                                                         </NavLink>
                                                     </li>
@@ -263,7 +265,9 @@ const Sidebar = () => {
                                                     <li className="nav-item">
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('6: Primera Revisión Tesis')}</span>
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('6: Primera Revisión Tesis')}
+                                                                </span>
                                                             </div>
                                                         </NavLink>
                                                     </li>
@@ -271,7 +275,9 @@ const Sidebar = () => {
                                                     <li className="nav-item">
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('7: Última Revisión Tesis')}</span>
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('7: Última Revisión Tesis')}
+                                                                </span>
                                                             </div>
                                                         </NavLink>
                                                     </li>
@@ -279,7 +285,9 @@ const Sidebar = () => {
                                                     <li className="nav-item">
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('8: Constancia de Filtro')}</span>
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('8: Constancia de Filtro')}
+                                                                </span>
                                                             </div>
                                                         </NavLink>
                                                     </li>
@@ -295,7 +303,9 @@ const Sidebar = () => {
                                                     <li className="nav-item">
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('10: Emision de Resolución')}</span>
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('10: Emision de Resolución')}
+                                                                </span>
                                                             </div>
                                                         </NavLink>
                                                     </li>
@@ -303,7 +313,9 @@ const Sidebar = () => {
                                                     <li className="nav-item">
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('11: Notificación de Jurados')}</span>
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('11: Notificación de Jurados')}
+                                                                </span>
                                                             </div>
                                                         </NavLink>
                                                     </li>
@@ -311,7 +323,9 @@ const Sidebar = () => {
                                                     <li className="nav-item">
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('12: Aprobación Resolutiva')}</span>
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('12: Aprobación Resolutiva')}
+                                                                </span>
                                                             </div>
                                                         </NavLink>
                                                     </li>
@@ -319,7 +333,9 @@ const Sidebar = () => {
                                                     <li className="nav-item">
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('13: Constancia Conformidad')}</span>
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('13: Constancia Conformidad')}
+                                                                </span>
                                                             </div>
                                                         </NavLink>
                                                     </li>
@@ -330,24 +346,139 @@ const Sidebar = () => {
                                         {/* //TODO CERRAR ISADMIN  */}
                                     </>
                                 )}
-                            </div> {/* //TODO CERRAR ISADMIN  */}
+                            </div>{' '}
+                            {/* //TODO CERRAR ISADMIN  */}
+                            {/* modulo de pasos estudiante ------------------------------------------ inicio   */}
+                            <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
+                                <IconMinus className="w-4 h-5 flex-none hidden" />
+                                <span>{t('Pasos')}</span>
+                            </h2>
+                            <li className="menu nav-item">
+                                <button type="button" className={`${currentMenu === 'steps' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('stepsStudents')}>
+                                    <div className="flex items-center">
+                                        <IconMenuDocumentation className="group-hover:!text-primary shrink-0" />
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Proceso')}</span>
+                                    </div>
 
+                                    <div className={currentMenu !== 'stepsStudents' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                        <IconCaretDown />
+                                    </div>
+                                </button>
 
-
-
-
-
-
-
-
-
-
-
+                                <AnimateHeight duration={300} height={currentMenu === 'stepsStudents' ? 'auto' : 0}>
+                                    <ul className="sub-menu text-gray-500">
+                                        {/* Paso 1 */}
+                                        <li className="nav-item">
+                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                <div className="flex items-center">
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('1: Reserva de Titulos')}</span>
+                                                </div>
+                                            </NavLink>
+                                        </li>
+                                        {/* Paso 2 */}
+                                        <li className="nav-item">
+                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                <div className="flex items-center">
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('2: Constancia de Filtro')}</span>
+                                                </div>
+                                            </NavLink>
+                                        </li>
+                                        {/* Paso 3 */}
+                                        <li className="nav-item">
+                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                <div className="flex items-center">
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('3: Aprobación de Tesis')}</span>
+                                                </div>
+                                            </NavLink>
+                                        </li>
+                                        {/* Paso 4 */}
+                                        <li className="nav-item">
+                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                <div className="flex items-center">
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('4: Designación de Jurados')}</span>
+                                                </div>
+                                            </NavLink>
+                                        </li>
+                                        {/* Paso 5 */}
+                                        <li className="nav-item">
+                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                <div className="flex items-center">
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('5: Recomposición Jurados')}</span>
+                                                </div>
+                                            </NavLink>
+                                        </li>
+                                        {/* Paso 6 */}
+                                        <li className="nav-item">
+                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                <div className="flex items-center">
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('6: Primera Revisión Tesis')}</span>
+                                                </div>
+                                            </NavLink>
+                                        </li>
+                                        {/* Paso 7 */}
+                                        <li className="nav-item">
+                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                <div className="flex items-center">
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('7: Última Revisión Tesis')}</span>
+                                                </div>
+                                            </NavLink>
+                                        </li>
+                                        {/* Paso 8 */}
+                                        <li className="nav-item">
+                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                <div className="flex items-center">
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('8: Constancia de Filtro')}</span>
+                                                </div>
+                                            </NavLink>
+                                        </li>
+                                        {/* Paso 9 */}
+                                        <li className="nav-item">
+                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                <div className="flex items-center">
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('9: Ampliación de Plazo')}</span>
+                                                </div>
+                                            </NavLink>
+                                        </li>
+                                        {/* Paso 10 */}
+                                        <li className="nav-item">
+                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                <div className="flex items-center">
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('10: Emision de Resolución')}</span>
+                                                </div>
+                                            </NavLink>
+                                        </li>
+                                        {/* Paso 11 */}
+                                        <li className="nav-item">
+                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                <div className="flex items-center">
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('11: Notificación de Jurados')}</span>
+                                                </div>
+                                            </NavLink>
+                                        </li>
+                                        {/* Paso 12 */}
+                                        <li className="nav-item">
+                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                <div className="flex items-center">
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('12: Aprobación Resolutiva')}</span>
+                                                </div>
+                                            </NavLink>
+                                        </li>
+                                        {/* Paso 13 */}
+                                        <li className="nav-item">
+                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                <div className="flex items-center">
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('13: Constancia Conformidad')}</span>
+                                                </div>
+                                            </NavLink>
+                                        </li>
+                                    </ul>
+                                </AnimateHeight>
+                            </li>
+                            {/* modulo de pasos estudiante --------------------------------fin*/}
                             <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                 <IconMinus className="w-4 h-5 flex-none hidden" />
                                 <span>{t('Apps')}</span>
                             </h2>
-
                             <li className="nav-item">
                                 <ul>
                                     <li className="nav-item">
@@ -399,7 +530,6 @@ const Sidebar = () => {
                                         </NavLink>
                                     </li>
 
-
                                     <li className="menu nav-item">
                                         <button type="button" className={`${currentMenu === 'invoice' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('invoice')}>
                                             <div className="flex items-center">
@@ -440,12 +570,10 @@ const Sidebar = () => {
                                     </li>
                                 </ul>
                             </li>
-
                             <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                 <IconMinus className="w-4 h-5 flex-none hidden" />
                                 <span>{t('user_interface')}</span>
                             </h2>
-
                             <li className="menu nav-item">
                                 <button type="button" className={`${currentMenu === 'component' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('component')}>
                                     <div className="flex items-center">
@@ -505,7 +633,6 @@ const Sidebar = () => {
                                     </ul>
                                 </AnimateHeight>
                             </li>
-
                             <li className="menu nav-item">
                                 <button type="button" className={`${currentMenu === 'element' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('element')}>
                                     <div className="flex items-center">
@@ -577,7 +704,6 @@ const Sidebar = () => {
                                     </ul>
                                 </AnimateHeight>
                             </li>
-
                             <li className="menu nav-item">
                                 <NavLink to="/charts" className="group">
                                     <div className="flex items-center">
@@ -586,7 +712,6 @@ const Sidebar = () => {
                                     </div>
                                 </NavLink>
                             </li>
-
                             <li className="menu nav-item">
                                 <NavLink to="/widgets" className="group">
                                     <div className="flex items-center">
@@ -595,7 +720,6 @@ const Sidebar = () => {
                                     </div>
                                 </NavLink>
                             </li>
-
                             <li className="menu nav-item">
                                 <NavLink to="/font-icons" className="group">
                                     <div className="flex items-center">
@@ -604,7 +728,6 @@ const Sidebar = () => {
                                     </div>
                                 </NavLink>
                             </li>
-
                             <li className="menu nav-item">
                                 <NavLink to="/dragndrop" className="group">
                                     <div className="flex items-center">
@@ -613,12 +736,10 @@ const Sidebar = () => {
                                     </div>
                                 </NavLink>
                             </li>
-
                             <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                 <IconMinus className="w-4 h-5 flex-none hidden" />
                                 <span>{t('tables_and_forms')}</span>
                             </h2>
-
                             <li className="menu nav-item">
                                 <NavLink to="/tables" className="group">
                                     <div className="flex items-center">
@@ -627,7 +748,6 @@ const Sidebar = () => {
                                     </div>
                                 </NavLink>
                             </li>
-
                             <li className="menu nav-item">
                                 <button type="button" className={`${currentMenu === 'datalabel' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('datalabel')}>
                                     <div className="flex items-center">
@@ -678,7 +798,6 @@ const Sidebar = () => {
                                     </ul>
                                 </AnimateHeight>
                             </li>
-
                             <li className="menu nav-item">
                                 <button type="button" className={`${currentMenu === 'forms' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('forms')}>
                                     <div className="flex items-center">
@@ -741,12 +860,10 @@ const Sidebar = () => {
                                     </ul>
                                 </AnimateHeight>
                             </li>
-
                             <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                 <IconMinus className="w-4 h-5 flex-none hidden" />
                                 <span>{t('user_and_pages')}</span>
                             </h2>
-
                             <li className="menu nav-item">
                                 <button type="button" className={`${currentMenu === 'users' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('users')}>
                                     <div className="flex items-center">
@@ -770,7 +887,6 @@ const Sidebar = () => {
                                     </ul>
                                 </AnimateHeight>
                             </li>
-
                             <li className="menu nav-item">
                                 <button type="button" className={`${currentMenu === 'page' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('page')}>
                                     <div className="flex items-center">
@@ -814,8 +930,9 @@ const Sidebar = () => {
                                         <li className="menu nav-item">
                                             <button
                                                 type="button"
-                                                className={`${errorSubMenu ? 'open' : ''
-                                                    } w-full before:bg-gray-300 before:w-[5px] before:h-[5px] before:rounded ltr:before:mr-2 rtl:before:ml-2 dark:text-[#888ea8] hover:bg-gray-100 dark:hover:bg-gray-900`}
+                                                className={`${
+                                                    errorSubMenu ? 'open' : ''
+                                                } w-full before:bg-gray-300 before:w-[5px] before:h-[5px] before:rounded ltr:before:mr-2 rtl:before:ml-2 dark:text-[#888ea8] hover:bg-gray-100 dark:hover:bg-gray-900`}
                                                 onClick={() => setErrorSubMenu(!errorSubMenu)}
                                             >
                                                 {t('error')}
@@ -852,7 +969,6 @@ const Sidebar = () => {
                                     </ul>
                                 </AnimateHeight>
                             </li>
-
                             <li className="menu nav-item">
                                 <button type="button" className={`${currentMenu === 'auth' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('auth')}>
                                     <div className="flex items-center">

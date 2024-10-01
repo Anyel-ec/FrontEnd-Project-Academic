@@ -41,8 +41,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                             <th>Observaciones</th>
                             <th>Fecha Creación</th>
                             <th>Fecha Actualización</th>
-                            <th>PDF</th>
-                            <th>Acciones</th>
+                            <th className='!text-center'>PDF</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -86,14 +85,6 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                                             onUploadFailure={handlePDFUploadFailure}
                                         />
                                     )}
-                                </td>
-                                <td className="flex gap-4 items-center justify-center">
-                                    {/* <button onClick={() => onEdit(reservation.id)} className="btn btn-sm btn-outline-primary">
-                                        Editar
-                                    </button> */}
-                                    <button onClick={() => onDelete(reservation.id)} className="btn btn-sm btn-outline-danger">
-                                        Eliminar
-                                    </button>
                                 </td>
                             </tr>
                         ))

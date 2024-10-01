@@ -45,6 +45,7 @@ const TitleUpload = ({ reservaId }) => {
     }, [reservaId]);
 
     const uploadFile = () => {
+        // Si no hay PDF, permitir al usuario subir uno
         if (pdfDocumentId) {
             // Si ya hay un PDF cargado, mostramos la vista previa
             fetch(`http://localhost:8080/api/v1/pdfDocument/OneStep/${reservaId}/view`, {
@@ -59,9 +60,13 @@ const TitleUpload = ({ reservaId }) => {
                     const base64PDF = `data:application/pdf;base64,${data.pdfData}`;
                     setBase64String(base64PDF);
 
+                    // Verificar el contenido de la cadena Base64
+                    console.log('Base64 PDF:', base64PDF);
+
                     Swal.fire({
                         title: 'Vista Previa del PDF',
-                        html: `<embed src="${base64PDF}" type="application/pdf" width="100%" height="500px" />`,
+                        // Usa un iframe en lugar de embed para mejor compatibilidad
+                        html: `<iframe src="${base64PDF}" width="100%" height="500px" style="border:none;"></iframe>`,
                         confirmButtonText: 'Cerrar',
                     });
                 })
@@ -69,7 +74,6 @@ const TitleUpload = ({ reservaId }) => {
                     console.error('Error al obtener el PDF:', error);
                 });
         } else {
-            // Si no hay PDF, permitir al usuario subir uno
             Swal.fire({
                 title: 'Seleccionar un archivo PDF',
                 input: 'file',
@@ -81,6 +85,8 @@ const TitleUpload = ({ reservaId }) => {
                 preConfirm: (file) => {
                     if (!file) {
                         Swal.showValidationMessage('Debes seleccionar un archivo');
+                    } else if (file.type !== 'application/pdf') {
+                        Swal.showValidationMessage('El archivo debe ser un PDF');
                     } else {
                         return file;
                     }
@@ -94,6 +100,17 @@ const TitleUpload = ({ reservaId }) => {
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         const base64PDF = e.target.result;
+
+                        // Verificación adicional de Base64
+                        if (!base64PDF.startsWith('data:application/pdf;base64,')) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'El archivo no es un PDF válido.',
+                            });
+                            return;
+                        }
+
                         setBase64String(base64PDF); // Guarda el PDF en formato Base64
 
                         // Muestra la vista previa del PDF
@@ -107,6 +124,13 @@ const TitleUpload = ({ reservaId }) => {
                                 // Si el usuario confirma, enviar el archivo al backend
                                 sendFileToBackend(base64PDF);
                             }
+                        });
+                    };
+                    reader.onerror = () => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un problema al leer el archivo PDF.',
                         });
                     };
                     reader.readAsDataURL(selectedFile); // Lee el archivo como base64
@@ -187,7 +211,7 @@ const TitleUpload = ({ reservaId }) => {
     };
 
     return (
-        <div className="flex gap-3">
+        <div className="flex gap-3 ">
             <button onClick={uploadFile} className="btn btn-sm btn-outline-secondary m-0">
                 {pdfDocumentId ? 'Ver' : 'Subir'}
             </button>

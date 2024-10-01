@@ -1,7 +1,8 @@
 import { lazy } from 'react';
-import Students from '../pages/Apps/Student/Students';  
+import Students from '../pages/Apps/Student/Students';
 import Teachers from '../pages/Apps/Teacher/Teachers';
 import TitleReservation from '../pages/Apps/Steps/One/TitleReservation';
+import TitleReservationStudents from '../pages/Apps/StepsStudents/One/TitleReservation';
 import ThesisAdvisory from '../pages/Apps/ThesisAdvisory';
 import ProtectedRoute from '../security/ProtectedRoute ';
 import AuthRoute from '../security/AuthRoute ';
@@ -102,7 +103,6 @@ const DateRangePicker = lazy(() => import('../pages/Forms/DateRangePicker'));
 const Clipboard = lazy(() => import('../pages/Forms/Clipboard'));
 
 const routes = [
-
     // Ruta de inicio de sesión protegida
     {
         path: '/auth/inicio-sesion',
@@ -115,9 +115,7 @@ const routes = [
     },
     {
         path: '/auth/cambiar-contrasena',
-        element: (
-                <RecoverIdCover />
-        ),
+        element: <RecoverIdCover />,
         layout: 'blank',
     },
 
@@ -127,9 +125,7 @@ const routes = [
         element: <Profile />,
     },
 
-
     ///---INICIO----------------------------------------------------------------/////
-
 
     ////////
     {
@@ -164,7 +160,12 @@ const routes = [
             </ProtectedRoute>
         ),
     },
-
+    // Estudiantes
+    {
+        path: 'apps/paso-estudiante/reservacion-titulo',
+        element: <TitleReservationStudents />,
+    },
+    // Estudiantes Fin
     {
         path: 'apps/asesoria-tesis',
         element: (
@@ -173,8 +174,6 @@ const routes = [
             </ProtectedRoute>
         ),
     },
-
-
 
     ///---FIN----------------------------------------------------------------/////
     {
