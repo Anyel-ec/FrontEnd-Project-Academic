@@ -4,7 +4,8 @@ import Teachers from '../pages/Apps/Teacher/Teachers';
 import TitleReservation from '../pages/Apps/Steps/One/TitleReservation';
 import TitleReservationStudents from '../pages/Apps/StepsStudents/One/TitleReservation';
 import ThesisAdvisory from '../pages/Apps/ThesisAdvisory';
-import ProtectedRoute from '../security/ProtectedRoute ';
+import { ProtectedRoute, StudentRoute } from '../security/ProtectedRoute';
+
 import AuthRoute from '../security/AuthRoute ';
 import Swal from 'sweetalert2';
 const Index = lazy(() => import('../pages/Index'));
@@ -163,7 +164,11 @@ const routes = [
     // Estudiantes
     {
         path: 'apps/paso-estudiante/reservacion-titulo',
-        element: <TitleReservationStudents />,
+        element: (
+            <StudentRoute>
+                <TitleReservationStudents />
+            </StudentRoute>
+        ),
     },
     // Estudiantes Fin
     {

@@ -47,6 +47,7 @@ const Sidebar = () => {
     const [user, setUser] = useState(null);
 
     const isAdmin = user && user.rol && user.rol.name === 'admin';
+    const isEstudiante = user && user.rol && user.rol.name === 'estudiante';
 
     useEffect(() => {
         const selector = document.querySelector('.sidebar ul a[href="' + window.location.pathname + '"]');
@@ -349,227 +350,233 @@ const Sidebar = () => {
                             </div>{' '}
                             {/* //TODO CERRAR ISADMIN  */}
                             {/* modulo de pasos estudiante ------------------------------------------ inicio   */}
-                            <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
-                                <IconMinus className="w-4 h-5 flex-none hidden" />
-                                <span>{t('Pasos')}</span>
-                            </h2>
-                            <li className="menu nav-item">
-                                <button type="button" className={`${currentMenu === 'steps' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('stepsStudents')}>
-                                    <div className="flex items-center">
-                                        <IconMenuDocumentation className="group-hover:!text-primary shrink-0" />
-                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Proceso')}</span>
-                                    </div>
-
-                                    <div className={currentMenu !== 'stepsStudents' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                        <IconCaretDown />
-                                    </div>
-                                </button>
-
-                                <AnimateHeight duration={300} height={currentMenu === 'stepsStudents' ? 'auto' : 0}>
-                                    <ul className="sub-menu text-gray-500">
-                                        {/* Paso 1 */}
-                                        <li className="nav-item">
-                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                <div className="flex items-center">
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('1: Reserva de Titulos')}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        {/* Paso 2 */}
-                                        <li className="nav-item">
-                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                <div className="flex items-center">
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('2: Constancia de Filtro')}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        {/* Paso 3 */}
-                                        <li className="nav-item">
-                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                <div className="flex items-center">
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('3: Aprobación de Tesis')}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        {/* Paso 4 */}
-                                        <li className="nav-item">
-                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                <div className="flex items-center">
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('4: Designación de Jurados')}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        {/* Paso 5 */}
-                                        <li className="nav-item">
-                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                <div className="flex items-center">
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('5: Recomposición Jurados')}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        {/* Paso 6 */}
-                                        <li className="nav-item">
-                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                <div className="flex items-center">
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('6: Primera Revisión Tesis')}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        {/* Paso 7 */}
-                                        <li className="nav-item">
-                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                <div className="flex items-center">
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('7: Última Revisión Tesis')}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        {/* Paso 8 */}
-                                        <li className="nav-item">
-                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                <div className="flex items-center">
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('8: Constancia de Filtro')}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        {/* Paso 9 */}
-                                        <li className="nav-item">
-                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                <div className="flex items-center">
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('9: Ampliación de Plazo')}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        {/* Paso 10 */}
-                                        <li className="nav-item">
-                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                <div className="flex items-center">
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('10: Emision de Resolución')}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        {/* Paso 11 */}
-                                        <li className="nav-item">
-                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                <div className="flex items-center">
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('11: Notificación de Jurados')}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        {/* Paso 12 */}
-                                        <li className="nav-item">
-                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                <div className="flex items-center">
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('12: Aprobación Resolutiva')}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        {/* Paso 13 */}
-                                        <li className="nav-item">
-                                            <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                <div className="flex items-center">
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('13: Constancia Conformidad')}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                    </ul>
-                                </AnimateHeight>
-                            </li>
-                            {/* modulo de pasos estudiante --------------------------------fin*/}
-                            <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
-                                <IconMinus className="w-4 h-5 flex-none hidden" />
-                                <span>{t('Apps')}</span>
-                            </h2>
-                            <li className="nav-item">
-                                <ul>
-                                    <li className="nav-item">
-                                        <NavLink to="/apps/chat" className="group">
-                                            <div className="flex items-center">
-                                                <IconMenuChat className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('chat')}</span>
-                                            </div>
-                                        </NavLink>
-                                    </li>
-                                    <li className="nav-item">
-                                        <NavLink to="/apps/mailbox" className="group">
-                                            <div className="flex items-center">
-                                                <IconMenuMailbox className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('mailbox')}</span>
-                                            </div>
-                                        </NavLink>
-                                    </li>
-                                    <li className="nav-item">
-                                        <NavLink to="/apps/todolist" className="group">
-                                            <div className="flex items-center">
-                                                <IconMenuTodo className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('todo_list')}</span>
-                                            </div>
-                                        </NavLink>
-                                    </li>
-                                    <li className="nav-item">
-                                        <NavLink to="/apps/notes" className="group">
-                                            <div className="flex items-center">
-                                                <IconMenuNotes className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('notes')}</span>
-                                            </div>
-                                        </NavLink>
-                                    </li>
-                                    <li className="nav-item">
-                                        <NavLink to="/apps/scrumboard" className="group">
-                                            <div className="flex items-center">
-                                                <IconMenuScrumboard className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('scrumboard')}</span>
-                                            </div>
-                                        </NavLink>
-                                    </li>
-                                    <li className="nav-item">
-                                        <NavLink to="/apps/contacts" className="group">
-                                            <div className="flex items-center">
-                                                <IconMenuContacts className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('contacts')}</span>
-                                            </div>
-                                        </NavLink>
-                                    </li>
-
+                            {isEstudiante && (
+                                <>
+                                    <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
+                                        <IconMinus className="w-4 h-5 flex-none hidden" />
+                                        <span>{t('Pasos')}</span>
+                                    </h2>
                                     <li className="menu nav-item">
-                                        <button type="button" className={`${currentMenu === 'invoice' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('invoice')}>
+                                        <button type="button" className={`${currentMenu === 'steps' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('stepsStudents')}>
                                             <div className="flex items-center">
-                                                <IconMenuInvoice className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('invoice')}</span>
+                                                <IconMenuDocumentation className="group-hover:!text-primary shrink-0" />
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Proceso')}</span>
                                             </div>
 
-                                            <div className={currentMenu !== 'invoice' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                            <div className={currentMenu !== 'stepsStudents' ? 'rtl:rotate-90 -rotate-90' : ''}>
                                                 <IconCaretDown />
                                             </div>
                                         </button>
 
-                                        <AnimateHeight duration={300} height={currentMenu === 'invoice' ? 'auto' : 0}>
+                                        <AnimateHeight duration={300} height={currentMenu === 'stepsStudents' ? 'auto' : 0}>
                                             <ul className="sub-menu text-gray-500">
-                                                <li>
-                                                    <NavLink to="/apps/invoice/list">{t('list')}</NavLink>
+                                                {/* Paso 1 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('1: Reserva de Titulos')}</span>
+                                                        </div>
+                                                    </NavLink>
                                                 </li>
-                                                <li>
-                                                    <NavLink to="/apps/invoice/preview">{t('preview')}</NavLink>
+                                                {/* Paso 2 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('2: Constancia de Filtro')}</span>
+                                                        </div>
+                                                    </NavLink>
                                                 </li>
-                                                <li>
-                                                    <NavLink to="/apps/invoice/add">{t('add')}</NavLink>
+                                                {/* Paso 3 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('3: Aprobación de Tesis')}</span>
+                                                        </div>
+                                                    </NavLink>
                                                 </li>
-                                                <li>
-                                                    <NavLink to="/apps/invoice/edit">{t('edit')}</NavLink>
+                                                {/* Paso 4 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('4: Designación de Jurados')}</span>
+                                                        </div>
+                                                    </NavLink>
+                                                </li>
+                                                {/* Paso 5 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('5: Recomposición Jurados')}</span>
+                                                        </div>
+                                                    </NavLink>
+                                                </li>
+                                                {/* Paso 6 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('6: Primera Revisión Tesis')}</span>
+                                                        </div>
+                                                    </NavLink>
+                                                </li>
+                                                {/* Paso 7 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('7: Última Revisión Tesis')}</span>
+                                                        </div>
+                                                    </NavLink>
+                                                </li>
+                                                {/* Paso 8 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('8: Constancia de Filtro')}</span>
+                                                        </div>
+                                                    </NavLink>
+                                                </li>
+                                                {/* Paso 9 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('9: Ampliación de Plazo')}</span>
+                                                        </div>
+                                                    </NavLink>
+                                                </li>
+                                                {/* Paso 10 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('10: Emision de Resolución')}</span>
+                                                        </div>
+                                                    </NavLink>
+                                                </li>
+                                                {/* Paso 11 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                {t('11: Notificación de Jurados')}
+                                                            </span>
+                                                        </div>
+                                                    </NavLink>
+                                                </li>
+                                                {/* Paso 12 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('12: Aprobación Resolutiva')}</span>
+                                                        </div>
+                                                    </NavLink>
+                                                </li>
+                                                {/* Paso 13 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('13: Constancia Conformidad')}</span>
+                                                        </div>
+                                                    </NavLink>
                                                 </li>
                                             </ul>
                                         </AnimateHeight>
                                     </li>
-
+                                    {/* modulo de pasos estudiante --------------------------------fin*/}
+                                    <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
+                                        <IconMinus className="w-4 h-5 flex-none hidden" />
+                                        <span>{t('Apps')}</span>
+                                    </h2>
                                     <li className="nav-item">
-                                        <NavLink to="/apps/calendar" className="group">
-                                            <div className="flex items-center">
-                                                <IconMenuCalendar className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('calendar')}</span>
-                                            </div>
-                                        </NavLink>
+                                        <ul>
+                                            <li className="nav-item">
+                                                <NavLink to="/apps/chat" className="group">
+                                                    <div className="flex items-center">
+                                                        <IconMenuChat className="group-hover:!text-primary shrink-0" />
+                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('chat')}</span>
+                                                    </div>
+                                                </NavLink>
+                                            </li>
+                                            <li className="nav-item">
+                                                <NavLink to="/apps/mailbox" className="group">
+                                                    <div className="flex items-center">
+                                                        <IconMenuMailbox className="group-hover:!text-primary shrink-0" />
+                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('mailbox')}</span>
+                                                    </div>
+                                                </NavLink>
+                                            </li>
+                                            <li className="nav-item">
+                                                <NavLink to="/apps/todolist" className="group">
+                                                    <div className="flex items-center">
+                                                        <IconMenuTodo className="group-hover:!text-primary shrink-0" />
+                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('todo_list')}</span>
+                                                    </div>
+                                                </NavLink>
+                                            </li>
+                                            <li className="nav-item">
+                                                <NavLink to="/apps/notes" className="group">
+                                                    <div className="flex items-center">
+                                                        <IconMenuNotes className="group-hover:!text-primary shrink-0" />
+                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('notes')}</span>
+                                                    </div>
+                                                </NavLink>
+                                            </li>
+                                            <li className="nav-item">
+                                                <NavLink to="/apps/scrumboard" className="group">
+                                                    <div className="flex items-center">
+                                                        <IconMenuScrumboard className="group-hover:!text-primary shrink-0" />
+                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('scrumboard')}</span>
+                                                    </div>
+                                                </NavLink>
+                                            </li>
+                                            <li className="nav-item">
+                                                <NavLink to="/apps/contacts" className="group">
+                                                    <div className="flex items-center">
+                                                        <IconMenuContacts className="group-hover:!text-primary shrink-0" />
+                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('contacts')}</span>
+                                                    </div>
+                                                </NavLink>
+                                            </li>
+
+                                            <li className="menu nav-item">
+                                                <button type="button" className={`${currentMenu === 'invoice' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('invoice')}>
+                                                    <div className="flex items-center">
+                                                        <IconMenuInvoice className="group-hover:!text-primary shrink-0" />
+                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('invoice')}</span>
+                                                    </div>
+
+                                                    <div className={currentMenu !== 'invoice' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                                        <IconCaretDown />
+                                                    </div>
+                                                </button>
+
+                                                <AnimateHeight duration={300} height={currentMenu === 'invoice' ? 'auto' : 0}>
+                                                    <ul className="sub-menu text-gray-500">
+                                                        <li>
+                                                            <NavLink to="/apps/invoice/list">{t('list')}</NavLink>
+                                                        </li>
+                                                        <li>
+                                                            <NavLink to="/apps/invoice/preview">{t('preview')}</NavLink>
+                                                        </li>
+                                                        <li>
+                                                            <NavLink to="/apps/invoice/add">{t('add')}</NavLink>
+                                                        </li>
+                                                        <li>
+                                                            <NavLink to="/apps/invoice/edit">{t('edit')}</NavLink>
+                                                        </li>
+                                                    </ul>
+                                                </AnimateHeight>
+                                            </li>
+
+                                            <li className="nav-item">
+                                                <NavLink to="/apps/calendar" className="group">
+                                                    <div className="flex items-center">
+                                                        <IconMenuCalendar className="group-hover:!text-primary shrink-0" />
+                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('calendar')}</span>
+                                                    </div>
+                                                </NavLink>
+                                            </li>
+                                        </ul>
                                     </li>
-                                </ul>
-                            </li>
+                                </>
+                            )}
                             <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                 <IconMinus className="w-4 h-5 flex-none hidden" />
                                 <span>{t('user_interface')}</span>

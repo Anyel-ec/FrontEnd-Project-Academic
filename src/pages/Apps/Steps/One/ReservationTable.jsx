@@ -41,7 +41,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                             <th>Observaciones</th>
                             <th>Fecha Creación</th>
                             <th>Fecha Actualización</th>
-                            <th>PDF</th>
+                            <th className='!text-center'>PDF</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>

@@ -149,12 +149,12 @@ const TitleReservation = () => {
     const addTitleReservations = async (selectedStudents) => {
         try {
             const titleReservationData = {
-                student: { id: selectedStudents[0].value }, // Primer estudiante
+                student: { id: selectedStudents[0].value },
             };
 
             // Agregar segundo estudiante si está seleccionado
             if (selectedStudents.length === 2) {
-                titleReservationData.student = { id: selectedStudents[1].value };
+                titleReservationData.studentTwo = { id: selectedStudents[1].value };
             }
             
             console.log('Datos que se envían al backend:', titleReservationData);
