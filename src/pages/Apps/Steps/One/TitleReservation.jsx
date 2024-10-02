@@ -38,38 +38,38 @@ const TitleReservation = () => {
         fetchTitleReservations();
     }, [dispatch]);
 
-    // Fetch para obtener los estudiantes
     const fetchStudents = useCallback(async () => {
         try {
             const students = await studentService.getStudents();
+            console.log('Students fetched:', students); // Log the fetched students
             const options = students.map((student) => ({
                 value: `${student.id}`,
                 label: `${student.studentCode} - ${student.firstNames ?? ''} ${student.lastName ?? ''}`,
                 careerId: student.career ? student.career.id : null,
                 data: student,
             }));
-            setStudentOptions(options); // La lista original de estudiantes
-            filterStudents(options); // Filtra los estudiantes según las reservaciones
+            setStudentOptions(options);
+            filterStudents(options);
             setApiError(null);
         } catch (error) {
             console.error('Error al obtener los estudiantes:', error);
             setApiError('Error al cargar los estudiantes.');
         }
-    }, [titleReservations]); // Dependencia para filtrar los estudiantes una vez que las reservaciones son obtenidas
-
+    }, [titleReservations]);
     // Fetch para obtener las reservaciones de título
     const fetchTitleReservations = useCallback(async () => {
         try {
             const reservations = await titleReservationsService.getTitleReservations();
-            console.log('Reservaciones obtenidas:', reservations); // Muestra las reservaciones obtenidas
+            console.log('Reservaciones obtenidas:', reservations); // Log the fetched reservations
             setTitleReservations(reservations);
-            updateFilteredStudents(); // Asegúrate de actualizar los estudiantes filtrados
+            updateFilteredStudents(); // Ensure to update filtered students
             setApiError(null);
         } catch (error) {
             console.error('Error al obtener las reservaciones de títulos:', error);
             setApiError('Error al cargar las reservaciones de títulos.');
         }
     }, [studentOptions]); // Dependencia de los estudiantes
+
     const handleEditReservation = (reservation) => {
         const selectedStudents = [{ value: reservation.student.id, label: `${reservation.student.studentCode} - ${reservation.student.firstNames} ${reservation.student.lastName}` }];
 
@@ -135,60 +135,65 @@ const TitleReservation = () => {
         setFilteredStudentOptions(filtered); // Filtra los estudiantes
     };
 
-    // Filtrar los estudiantes por carrera
     const filterStudentsByCareer = (careerId) => {
         if (!careerId) {
-            setFilteredStudentOptions([]); // Vacía la lista si no hay carrera seleccionada
+            setFilteredStudentOptions([]);
         } else {
-            const filtered = studentOptions.filter((student) => student.careerId === careerId);
-            filterStudents(filtered);
+            const reservedStudentIds = new Set(titleReservations.flatMap(reservation => [
+                reservation.student.id.toString(),
+                reservation.studentTwo ? reservation.studentTwo.id.toString() : null
+            ].filter(Boolean)));
+    
+            const filteredByCareer = studentOptions.filter(student => 
+                student.careerId === careerId && !reservedStudentIds.has(student.value)
+            );
+            setFilteredStudentOptions(filteredByCareer);
         }
     };
     
+
     // Agregar reservaciones de título
     const addTitleReservations = async (selectedStudents) => {
         try {
             const titleReservationData = {
                 student: { id: selectedStudents[0].value },
+                studentTwo: selectedStudents.length > 1 ? { id: selectedStudents[1].value } : undefined,
             };
 
-            // Agregar segundo estudiante si está seleccionado
-            if (selectedStudents.length === 2) {
-                titleReservationData.studentTwo = { id: selectedStudents[1].value };
-            }
-            
-            console.log('Datos que se envían al backend:', titleReservationData);
+            console.log('Sending to backend:', titleReservationData); // Log the data being sent for reservation
 
             const response = await titleReservationsService.addTitleReservation(titleReservationData);
+            console.log('Response from add reservation:', response); // Log the response from adding a reservation
 
-            // Verificar si la respuesta tiene éxito y manejarla adecuadamente
             if (!response) {
-                console.error('Respuesta inesperada del servidor:', response);
-                Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
+                console.error('Unexpected server response:', response);
+                Swal.fire('Error', 'Unexpected server response', 'error');
             } else {
-                Swal.fire('Error', 'Estudiante agregado correctamente', 'success');
-                await fetchTitleReservations(); // Recargar las reservaciones para reflejar los cambios
+                Swal.fire('Success', 'Reservation added successfully', 'success');
+                await fetchTitleReservations(); // Reload to reflect changes
             }
         } catch (error) {
-            console.error('Error al agregar las reservaciones:', error);
-            setApiError('Error al agregar las reservaciones.');
-            Swal.fire('Error', 'Error inesperado: ' + error.message, 'error');
+            console.error('Error adding reservations:', error);
+            setApiError('Error adding reservations.');
+            Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
         }
     };
 
-    // Actualizar los estudiantes filtrados
     const updateFilteredStudents = () => {
-        const reservedStudentIds = new Set(titleReservations.flatMap((reservation) => [reservation.student.id.toString(), reservation.studentTwo?.id.toString()].filter(Boolean)));
-        const filtered = studentOptions.filter((option) => !reservedStudentIds.has(option.value));
+        const reservedStudentIds = new Set(titleReservations.flatMap(reservation => [
+            reservation.student.id.toString(),
+            reservation.studentTwo ? reservation.studentTwo.id.toString() : ''
+        ].filter(Boolean)));
+        const filtered = studentOptions.filter(option => !reservedStudentIds.has(option.value));
         setFilteredStudentOptions(filtered);
     };
+    
 
-    // Asegúrate de llamar a esta función después de actualizar reservaciones o la lista de estudiantes
     useEffect(() => {
         if (titleReservations.length > 0 || studentOptions.length > 0) {
             updateFilteredStudents();
         }
-    }, [titleReservations, studentOptions]);
+    }, [titleReservations, studentOptions]); // Asegurarse de que las dependencias están correctamente establecidas
 
     // Eliminar una reservación de título
     const deleteTitleReservation = async (reservationId, studentId, resetForm) => {

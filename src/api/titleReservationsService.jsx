@@ -16,7 +16,6 @@ const getTitleReservations = async () => {
                 Authorization: `Bearer ${getAuthToken()}`,
             },
         });
-        console.log("La respuesta es: ", response.data);
         return response.data;
     } catch (error) {
         console.error('Error fetching titlereservations', error);

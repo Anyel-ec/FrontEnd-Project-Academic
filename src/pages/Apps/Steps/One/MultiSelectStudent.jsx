@@ -37,10 +37,11 @@ const MultiSelectStudent = ({ options, value, setFieldValue, isDisabled, errors,
 
 // Aquí es donde agregas React.memo para mejorar el rendimiento
 export default React.memo(MultiSelectStudent, (prevProps, nextProps) => {
-  // Solo re-renderiza si cambian las opciones, el valor o si está deshabilitado
-  return (
-    prevProps.options === nextProps.options &&
-    prevProps.value === nextProps.value &&
-    prevProps.isDisabled === nextProps.isDisabled
-  );
-});
+    return (
+      prevProps.options === nextProps.options &&
+      prevProps.value === nextProps.value &&
+      prevProps.isDisabled === nextProps.isDisabled &&
+      JSON.stringify(prevProps.value) === JSON.stringify(nextProps.value)  // Verificar también el valor actual de los estudiantes seleccionados
+    );
+  });
+  
