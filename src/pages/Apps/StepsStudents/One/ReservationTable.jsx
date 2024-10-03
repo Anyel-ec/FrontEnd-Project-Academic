@@ -6,19 +6,20 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
     const [pdfDataMap, setPdfDataMap] = useState({}); // Mapea cada reserva a su PDF en base64
 
     const itemsPerPage = 4;
-
+    
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentReservations = titleReservations.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
 
     const handlePDFUploadSuccess = (reservationId, base64Data) => {
+        // Actualiza el estado para que React re-renderice la tabla
         setPdfDataMap((prev) => ({
             ...prev,
             [reservationId]: base64Data, // Mapea el PDF a la reserva correspondiente
         }));
         console.log('PDF cargado y convertido a Base64 para la reserva:', reservationId);
     };
-
+    
     const handlePDFUploadFailure = (error) => {
         console.error('Error al cargar el PDF:', error);
     };
@@ -71,17 +72,13 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                                 <td>{new Date(reservation.createdAt).toLocaleString()}</td>
                                 <td>{new Date(reservation.updatedAt).toLocaleString()}</td>
                                 <td className='gap-4'>
-                                    {pdfDataMap[reservation.id] ? (
-                                        <a href={`data:application/pdf;base64,${pdfDataMap[reservation.id]}`} target="_blank" rel="noopener noreferrer" className="">
-                                            Ver
-                                        </a>
-                                    ) : (
+                                    {
                                         <TitleUpload
                                             reservaId={reservation.id} // Pasa el ID de la reservación al componente de carga
                                             onUploadSuccess={(base64Data) => handlePDFUploadSuccess(reservation.id, base64Data)} // Mapea el PDF a la reservación correspondiente
                                             onUploadFailure={handlePDFUploadFailure}
                                         />
-                                    )}
+                                    }
                                 </td>
                             </tr>
                         ))

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-
+import AppEnvironments from '../../../../config/AppEnvironments';
 // Función para obtener el token de autenticación del localStorage
 const getAuthToken = () => {
     return localStorage.getItem('token');
 };
+const PDFONE_API_URL = `${AppEnvironments.baseUrl}api/v1/pdfDocument/OneStep/`;
 
 const TitleUpload = ({ reservaId }) => {
     const [file, setFile] = useState(null); // Almacena el archivo seleccionado
@@ -19,7 +20,7 @@ const TitleUpload = ({ reservaId }) => {
         }
 
         // Llamada al backend para obtener el PDF asociado si existe
-        fetch(`http://localhost:8080/api/v1/pdfDocument/OneStep/${reservaId}/view`, {
+        fetch(`${PDFONE_API_URL}${reservaId}/view`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${getAuthToken()}`, // Asegúrate de enviar el token correcto
@@ -48,7 +49,7 @@ const TitleUpload = ({ reservaId }) => {
         // Si no hay PDF, permitir al usuario subir uno
         if (pdfDocumentId) {
             // Si ya hay un PDF cargado, mostramos la vista previa
-            fetch(`http://localhost:8080/api/v1/pdfDocument/OneStep/${reservaId}/view`, {
+            fetch(`${PDFONE_API_URL}${reservaId}/view`, {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${getAuthToken()}`, // Asegúrate de enviar el token correcto
@@ -61,7 +62,6 @@ const TitleUpload = ({ reservaId }) => {
                     setBase64String(base64PDF);
 
                     // Verificar el contenido de la cadena Base64
-                    console.log('Base64 PDF:', base64PDF);
 
                     Swal.fire({
                         title: 'Vista Previa del PDF',
@@ -87,6 +87,9 @@ const TitleUpload = ({ reservaId }) => {
                         Swal.showValidationMessage('Debes seleccionar un archivo');
                     } else if (file.type !== 'application/pdf') {
                         Swal.showValidationMessage('El archivo debe ser un PDF');
+                    } else if (file.size > 1048576) {
+                        // 1 MB = 1048576 bytes
+                        Swal.showValidationMessage('El archivo no debe superar los 1 MB');
                     } else {
                         return file;
                     }
@@ -147,7 +150,7 @@ const TitleUpload = ({ reservaId }) => {
             updatedAt: new Date(),
         };
 
-        fetch(`http://localhost:8080/api/v1/pdfDocument/OneStep/${reservaId}/upload`, {
+        fetch(`${PDFONE_API_URL}${reservaId}/upload`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -162,13 +165,14 @@ const TitleUpload = ({ reservaId }) => {
                 return response.json();
             })
             .then((data) => {
+                setPdfDocumentId(data.pdfDocumentId);
                 Swal.fire({
                     icon: 'success',
                     title: 'Archivo cargado con éxito',
                     text: 'El archivo ha sido guardado correctamente.',
                 });
                 // Actualizar el id del PDF document sin necesidad de recargar la página
-                setPdfDocumentId(data.pdfDocumentId);
+                window.location.reload();
             })
             .catch((error) => {
                 console.error('Error al subir el archivo:', error);
@@ -182,7 +186,7 @@ const TitleUpload = ({ reservaId }) => {
 
     // Función para eliminar el archivo PDF del servidor
     const deletePDF = () => {
-        fetch(`http://localhost:8080/api/v1/pdfDocument/OneStep/${reservaId}/delete`, {
+        fetch(`${PDFONE_API_URL}${reservaId}/delete`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${getAuthToken()}`, // Asegúrate de enviar el token correcto

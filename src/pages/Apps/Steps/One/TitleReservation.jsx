@@ -10,16 +10,7 @@ import titleReservationsService from '../../../../api/titleReservationsService';
 import SelectCareer from './SelectCareer';
 import MultiSelectStudent from './MultiSelectStudent'; // Componente MultiSelect
 import ReservationTable from './ReservationTable';
-import { HandleMode } from '../../styles/selectStyles';
-
-const isDarkMode = true; // Lógica para determinar el modo oscuro (puede ser gestionada por estado o contexto)
-const styles = HandleMode(isDarkMode);
-
-// Validación con Yup para el formulario
-const validationSchema = Yup.object().shape({
-    career: Yup.object().nullable().required('Debes seleccionar una carrera'),
-    students: Yup.array().min(1, 'Debes seleccionar al menos un estudiante').max(2, 'Solo puedes seleccionar hasta dos estudiantes'),
-});
+// import { HandleMode } from '../../styles/selectStyles';
 
 const TitleReservation = () => {
     const dispatch = useDispatch();
@@ -30,7 +21,6 @@ const TitleReservation = () => {
     const [apiError, setApiError] = useState(null);
     const [currentEditReservation, setCurrentEditReservation] = useState(null); // Reservación que se está editando
 
-    // Fetch de carreras, estudiantes y reservaciones al montar el componente
     useEffect(() => {
         dispatch(setPageTitle('Reservación de Título'));
         fetchCareers();
@@ -41,7 +31,6 @@ const TitleReservation = () => {
     const fetchStudents = useCallback(async () => {
         try {
             const students = await studentService.getStudents();
-            console.log('Students fetched:', students); // Log the fetched students
             const options = students.map((student) => ({
                 value: `${student.id}`,
                 label: `${student.studentCode} - ${student.firstNames ?? ''} ${student.lastName ?? ''}`,
@@ -56,19 +45,18 @@ const TitleReservation = () => {
             setApiError('Error al cargar los estudiantes.');
         }
     }, [titleReservations]);
-    // Fetch para obtener las reservaciones de título
+
     const fetchTitleReservations = useCallback(async () => {
         try {
             const reservations = await titleReservationsService.getTitleReservations();
-            console.log('Reservaciones obtenidas:', reservations); // Log the fetched reservations
             setTitleReservations(reservations);
-            updateFilteredStudents(); // Ensure to update filtered students
+            updateFilteredStudents();
             setApiError(null);
         } catch (error) {
             console.error('Error al obtener las reservaciones de títulos:', error);
             setApiError('Error al cargar las reservaciones de títulos.');
         }
-    }, [studentOptions]); // Dependencia de los estudiantes
+    }, [studentOptions]);
 
     const handleEditReservation = (reservation) => {
         const selectedStudents = [{ value: reservation.student.id, label: `${reservation.student.studentCode} - ${reservation.student.firstNames} ${reservation.student.lastName}` }];
@@ -86,6 +74,7 @@ const TitleReservation = () => {
             students: selectedStudents,
         });
     };
+
     const updateTitleReservation = async (reservationId, selectedStudents) => {
         try {
             const titleReservationData = {
@@ -99,19 +88,16 @@ const TitleReservation = () => {
             const response = await titleReservationsService.updateTitleReservation(reservationId, titleReservationData);
 
             if (!response) {
-                console.error('Respuesta inesperada del servidor:', response);
                 Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
             } else {
                 Swal.fire('Exito', 'Reservación actualizada correctamente', 'success');
-                await fetchTitleReservations(); // Recargar las reservaciones para reflejar los cambios
+                await fetchTitleReservations();
             }
         } catch (error) {
-            console.error('Error al actualizar la reservación:', error);
             Swal.fire('Error', 'Error inesperado: ' + error.message, 'error');
         }
     };
 
-    // Fetch para obtener las carreras
     const fetchCareers = useCallback(async () => {
         try {
             const careers = await careerService.getCareers();
@@ -123,16 +109,14 @@ const TitleReservation = () => {
             setCareerOptions(options);
             setApiError(null);
         } catch (error) {
-            console.error('Error al obtener las carreras:', error);
             setApiError('Error al cargar las carreras.');
         }
     }, []);
 
-    // Filtra los estudiantes que ya tienen reservaciones
     const filterStudents = (students) => {
         const reservedStudentIds = titleReservations.map((reservation) => reservation.student.id);
         const filtered = students.filter((student) => !reservedStudentIds.includes(parseInt(student.value)));
-        setFilteredStudentOptions(filtered); // Filtra los estudiantes
+        setFilteredStudentOptions(filtered);
     };
 
     const filterStudentsByCareer = (careerId) => {
@@ -150,9 +134,7 @@ const TitleReservation = () => {
             setFilteredStudentOptions(filteredByCareer);
         }
     };
-    
 
-    // Agregar reservaciones de título
     const addTitleReservations = async (selectedStudents) => {
         try {
             const titleReservationData = {
@@ -160,21 +142,14 @@ const TitleReservation = () => {
                 studentTwo: selectedStudents.length > 1 ? { id: selectedStudents[1].value } : undefined,
             };
 
-            console.log('Sending to backend:', titleReservationData); // Log the data being sent for reservation
-
             const response = await titleReservationsService.addTitleReservation(titleReservationData);
-            console.log('Response from add reservation:', response); // Log the response from adding a reservation
-
             if (!response) {
-                console.error('Unexpected server response:', response);
-                Swal.fire('Error', 'Unexpected server response', 'error');
+                Swal.fire('Error', 'Error al agregar la Reservación ', 'error');
             } else {
-                Swal.fire('Success', 'Reservation added successfully', 'success');
-                await fetchTitleReservations(); // Reload to reflect changes
+                Swal.fire('Exito', 'Reservación agregada satisfactoriamente', 'exito');
+                await fetchTitleReservations();
             }
         } catch (error) {
-            console.error('Error adding reservations:', error);
-            setApiError('Error adding reservations.');
             Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
         }
     };
@@ -187,15 +162,13 @@ const TitleReservation = () => {
         const filtered = studentOptions.filter(option => !reservedStudentIds.has(option.value));
         setFilteredStudentOptions(filtered);
     };
-    
 
     useEffect(() => {
         if (titleReservations.length > 0 || studentOptions.length > 0) {
             updateFilteredStudents();
         }
-    }, [titleReservations, studentOptions]); // Asegurarse de que las dependencias están correctamente establecidas
+    }, [titleReservations, studentOptions]);
 
-    // Eliminar una reservación de título
     const deleteTitleReservation = async (reservationId, studentId, resetForm) => {
         const result = await Swal.fire({
             title: '¿Estás seguro?',
@@ -211,12 +184,10 @@ const TitleReservation = () => {
         if (result.isConfirmed) {
             try {
                 await titleReservationsService.deleteTitleReservation(reservationId);
-                // Actualizar la lista de reservaciones y estudiantes
                 await fetchTitleReservations();
                 filterStudents(studentOptions);
                 Swal.fire('Eliminado!', 'La reservación ha sido eliminada exitosamente.', 'success');
             } catch (error) {
-                console.error('Error al eliminar la reservación:', error);
                 Swal.fire('Error', 'Error al eliminar la reservación.', 'error');
             }
         }
@@ -225,29 +196,29 @@ const TitleReservation = () => {
     return (
         <div className="p-5">
             <h1 className="text-2xl font-bold mb-5">Reservaciones de Títulos</h1>
-
             <Formik
                 initialValues={{
                     career: currentEditReservation ? currentEditReservation.career : null,
                     students: currentEditReservation ? currentEditReservation.students : [],
                 }}
-                validationSchema={validationSchema}
+                validationSchema={Yup.object().shape({
+                    career: Yup.object().nullable().required('Debes seleccionar una carrera'),
+                    students: Yup.array().min(1, 'Debes seleccionar al menos un estudiante').max(2, 'Solo puedes seleccionar hasta dos estudiantes'),
+                })}
                 enableReinitialize={true}
                 onSubmit={(values, { setSubmitting, resetForm }) => {
                     const selectedStudents = values.students;
 
                     if (selectedStudents.length > 0) {
                         if (currentEditReservation) {
-                            // Lógica para actualizar la reservación existente
                             updateTitleReservation(currentEditReservation.id, selectedStudents)
                                 .then(() => {
                                     resetForm();
                                     setSubmitting(false);
-                                    setCurrentEditReservation(null); // Salir del modo de edición
+                                    setCurrentEditReservation(null);
                                 })
                                 .catch(() => setSubmitting(false));
                         } else {
-                            // Lógica para agregar nueva reservación
                             addTitleReservations(selectedStudents)
                                 .then(() => {
                                     resetForm();
@@ -262,7 +233,6 @@ const TitleReservation = () => {
             >
                 {({ errors, submitCount, values, setFieldValue, isSubmitting }) => (
                     <Form className="flex flex-row items-center gap-4">
-                        {/* SelectCareer y MultiSelectStudent */}
                         <SelectCareer
                             options={careerOptions}
                             value={values.career}
@@ -275,7 +245,7 @@ const TitleReservation = () => {
                             options={filteredStudentOptions}
                             value={values.students}
                             setFieldValue={setFieldValue}
-                            maxSelectable={2} // Límite de 2 estudiantes
+                            maxSelectable={2}
                             isDisabled={!values.career}
                             errors={errors}
                             submitCount={submitCount}
@@ -289,7 +259,7 @@ const TitleReservation = () => {
             <ReservationTable
                 titleReservations={titleReservations}
                 apiError={apiError}
-                onEdit={handleEditReservation} // Pasamos la función de edición
+                onEdit={handleEditReservation}
                 onDelete={deleteTitleReservation}
             />
         </div>

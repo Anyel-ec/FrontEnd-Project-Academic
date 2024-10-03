@@ -14,6 +14,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentReservations = titleReservations.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
 
+    // Manejo de éxito en la carga de PDF
     const handlePDFUploadSuccess = (reservationId, base64Data) => {
         setPdfDataMap((prev) => ({
             ...prev,
@@ -22,6 +23,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
         console.log('PDF cargado y convertido a Base64 para la reserva:', reservationId);
     };
 
+    // Manejo de fallos en la carga de PDF
     const handlePDFUploadFailure = (error) => {
         console.error('Error al cargar el PDF:', error);
     };
@@ -41,69 +43,64 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                             <th>Observaciones</th>
                             <th>Fecha Creación</th>
                             <th>Fecha Actualización</th>
-                            <th className='!text-center'>PDF</th>
+                            <th className="!text-center">PDF</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                    {currentReservations.length > 0 ? (
-                        currentReservations.map((reservation) => (
-                            <tr key={reservation.id}>
-                                <td>
-                                    {reservation.student.studentCode}{' '}
-                                    {reservation.studentTwo && (
-                                        <>
-                                            <br />
-                                            {reservation.studentTwo.studentCode}
-                                        </>
-                                    )}
-                                </td>
+                        {currentReservations.length > 0 ? (
+                            currentReservations.map((reservation) => (
+                                <tr key={reservation.id}>
+                                    <td>
+                                        {reservation.student?.studentCode || 'N/A'} {/* Asegurarse de que student existe */}
+                                        {reservation.studentTwo && (
+                                            <>
+                                                <br />
+                                                {reservation.studentTwo.studentCode || 'N/A'}
+                                            </>
+                                        )}
+                                    </td>
 
-                                <td>{reservation.meetsRequirements ? 'Sí' : 'No'}</td>
-                                <td>
-                                    {reservation.student.firstNames ?? ''} {reservation.student.lastName ?? ''}
-                                    {reservation.studentTwo && (
-                                        <p>
-                                            {reservation.studentTwo.firstNames ?? ''} {reservation.studentTwo.lastName ?? ''}
-                                        </p>
-                                    )}
-                                </td>
+                                    <td>{reservation.meetsRequirements ? 'Sí' : 'No'}</td>
+                                    <td>
+                                        {reservation.student?.firstNames ?? ''} {reservation.student?.lastName ?? ''}
+                                        {reservation.studentTwo && (
+                                            <p>
+                                                {reservation.studentTwo?.firstNames ?? ''} {reservation.studentTwo?.lastName ?? ''}
+                                            </p>
+                                        )}
+                                    </td>
 
-                                <td>{reservation.student.career.name}</td>
-                                <td>{reservation.project ? 'Sí' : 'No'}</td>
-                                <td>{reservation.observations || 'Ninguna'}</td>
-                                <td>{new Date(reservation.createdAt).toLocaleString()}</td>
-                                <td>{new Date(reservation.updatedAt).toLocaleString()}</td>
-                                <td className='gap-4'>
-                                    {pdfDataMap[reservation.id] ? (
-                                        <a href={`data:application/pdf;base64,${pdfDataMap[reservation.id]}`} target="_blank" rel="noopener noreferrer" className="">
-                                            Ver
-                                        </a>
-                                    ) : (
+                                    <td>{reservation.student?.career?.name || 'N/A'}</td>
+                                    <td>{reservation.project ? 'Sí' : 'No'}</td>
+                                    <td>{reservation.observations || 'Ninguna'}</td>
+                                    <td>{new Date(reservation.createdAt).toLocaleString()}</td>
+                                    <td>{new Date(reservation.updatedAt).toLocaleString()}</td>
+                                    <td className="gap-4">
+                                        {/* Componente de carga de PDF */}
                                         <TitleUpload
                                             reservaId={reservation.id} // Pasa el ID de la reservación al componente de carga
                                             onUploadSuccess={(base64Data) => handlePDFUploadSuccess(reservation.id, base64Data)} // Mapea el PDF a la reservación correspondiente
                                             onUploadFailure={handlePDFUploadFailure}
                                         />
-                                    )}
-                                </td>
-                                <td className="flex gap-4 items-center justify-center">
-                                    {/* <button onClick={() => onEdit(reservation.id)} className="btn btn-sm btn-outline-primary">
-                                        Editar
-                                    </button> */}
-                                    <button onClick={() => onDelete(reservation.id)} className="btn btn-sm btn-outline-danger">
-                                        Eliminar
-                                    </button>
+                                    </td>
+                                    <td className="flex gap-4 items-center justify-center">
+                                        <button onClick={() => onEdit(reservation)} className="btn btn-sm btn-outline-primary">
+                                            Editar
+                                        </button>
+                                        <button onClick={() => onDelete(reservation.id)} className="btn btn-sm btn-outline-danger">
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="10" className="px-4 py-2 text-center">
+                                    No hay reservaciones disponibles
                                 </td>
                             </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="10" className="px-4 py-2 text-center">
-                                No hay reservaciones disponibles
-                            </td>
-                        </tr>
-                    )}
+                        )}
                     </tbody>
                 </table>
             </div>

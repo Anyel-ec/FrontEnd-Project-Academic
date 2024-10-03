@@ -13,7 +13,7 @@ const TitleUpload = ({ reservaId }) => {
     // Verifica que reservaId no sea undefined antes de usarlo
     useEffect(() => {
         if (!reservaId) {
-            console.error('El ID de la reserva es undefined.');
+            console.error('El ID de la reserva es indefinida.');
             return;
         }
 
@@ -44,7 +44,6 @@ const TitleUpload = ({ reservaId }) => {
                 console.error('Error al cargar la reservación:', error);
             });
     }, [reservaId]);
-
     const viewPDF = () => {
         if (pdfDocumentId) {
             // Si ya hay un PDF cargado, mostramos la vista previa
