@@ -2,17 +2,23 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import IconX from '../../../components/Icon/IconX';
+import IconX from '../../../../components/Icon/IconX';
 
-
-const ReservationModal = ({ isOpen, onClose, onSave, student }) => {
-    // Validación usando Yup
+const ReservationModal = ({ isOpen, onClose, onSave, reservation, editingReservation,isDisabled }) => {
     const validationSchema = Yup.object({
         studentCode: Yup.string().max(6, 'Máximo 6 caracteres').required('Requerido'),
         studentTwoCode: Yup.string().max(6, 'Máximo 6 caracteres'),
         meetRequirements: Yup.string().required('Selecciona una opción'),
         observation: Yup.string(),
     });
+
+    // Manejar correctamente los valores iniciales, considerando si studentTwo es null
+    const initialValues = {
+        studentCode: reservation?.student?.studentCode || 'N/A', // Código del primer estudiante
+        studentTwoCode: reservation?.studentTwo?.studentCode || '', // Si no existe, devolver 'N/A'
+        meetRequirements: reservation?.meetsRequirements ? 'yes' : 'no', // Conversión de booleano a string
+        observation: reservation?.observations || '', // Observaciones
+    };
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -24,34 +30,42 @@ const ReservationModal = ({ isOpen, onClose, onSave, student }) => {
                             <button type="button" onClick={onClose} className="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none">
                                 <IconX />
                             </button>
-                            <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
-                                Aceptar Reservación
-                            </div>
+                            <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">Aceptar Reservación</div>
                             <div className="p-5">
                                 <Formik
-                                    initialValues={{
-                                        studentCode: student?.studentCode || '',
-                                        studentTwoCode: student?.studentTwoCode || '',
-                                        observation: student?.observation || '',
-                                        meetRequirements: student ? String(student.meetRequirements) : '', // Convertir boolean a string
-                                    }}
+                                    initialValues={initialValues}
                                     validationSchema={validationSchema}
-                                    onSubmit={onSave}
+                                    onSubmit={(values) => {
+                                        if (reservation && reservation.id) {
+                                            onSave(reservation.id, values); // Solo llamar si reservation tiene un id válido
+                                        } else {
+                                            console.error('Error: No se ha definido un ID válido para la reservación.');
+                                        }
+                                    }}
                                 >
                                     {({ errors, submitCount }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
-                                                <Field name="studentCode" type="text" id="studentCode" placeholder="Ingrese el código del estudiante" maxLength={6} className="form-input" />
+                                                <Field name="studentCode" type="text" id="studentCode" readOnly placeholder="Ingrese el código del estudiante" maxLength={6} className="form-input" />
                                                 <ErrorMessage name="studentCode" component="div" className="text-danger mt-1" />
                                             </div>
 
-                                            <div className={submitCount && errors.studentTwoCode ? 'has-error' : ''}>
-                                                <label htmlFor="studentTwoCode">Segundo Estudiante</label>
-                                                <Field name="studentTwoCode" type="text" id="studentTwoCode" placeholder="Ingrese el código del estudiante" maxLength={6} className="form-input" />
-                                                <ErrorMessage name="studentTwoCode" component="div" className="text-danger mt-1" />
-                                            </div>
-
+                                            {reservation?.studentTwo && (
+                                                <div className={submitCount && errors.studentTwoCode ? 'has-error' : ''}>
+                                                    <label htmlFor="studentTwoCode">Segundo Estudiante</label>
+                                                    <Field
+                                                        name="studentTwoCode"
+                                                        type="text"
+                                                        id="studentTwoCode"
+                                                        placeholder="Ingrese el código del segundo estudiante"
+                                                        maxLength={6}
+                                                        readOnly
+                                                        className="form-input"
+                                                    />
+                                                    <ErrorMessage name="studentTwoCode" component="div" className="text-danger mt-1" />
+                                                </div>
+                                            )}
                                             <div className={submitCount && errors.meetRequirements ? 'has-error' : ''}>
                                                 <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
@@ -78,7 +92,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, student }) => {
                                                     Cancelar
                                                 </button>
                                                 <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
-                                                    {student ? 'Actualizar' : 'Guardar'}
+                                                    Actualizar
                                                 </button>
                                             </div>
                                         </Form>
