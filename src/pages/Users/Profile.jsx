@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import userService from '../../api/userService'; // Importa tu servicio de usuarios
 import IconCoffee from '../../components/Icon/IconCoffee';

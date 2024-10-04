@@ -133,29 +133,93 @@ const TitleReservation = () => {
         }
     };
     const handleSaveReservation = async (reservationId, values) => {
-        try {
-            // Incluye solo los campos meetsRequirements y observations
-            const titleReservationData = {
-                meetsRequirements: values?.meetRequirements === 'yes',
+        // Verificar si meetsRequirements es true y observations está vacío
+        if (values?.meetRequirements === 'yes') {
+            Swal.fire({
+                html: `
+               
+                    <div style="font-size: 5rem;margin: 0; color: orange;">&#9888;</div> <!-- Ícono de advertencia grande -->
+                    <span style="color: #000; margin-bottom: 0.25rem;font-weight:bold;font-size:1.5rem;background-color: #  ;padding: 0    2px;border-radius:5px;">Atención</span>
+                    <p font-size: 1rem; text-align: center;">
+                        Esta acción es irreversible, no puede ser modificada despúes de enviarse.
+                    </p>
                 
-                observations: values.observation || '', // Incluye observaciones
-            };
-    
-            const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
-    
-            if (!response) {
-                Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
-            } else {
-                Swal.fire('Éxito', 'Reservación actualizada correctamente', 'success');
-                await fetchTitleReservations(); // Actualizar lista de reservaciones
-                closeModal(); // Cerrar el modal automáticamente después de la actualización
+            `,
+                iconColor: '#f39c12', // Color del ícono
+                timer: 5000, // 5 segundos de espera
+                timerProgressBar: true,
+                showConfirmButton: false,
+                willClose: async () => {
+                    const result = await Swal.fire({
+                        title: 'Confirmar Reservación',
+                        text: '¿Quieres aceptar la reservación del título?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Aceptar',
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                    });
+
+                    if (result.isConfirmed) {
+                        try {
+                            // Realiza el guardado de la reservación solo si el usuario confirma
+                            const titleReservationData = {
+                                meetsRequirements: true,
+                                observations: '', // Observaciones vacías
+                            };
+
+                            const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
+
+                            if (!response) {
+                                Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
+                            } else {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Reservación Aceptada',
+                                    text: 'La reservación ha sido aceptada con éxito. Esta acción es irreversible.',
+                                    timer: 3000,
+                                    showConfirmButton: false,
+                                });
+                                await fetchTitleReservations(); // Actualizar lista de reservaciones
+                                closeModal(); // Cerrar el modal automáticamente después de la actualización
+                            }
+                        } catch (error) {
+                            Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
+                        }
+                    } else if (result.isDismissed) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Reservación Cancelada',
+                            text: 'La reservación ha sido cancelada.',
+                            timer: 3000,
+                            showConfirmButton: false,
+                        });
+                    }
+                },
+            });
+        } else {
+            // Continúa con el guardado normal si no cumple con la condición
+            try {
+                const titleReservationData = {
+                    meetsRequirements: values?.meetRequirements === 'yes',
+                    observations: values.observation || '', // Incluye observaciones si las hay
+                };
+
+                const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
+
+                if (!response) {
+                    Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
+                } else {
+                    Swal.fire('Éxito', 'Reservación actualizada correctamente', 'success');
+                    await fetchTitleReservations(); // Actualizar lista de reservaciones
+                    closeModal(); // Cerrar el modal automáticamente después de la actualización
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
             }
-        } catch (error) {
-            Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
         }
     };
-    
-    
 
     const editReservation = (reservation) => {
         console.log('Reservation seleccionada:', reservation); // Depura el objeto

@@ -1,18 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
+import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';  // Para acceder al estado global
 import { ErrorMessage } from 'formik';
 import { HandleMode } from '../../styles/selectStyles';
 
 const MultiSelectStudent = ({ options, value, setFieldValue, isDisabled, errors, submitCount, maxSelectable = 2 }) => {
-    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');  // Verifica si el tema es oscuro
-    const styles = HandleMode(isDarkMode);  // Aplicar los estilos según el modo
+    const [isDarkMode, setIsDarkMode] = useState(false);
+    const theme = useSelector((state) => state.themeConfig.theme);  // 'light' | 'dark' | 'system'
+    
+    useEffect(() => {
+        // Función para aplicar el modo correcto según las preferencias del sistema
+        const applySystemTheme = () => {
+            if (theme === 'system') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                setIsDarkMode(prefersDark);
+            } else {
+                setIsDarkMode(theme === 'dark');
+            }
+        };
+
+        // Aplicar el tema inicial al cargar el componente
+        applySystemTheme();
+
+        // Escuchar cambios en las preferencias del sistema
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        mediaQuery.addEventListener('change', applySystemTheme);
+
+        // Limpieza del listener al desmontar el componente
+        return () => mediaQuery.removeEventListener('change', applySystemTheme);
+    }, [theme]);  // Ejecuta el efecto cuando cambia el tema
+
+    const styles = HandleMode(isDarkMode);  // Usa el estado de `isDarkMode` para obtener los estilos correctos
 
     const handleChange = (selectedOptions) => {
-        // Limitar la cantidad de estudiantes seleccionados al máximo permitido
-        if (selectedOptions.length <= maxSelectable) {
-            setFieldValue('students', selectedOptions);  // Actualizamos el array de estudiantes
+        if (selectedOptions.length > maxSelectable) return;
+
+        if (selectedOptions.length > 1) {
+            const careerIdFirstStudent = selectedOptions[0].careerId;
+            const hasDifferentCareer = selectedOptions.some(student => student.careerId !== careerIdFirstStudent);
+
+            if (hasDifferentCareer) {
+                Swal.fire('Error', 'No se pueden seleccionar estudiantes de diferentes carreras', 'error');
+                return;
+            }
         }
+
+        setFieldValue('students', selectedOptions);
     };
 
     return (
@@ -26,22 +60,20 @@ const MultiSelectStudent = ({ options, value, setFieldValue, isDisabled, errors,
                 onChange={handleChange}
                 value={value}
                 isDisabled={isDisabled}
-                isMulti  // Habilita la selección múltiple
+                isMulti  
                 noOptionsMessage={() => 'No hay estudiantes disponibles'}
-                closeMenuOnSelect={false} // Permite seguir seleccionando hasta el máximo permitido
+                closeMenuOnSelect={false}
             />
             <ErrorMessage name="students" component="div" className="text-danger mt-1" />
         </div>
     );
 };
 
-// Aquí es donde agregas React.memo para mejorar el rendimiento
 export default React.memo(MultiSelectStudent, (prevProps, nextProps) => {
     return (
-      prevProps.options === nextProps.options &&
-      prevProps.value === nextProps.value &&
-      prevProps.isDisabled === nextProps.isDisabled &&
-      JSON.stringify(prevProps.value) === JSON.stringify(nextProps.value)  // Verificar también el valor actual de los estudiantes seleccionados
+        prevProps.options === nextProps.options &&
+        prevProps.value === nextProps.value &&
+        prevProps.isDisabled === nextProps.isDisabled &&
+        JSON.stringify(prevProps.value) === JSON.stringify(nextProps.value)  
     );
-  });
-  
+});

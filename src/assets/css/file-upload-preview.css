@@ -72,6 +72,96 @@
     z-index: 5;
     font-size: 14px;
 }
+.swal2-popup {
+    padding: 20px !important; /* Ajusta el padding a un valor más pequeño si es necesario */
+}
+
+#swal2-html-container {
+    padding: 0 !important; /* Elimina el padding de este contenedor */
+    margin: 0 !important; /* Elimina cualquier margen extra */
+    text-align: center; /* Asegura que el contenido esté centrado */
+}
+.swal2-container {
+    max-width: 100%;
+    margin: auto;
+}
+
+/* Centrado del contenedor de los botones */
+.swal2-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Espacio entre los botones */
+    margin-top: 20px; /* Añade un poco de margen superior */
+    width: 100%;
+}
+
+/* Mejora de los botones de acción */
+.swal2-confirm, .swal2-cancel {
+    border-radius: 6px;
+    padding: 10px 30px; /* Ajuste de padding para mayor simetría */
+    font-size: 16px;
+    display: inline-block;
+    text-align: center;
+}
+
+/* Estilo del botón de confirmación */
+.swal2-confirm {
+    background-color: #007bff !important;
+}
+
+.swal2-confirm:hover {
+    background-color: #0069d9 !important;
+}
+
+/* Estilo del botón de cancelación */
+.swal2-cancel {
+    background-color: #6c757d !important;
+}
+
+.swal2-cancel:hover {
+    background-color: #5a6268 !important;
+}
+
+/* Ocultar el input real */
+.custom-file-input {
+    display: none;
+}
+
+/* Estilo del botón de selección de archivo */
+.custom-file-button {
+    padding: 12px 25px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 18px;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.custom-file-button:hover {
+    background-color: #218838;
+    transform: translateY(-2px); /* Efecto de elevación */
+}
+
+/* Estilo del nombre del archivo seleccionado */
+.custom-file-text {
+    display: block;
+    margin-top: 15px;
+    color: #5AD667;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%; /* Ajuste al ancho del contenedor */
+}
+
+
 
 .custom-file-container__custom-file__custom-file-control {
     @apply dark:border-[#17263c] dark:bg-[#121e32] dark:text-white-dark dark:focus:border-primary;

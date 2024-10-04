@@ -137,6 +137,24 @@ export const darkModeStyles = {
         color: '#A0AEC0',
         fontSize: '0.875rem',  // Tamaño de fuente consistente
     }),
+    multiValue: (provided) => ({
+        ...provided,
+        backgroundColor: '#243b55',  // Fondo del elemento seleccionado
+        color: '#ffffff',  // Color del texto
+        borderRadius: '0.25rem', // Opcional: bordes redondeados
+    }),
+    multiValueLabel: (provided) => ({
+        ...provided,
+        color: '#ffffff',  // Color del texto en el elemento seleccionado
+    }),
+    multiValueRemove: (provided, state) => ({
+        ...provided,
+        color: '#ffffff',
+        ':hover': {
+            backgroundColor: '#1967D2', // Fondo al pasar el cursor
+            color: '#ffffff',
+        },
+    }),
 };
 
 // Función para manejar los modos (claro/oscuro)

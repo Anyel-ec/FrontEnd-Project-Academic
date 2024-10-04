@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import AppEnvironments from '../../../../config/AppEnvironments';
+import '../../../../assets/css/file-upload-preview.css';
 // Función para obtener el token de autenticación del localStorage
 const getAuthToken = () => {
     return localStorage.getItem('token');
@@ -76,35 +77,57 @@ const TitleUpload = ({ reservaId }) => {
         } else {
             Swal.fire({
                 title: 'Seleccionar un archivo PDF',
-                input: 'file',
-                inputAttributes: {
-                    accept: 'application/pdf',
-                },
+                html: `
+                    <div class="custom-file-wrapper">
+                        <button type="button" class="custom-file-button">Seleccionar archivo</button>
+                        <input id="fileInput" type="file" class="custom-file-input" accept="application/pdf" />
+                        <span id="fileName" class="custom-file-text">Ningún archivo seleccionado</span>
+                    </div>
+                `,
                 confirmButtonText: 'Cargar',
                 showCancelButton: true,
-                preConfirm: (file) => {
+                didOpen: () => {
+                    const fileInput = document.getElementById('fileInput');
+                    const fileName = document.getElementById('fileName');
+                    const customFileButton = document.querySelector('.custom-file-button');
+            
+                    // Evento que abre manualmente el explorador de archivos
+                    customFileButton.addEventListener('click', () => {
+                        fileInput.click();
+                    });
+            
+                    // Manejar el evento de selección de archivo
+                    fileInput.addEventListener('change', (event) => {
+                        const file = event.target.files[0];
+                        if (file) {
+                            fileName.textContent = file.name; // Actualiza el texto con el nombre del archivo
+                        } else {
+                            fileName.textContent = 'Ningún archivo seleccionado'; // Texto predeterminado
+                        }
+                    });
+                },
+                preConfirm: () => {
+                    const fileInput = document.getElementById('fileInput');
+                    const file = fileInput.files[0];
                     if (!file) {
                         Swal.showValidationMessage('Debes seleccionar un archivo');
                     } else if (file.type !== 'application/pdf') {
                         Swal.showValidationMessage('El archivo debe ser un PDF');
                     } else if (file.size > 1048576) {
-                        // 1 MB = 1048576 bytes
                         Swal.showValidationMessage('El archivo no debe superar los 1 MB');
                     } else {
                         return file;
                     }
-                },
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     const selectedFile = result.value;
                     setFile(selectedFile); // Guarda el archivo seleccionado
-
-                    // Convierte el archivo a Base64 para la vista previa
+            
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         const base64PDF = e.target.result;
-
-                        // Verificación adicional de Base64
+            
                         if (!base64PDF.startsWith('data:application/pdf;base64,')) {
                             Swal.fire({
                                 icon: 'error',
@@ -113,10 +136,9 @@ const TitleUpload = ({ reservaId }) => {
                             });
                             return;
                         }
-
+            
                         setBase64String(base64PDF); // Guarda el PDF en formato Base64
-
-                        // Muestra la vista previa del PDF
+            
                         Swal.fire({
                             title: 'Vista Previa del PDF',
                             html: `<embed src="${base64PDF}" type="application/pdf" width="100%" height="500px" />`,
@@ -124,8 +146,7 @@ const TitleUpload = ({ reservaId }) => {
                             showCancelButton: true,
                         }).then((previewResult) => {
                             if (previewResult.isConfirmed) {
-                                // Si el usuario confirma, enviar el archivo al backend
-                                sendFileToBackend(base64PDF);
+                                sendFileToBackend(base64PDF); // Envía el archivo al backend
                             }
                         });
                     };

@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
 import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importación es correcto
 
-const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [pdfDataMap, setPdfDataMap] = useState({}); // Mapea cada reserva a su PDF en base64
-
-    const itemsPerPage = 4;
-    
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentReservations = titleReservations.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
-
+const ReservationTable = ({ titleReservations, apiError }) => {
+    const reservations = titleReservations;
     const handlePDFUploadSuccess = (reservationId, base64Data) => {
         // Actualiza el estado para que React re-renderice la tabla
         setPdfDataMap((prev) => ({
@@ -43,8 +35,8 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                         </tr>
                     </thead>
                     <tbody>
-                    {currentReservations.length > 0 ? (
-                        currentReservations.map((reservation) => (
+                    {reservations.length > 0 ? (
+                        reservations.map((reservation) => (
                             <tr key={reservation.id}>
                                 <td>
                                     {reservation.student.studentCode}{' '}

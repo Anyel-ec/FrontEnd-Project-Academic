@@ -64,8 +64,8 @@ const TitleUpload = ({ reservaId }) => {
 
     return (
         <div className="flex gap-3 ">
-            <button onClick={viewPDF} className="btn btn-sm btn-outline-secondary m-0">
-                {pdfDocumentId ? 'Ver ' : 'No disponible'}
+            <button onClick={viewPDF} className="btn btn-sm btn-outline-secondary m-0 w-[5rem]">
+                {pdfDocumentId ? 'Ver PDF' : 'No disponible'}
             </button>
         </div>
     );
