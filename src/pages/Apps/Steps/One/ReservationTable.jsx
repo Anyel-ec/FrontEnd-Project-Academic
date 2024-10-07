@@ -44,7 +44,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                             <th>Fecha Creación</th>
                             <th>Fecha Actualización</th>
                             <th className="!text-center">PDF</th>
-                            <th>Acciones</th>
+                            <th className="!text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -52,7 +52,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                             currentReservations.map((reservation) => (
                                 <tr key={reservation.id}>
                                     <td>
-                                        {reservation.student?.studentCode || 'N/A'} {/* Asegurarse de que student existe */}
+                                        {reservation.student?.studentCode || 'N/A'}
                                         {reservation.studentTwo && (
                                             <>
                                                 <br />
@@ -85,12 +85,23 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                                         />
                                     </td>
                                     <td className="flex gap-4 items-center justify-center">
-                                        <button onClick={() => onEdit(reservation)} className="btn btn-sm btn-outline-primary">
-                                            Editar
-                                        </button>
-                                        <button onClick={() => onDelete(reservation.id)} className="btn btn-sm btn-outline-danger">
-                                            Eliminar
-                                        </button>
+                                        {/* Mostrar los botones de Editar y Eliminar solo si meetsRequirements es false */}
+                                        {reservation.meetsRequirements ? (
+                                            <>
+                                            <button className="btn btn-sm btn-outline-primary cursor-not-allowed">
+                                                Descargar Comprobante
+                                            </button>
+                                        </>
+                                        ) : (
+                                            <>
+                                                <button onClick={() => onEdit(reservation)} className="btn btn-sm btn-outline-primary">
+                                                    Editar
+                                                </button>
+                                                <button onClick={() => onDelete(reservation.id)} className="btn btn-sm btn-outline-danger">
+                                                    Eliminar
+                                                </button>
+                                            </>
+                                        )}
                                     </td>
                                 </tr>
                             ))
