@@ -11,7 +11,7 @@ const ReservationTable = ({ titleReservations, apiError }) => {
         }));
         console.log('PDF cargado y convertido a Base64 para la reserva:', reservationId);
     };
-    
+
     const handlePDFUploadFailure = (error) => {
         console.error('Error al cargar el PDF:', error);
     };
@@ -31,56 +31,60 @@ const ReservationTable = ({ titleReservations, apiError }) => {
                             <th>Observaciones</th>
                             <th>Fecha Creación</th>
                             <th>Fecha Actualización</th>
-                            <th className='!text-center'>PDF</th>
+                            {reservations.meetsRequirements ? <th className="!text-center">PDF</th> : <></>}
                         </tr>
                     </thead>
                     <tbody>
-                    {reservations.length > 0 ? (
-                        reservations.map((reservation) => (
-                            <tr key={reservation.id}>
-                                <td>
-                                    {reservation.student.studentCode}{' '}
-                                    {reservation.studentTwo && (
-                                        <>
-                                            <br />
-                                            {reservation.studentTwo.studentCode}
-                                        </>
-                                    )}
-                                </td>
+                        {reservations.length > 0 ? (
+                            reservations.map((reservation) => (
+                                <tr key={reservation.id}>
+                                    <td>
+                                        {reservation.student.studentCode}{' '}
+                                        {reservation.studentTwo && (
+                                            <>
+                                                <br />
+                                                {reservation.studentTwo.studentCode}
+                                            </>
+                                        )}
+                                    </td>
 
-                                <td>{reservation.meetsRequirements ? 'Sí' : 'No'}</td>
-                                <td>
-                                    {reservation.student.firstNames ?? ''} {reservation.student.lastName ?? ''}
-                                    {reservation.studentTwo && (
-                                        <p>
-                                            {reservation.studentTwo.firstNames ?? ''} {reservation.studentTwo.lastName ?? ''}
-                                        </p>
-                                    )}
-                                </td>
+                                    <td>{reservation.meetsRequirements ? 'Sí' : 'No'}</td>
+                                    <td>
+                                        {reservation.student.firstNames ?? ''} {reservation.student.lastName ?? ''}
+                                        {reservation.studentTwo && (
+                                            <p>
+                                                {reservation.studentTwo.firstNames ?? ''} {reservation.studentTwo.lastName ?? ''}
+                                            </p>
+                                        )}
+                                    </td>
 
-                                <td>{reservation.student.career.name}</td>
-                                <td>{reservation.project ? 'Sí' : 'No'}</td>
-                                <td>{reservation.observations || 'Ninguna'}</td>
-                                <td>{new Date(reservation.createdAt).toLocaleString()}</td>
-                                <td>{new Date(reservation.updatedAt).toLocaleString()}</td>
-                                <td className='gap-4'>
-                                    {
-                                        <TitleUpload
-                                            reservaId={reservation.id} // Pasa el ID de la reservación al componente de carga
-                                            onUploadSuccess={(base64Data) => handlePDFUploadSuccess(reservation.id, base64Data)} // Mapea el PDF a la reservación correspondiente
-                                            onUploadFailure={handlePDFUploadFailure}
-                                        />
-                                    }
+                                    <td>{reservation.student.career.name}</td>
+                                    <td>{reservation.project ? 'Sí' : 'No'}</td>
+                                    <td>{reservation.observations || 'Ninguna'}</td>
+                                    <td>{new Date(reservation.createdAt).toLocaleString()}</td>
+                                    <td>{new Date(reservation.updatedAt).toLocaleString()}</td>
+                                    {reservation.meetsRequirements ? (
+                                        <></>
+                                    ) : (
+                                        <td className="gap-4">
+                                            {
+                                                <TitleUpload
+                                                    reservaId={reservation.id} // Pasa el ID de la reservación al componente de carga
+                                                    onUploadSuccess={(base64Data) => handlePDFUploadSuccess(reservation.id, base64Data)} // Mapea el PDF a la reservación correspondiente
+                                                    onUploadFailure={handlePDFUploadFailure}
+                                                />
+                                            }
+                                        </td>
+                                    )}
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="10" className="px-4 py-2 text-center">
+                                    No hay reservaciones disponibles
                                 </td>
                             </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="10" className="px-4 py-2 text-center">
-                                No hay reservaciones disponibles
-                            </td>
-                        </tr>
-                    )}
+                        )}
                     </tbody>
                 </table>
             </div>

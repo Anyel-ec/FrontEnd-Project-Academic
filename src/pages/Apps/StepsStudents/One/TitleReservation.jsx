@@ -57,6 +57,7 @@ const TitleReservation = () => {
             setApiError('Error al cargar las reservaciones de títulos.');
         }
     }, [user.username]);
+    console.log(titleReservations);
 
     return (
         <div className="p-5">

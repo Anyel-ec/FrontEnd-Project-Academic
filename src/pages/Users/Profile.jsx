@@ -5,6 +5,8 @@ import userService from '../../api/userService'; // Asume que este es tu archivo
 import { fetchStudentProgress } from '../../api/reservationStepStatusService'; // Asume que este es tu archivo de servicio
 import IconCoffee from '../../components/Icon/IconCoffee';
 import IconMail from '../../components/Icon/IconMail';
+import titleReservationsService from '../../api/titleReservationsService';
+import { useCallback } from 'react';
 
 const Profile = () => {
     const dispatch = useDispatch();
@@ -15,7 +17,39 @@ const Profile = () => {
         lastName: '',
         email: '',
     });
-    const [progress, setProgress] = useState([]);
+    const [titleReservations, setTitleReservations] = useState([]);
+    const [apiError, setApiError] = useState(null);
+
+    const isStudent = user && user.rol && user.rol.name === 'estudiante';
+
+    useEffect(() => {
+        const selector = document.querySelector('.sidebar ul a[href="' + window.location.pathname + '"]');
+        if (selector) {
+            selector.classList.add('active');
+            const ul = selector.closest('ul.sub-menu');
+            if (ul) {
+                let ele = ul.closest('li.menu').querySelectorAll('.nav-link') || [];
+                if (ele.length) {
+                    ele = ele[0];
+                    setTimeout(() => {
+                        ele.click();
+                    });
+                }
+            }
+        }
+
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: 'No se encontraron los datos del usuario. Inicia sesión nuevamente.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar',
+            });
+        }
+    }, []);
 
     useEffect(() => {
         dispatch(setPageTitle('Perfil'));
@@ -26,10 +60,8 @@ const Profile = () => {
                 try {
                     const userData = await userService.getUser(storedUser.username);
                     setUser(userData);
-                    const progressData = await fetchStudentProgress(storedUser.username);
-                    setProgress(progressData);
                 } catch (error) {
-                    console.error('Error fetching data:', error);
+                    console.error('Error fetching user data:', error);
                 }
             } else {
                 console.error('No user found in localStorage');
@@ -38,6 +70,35 @@ const Profile = () => {
 
         fetchUserData();
     }, [dispatch]);
+
+    // Función para formatear la fecha con JavaScript nativo
+    const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+        return new Date(dateString).toLocaleString('es-ES', options);
+    };
+
+    // Fetch de las reservaciones de títulos
+    const fetchTitleReservations = useCallback(async () => {
+        try {
+            const reservations = await titleReservationsService.getTitleReservations();
+            const filteredReservations = reservations.filter(
+                (reservation) => reservation.student.studentCode === user.username || (reservation.studentTwo && reservation.studentTwo.studentCode === user.username)
+            );
+            setTitleReservations(filteredReservations);
+            setApiError(null);
+        } catch (error) {
+            console.error('Error al obtener las reservaciones de títulos:', error);
+            setApiError('Error al cargar las reservaciones de títulos.');
+        }
+    }, [user.username]);
+
+    // Llamada para obtener las reservaciones cuando el usuario esté disponible
+    useEffect(() => {
+        if (user.username) {
+            fetchTitleReservations();
+        }
+    }, [user.username, fetchTitleReservations]);
 
     return (
         <div className="pt-5">
@@ -67,6 +128,7 @@ const Profile = () => {
                         </ul>
                     </div>
                 </div>
+                {!isStudent ? (
                 <div className="panel lg:col-span-2 xl:col-span-3">
                     <div className="mb-5">
                         <h5 className="font-semibold text-lg dark:text-white-light">Tareas</h5>
@@ -79,20 +141,24 @@ const Profile = () => {
                                         <th>Proyectos</th>
                                         <th>Progreso</th>
                                         <th>Tarea Realizada</th>
-                                        <th className="text-center">Tiempo</th>
+                                        <th className="text-center">Última Actualización</th>
                                     </tr>
                                 </thead>
                                 <tbody className="dark:text-white-dark">
-                                    {progress.map(step => (
-                                        <tr key={step.stepNumber}>
-                                            <td>{`Paso ${step.stepNumber}`}</td>
+                                    {titleReservations.map((reservation) => (
+                                        <tr key={reservation.id}>
+                                            <td>{`Paso ${reservation.id}`}</td>
                                             <td>
                                                 <div className="h-1.5 bg-[#ebedf2] dark:bg-dark/40 rounded-full flex w-full">
-                                                    <div className={`bg-${step.isCompleted ? 'success' : 'danger'} rounded-full`} style={{ width: `${step.percentage}%` }}></div>
+                                                    <div className={`bg-${reservation.meetsRequirements ? 'success' : 'danger'} rounded-full`} style={{ width: '100%' }}></div>
                                                 </div>
                                             </td>
-                                            <td className={`${step.isCompleted ? 'text-success' : 'text-danger'}`}>{`${step.percentage}%`}</td>
-                                            <td className="text-center">{step.lastUpdated}</td>
+                                            <td className={`${reservation.meetsRequirements ? 'text-success' : 'text-danger'}`}>
+                                                {reservation.meetsRequirements ? '100%' : '0%'}
+                                            </td>
+                                            <td className="text-center">
+                                                {formatDate(reservation.updatedAt)}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -100,8 +166,10 @@ const Profile = () => {
                         </div>
                     </div>
                 </div>
+                ) : null}
             </div>
         </div>
     );
 };
+
 export default Profile;
