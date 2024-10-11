@@ -11,23 +11,26 @@ const getAuthToken = () => {
 };
 
 const getCareers = async () => {
-    try {
+    try { 
         const response = await axios.get(CAREER_API_URL, {
             headers: {
-                'Authorization': `Bearer ${getAuthToken()}`
-            }
+                Authorization: `Bearer ${getAuthToken()}`,
+            },
         });
-        return response.data.map((careerData) => new Career(
-            careerData.id,
-            careerData.name,
-            new Faculty(careerData.faculty.id, careerData.faculty.name)
-        ));
+        return response.data.map(
+            (careerData) =>
+                new Career(
+                    careerData.id,
+                    careerData.name,
+                    new Faculty(careerData.faculty.id, careerData.faculty.nombreFacultad) // Cambiado a nombreFacultad
+                )
+        );
     } catch (error) {
-        console.error("Error fetching careers", error);
+        console.error('Error fetching careers', error);
         throw error;
     }
 };
 
 export default {
-    getCareers
+    getCareers,
 };
