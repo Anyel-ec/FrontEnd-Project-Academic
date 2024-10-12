@@ -77,6 +77,7 @@ const TitleReservation = () => {
             setApiError('Error al cargar las carreras.');
         }
     }, []);
+    
 
     // Filtrar estudiantes según las reservaciones actuales
     const filterStudents = (students) => {
@@ -145,7 +146,7 @@ const TitleReservation = () => {
             }
         }
     };
-    
+
     const fetchResearchLines = useCallback(async (careerId) => {
         try {
             const researchLines = await lineResearchService.getResearchLinesByCareer(careerId); // Cambiar a lineResearchService
@@ -160,15 +161,14 @@ const TitleReservation = () => {
             setApiError('Error al cargar las líneas de investigación.');
         }
     }, []);
-
-    // Guardar cambios en reservación
     const handleSaveReservation = async (reservationId, values) => {
         try {
-            // Crear el objeto de datos para la reservación, incluyendo la línea de investigación seleccionada
+            // Crear el objeto de datos para la reservación
             const titleReservationData = {
                 meetsRequirements: values?.meetRequirements === 'yes',
                 observations: values.observation || '',
-                lineOfResearch: values.lineOfResearch ? { id: values.lineOfResearch.value } : null, // Asegurar que enviamos la línea de investigación si existe
+                title: values.title || '', // Asegúrate de que el título se está enviando
+                lineOfResearch: values.lineOfResearch ? { id: values.lineOfResearch.value } : null,
             };
     
             const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
@@ -181,10 +181,13 @@ const TitleReservation = () => {
                 closeModal(); // Cerrar el modal
             }
         } catch (error) {
-            Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
+            if (error.response && error.response.status === 409) {
+                Swal.fire('Error', 'El título ya existe. Por favor elige otro.', 'error');
+            } else {
+                Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
+            }
         }
     };
-    
     
 
     // Editar reservación

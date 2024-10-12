@@ -48,7 +48,6 @@ const addTitleReservation = async (titlereservation) => {
     }
 };
 
-// Editar una reserva de título existente
 const editTitleReservation = async (id, titlereservation) => {
     try {
         const response = await axios.put(`${TITLERESERVATION_API_URL}${id}`, titlereservation, {
@@ -59,7 +58,7 @@ const editTitleReservation = async (id, titlereservation) => {
         return response.data;
     } catch (error) {
         if (error.response && error.response.status === 409) {
-            throw new Error('Duplicidad de datos: ' + error.response.data.message);
+            throw new Error('El título del proyecto ya está en uso, por favor elige otro.'); // Error de título duplicado
         }
         throw error;
     }
@@ -78,11 +77,28 @@ const deleteTitleReservation = async (id) => {
         console.error('Error deleting titlereservation', error);
         throw error;
     }
-};  
+};
+const checkTitleExists = async (title) => {
+    try {
+        const response = await axios.get(`${TITLERESERVATION_API_URL}check-title`, {
+            params: { title },
+            headers: {
+                Authorization: `Bearer ${getAuthToken()}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        if (error.response && error.response.status === 409) {
+            throw new Error('El título ya existe');
+        }
+        throw new Error('Error al verificar el título');
+    }
+};
 
 export default {
     getTitleReservations,
     addTitleReservation,
     editTitleReservation,
     deleteTitleReservation,
+    checkTitleExists,
 };

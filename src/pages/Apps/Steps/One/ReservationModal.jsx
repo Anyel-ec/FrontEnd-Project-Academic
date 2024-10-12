@@ -3,26 +3,56 @@ import { Fragment } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import IconX from '../../../../components/Icon/IconX';
+import titleReservationsService from '../../../../api/titleReservationsService';
 import { useSelector } from 'react-redux';
 import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
+import Swal from 'sweetalert2';
 
 const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions }) => {
     const validationSchema = Yup.object({
         studentCode: Yup.string().max(6, 'Máximo 6 caracteres').required('Requerido'),
-        studentTwoCode: Yup.string().max(6, 'Máximo 6 caracteres'),
+        title: Yup.string()
+            .required('El título es obligatorio')
+            .test('is-unique', 'El título ya existe. Por favor elige otro.', async function (value) {
+                try {
+                    // Llamar a una función para verificar si el título ya existe
+                    const isDuplicate = await titleReservationsService.checkTitleExists(value);
+    
+                    if (isDuplicate) {
+                        // Mostrar SweetAlert si el título ya existe
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'El título ya existe. Por favor elige otro.',
+                            icon: 'error',
+                            confirmButtonText: 'Ok',
+                        });
+    
+                        // Retornar false para que Yup lo considere inválido
+                        return false;
+                    }
+    
+                    // Retornar true si no es duplicado
+                    return true;
+                } catch (error) {
+                    // Retornar false si hubo un error
+                    return false;
+                }
+            }),
         meetRequirements: Yup.string().required('Selecciona una opción'),
         observation: Yup.string(),
     });
+    
 
-    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark'); // Obtener el tema desde Redux
-    const styles = HandleMode(isDarkMode); // Aplicar los estilos según el modo
+    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
+    const styles = HandleMode(isDarkMode);
 
     const initialValues = {
         studentCode: reservation?.student?.studentCode || 'N/A',
         studentTwoCode: reservation?.studentTwo?.studentCode || '',
         meetRequirements: reservation?.meetsRequirements ? 'yes' : 'no',
         observation: reservation?.observations || '',
+        title: reservation?.title || '', // Inicializa el título si existe
         lineOfResearch: lineOptions.find((option) => option.value === reservation?.lineOfResearch?.id) || null,
     };
 
@@ -43,7 +73,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                     validationSchema={validationSchema}
                                     onSubmit={(values) => {
                                         if (reservation && reservation.id) {
-                                            onSave(reservation.id, values); // Llamar onSave con los datos
+                                            onSave(reservation.id, values); // Enviar los valores al guardar
                                         } else {
                                             console.error('Error: No se ha definido un ID válido para la reservación.');
                                         }
@@ -73,6 +103,14 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                 </div>
                                             )}
 
+                                            {/* Campo para el título */}
+                                            <div className={submitCount && errors.title ? 'has-error' : ''}>
+                                                <label htmlFor="title">Título del Proyecto</label>
+                                                <Field name="title" type="text" id="title" placeholder="Ingrese el título del proyecto" className="form-input" />
+                                                <ErrorMessage name="title" component="div" className="text-danger mt-1" />
+                                            </div>
+
+                                            {/* Select para la línea de investigación */}
                                             <div className="">
                                                 <label htmlFor="lineOfResearch">Línea de Investigación</label>
                                                 <Select
