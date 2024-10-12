@@ -7,68 +7,108 @@ const getAuthToken = () => {
 };
 
 const TitleUpload = ({ reservaId }) => {
-    const [base64String, setBase64String] = useState(''); // Almacena el PDF en Base64
-    const [pdfDocumentId, setPdfDocumentId] = useState(null); // Almacena el id del documento PDF desde la base de datos
+    const [pdfExists, setPdfExists] = useState(null); // true si existe, false si no, null mientras carga
 
-    // Verifica que reservaId no sea undefined antes de usarlo
     useEffect(() => {
         if (!reservaId) {
-            console.error('El ID de la reserva es indefinida.');
+            console.error('El ID de la reserva es indefinido.');
             return;
         }
 
-        // Llamada al backend para obtener el PDF asociado si existe
+        // Hacer una petición para verificar si el PDF existe sin cargarlo completamente
+        fetch(`http://localhost:8080/api/v1/pdfDocument/OneStep/${reservaId}/exists`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${getAuthToken()}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status === 404) {
+                    setPdfExists(false);
+                } else {
+                    throw new Error('Error al verificar la existencia del PDF.');
+                }
+            })
+            .then((data) => {
+                if (data && data.exists) {
+                    setPdfExists(true);
+                } else {
+                    setPdfExists(false);
+                }
+            })
+            .catch((error) => {
+                console.error('Error al verificar la existencia del PDF:', error);
+                setPdfExists(false);
+            });
+    }, [reservaId]);
+
+    const viewPDF = () => {
+        if (!reservaId) {
+            Swal.fire({
+                icon: 'error',
+                title: 'ID de reserva inválido',
+                text: 'No se ha proporcionado un ID de reserva válido.',
+            });
+            return;
+        }
+
+        // Llamada al backend para obtener el PDF asociado cuando se presiona el botón
         fetch(`http://localhost:8080/api/v1/pdfDocument/OneStep/${reservaId}/view`, {
             method: 'GET',
             headers: {
-                Authorization: `Bearer ${getAuthToken()}`, // Asegúrate de enviar el token correcto
+                Authorization: `Bearer ${getAuthToken()}`,
                 'Content-Type': 'application/json',
             },
         })
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error('Error al cargar la reservación.');
+                    throw new Error('Error al cargar el PDF.');
                 }
                 return response.json();
             })
             .then((data) => {
-                if (data.pdfDocumentId) {
-                    setPdfDocumentId(data.pdfDocumentId); // Actualiza el ID del PDF si existe
+                if (data.pdfDocumentId && data.pdfData) {
                     const base64PDF = `data:application/pdf;base64,${data.pdfData}`;
-                    setBase64String(base64PDF); // Almacena el PDF en formato Base64
+
+                    // Mostrar la vista previa del PDF
+                    Swal.fire({
+                        title: 'Vista Previa del PDF',
+                        html: `<iframe src="${base64PDF}" width="100%" height="500px" style="border:none;"></iframe>`,
+                        confirmButtonText: 'Cerrar',
+                    });
                 } else {
-                    setPdfDocumentId(null); // Si no hay PDF, lo marcamos como null
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'No hay PDF disponible',
+                        text: 'No se ha encontrado ningún PDF para esta reserva.',
+                    });
                 }
             })
             .catch((error) => {
-                console.error('Error al cargar la reservación:', error);
+                console.error('Error al cargar el PDF:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al cargar el PDF',
+                    text: 'Hubo un problema al cargar el PDF.',
+                });
             });
-    }, [reservaId]);
-    const viewPDF = () => {
-        if (pdfDocumentId) {
-            // Si ya hay un PDF cargado, mostramos la vista previa
-            Swal.fire({
-                title: 'Vista Previa del PDF',
-                // Usa un iframe en lugar de embed para mejor compatibilidad
-                html: `<iframe src="${base64String}" width="100%" height="500px" style="border:none;"></iframe>`,
-                confirmButtonText: 'Cerrar',
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'No hay PDF disponible',
-                text: 'No se ha encontrado ningún PDF para esta reserva.',
-            });
-        }
     };
 
     return (
-        <div className="flex gap-3 ">
-            <button onClick={viewPDF} className="btn btn-sm btn-outline-secondary m-0 w-[5rem]">
-                {pdfDocumentId ? 'Ver PDF' : 'No disponible'}
+        <div className="flex gap-3">
+            <button
+                onClick={viewPDF}
+                className="btn btn-sm btn-outline-secondary m-0 w-[5rem]"
+                disabled={!pdfExists}
+            >
+                {pdfExists === null ? 'Cargando...' : pdfExists ? 'Ver PDF' : 'No disponible'}
             </button>
         </div>
     );
 };
 
 export default TitleUpload;
+    

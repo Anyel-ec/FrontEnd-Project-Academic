@@ -5,18 +5,19 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
 import careerService from '../../../../api/careerService';
+import lineResearchService from '../../../../api/LineResearchService';
 import studentService from '../../../../api/studentService';
 import titleReservationsService from '../../../../api/titleReservationsService';
 import SelectCareer from './SelectCareer';
 import MultiSelectStudent from './MultiSelectStudent'; // Componente MultiSelect
 import ReservationTable from './ReservationTable';
 import ReservationModal from './ReservationModal';
-// import { HandleMode } from '../../styles/selectStyles';
 
 const TitleReservation = () => {
     const dispatch = useDispatch();
     const [titleReservations, setTitleReservations] = useState([]);
     const [careerOptions, setCareerOptions] = useState([]);
+    const [lineOptions, setLineOptions] = useState([]); // Opciones de líneas de investigación (agregar si es necesario)
     const [studentOptions, setStudentOptions] = useState([]);
     const [filteredStudentOptions, setFilteredStudentOptions] = useState([]);
     const [apiError, setApiError] = useState(null);
@@ -30,6 +31,7 @@ const TitleReservation = () => {
         fetchTitleReservations();
     }, [dispatch]);
 
+    // Fetch de estudiantes
     const fetchStudents = useCallback(async () => {
         try {
             const students = await studentService.getStudents();
@@ -40,7 +42,7 @@ const TitleReservation = () => {
                 data: student,
             }));
             setStudentOptions(options);
-            filterStudents(options);
+            filterStudents(options); // Filtrar según las reservaciones actuales
             setApiError(null);
         } catch (error) {
             console.error('Error al obtener los estudiantes:', error);
@@ -48,6 +50,7 @@ const TitleReservation = () => {
         }
     }, [titleReservations]);
 
+    // Fetch de reservaciones de títulos
     const fetchTitleReservations = useCallback(async () => {
         try {
             const reservations = await titleReservationsService.getTitleReservations();
@@ -59,6 +62,7 @@ const TitleReservation = () => {
         }
     }, [studentOptions]);
 
+    // Fetch de carreras
     const fetchCareers = useCallback(async () => {
         try {
             const careers = await careerService.getCareers();
@@ -74,24 +78,31 @@ const TitleReservation = () => {
         }
     }, []);
 
+    // Filtrar estudiantes según las reservaciones actuales
     const filterStudents = (students) => {
         const reservedStudentIds = titleReservations.map((reservation) => reservation.student.id);
         const filtered = students.filter((student) => !reservedStudentIds.includes(parseInt(student.value)));
         setFilteredStudentOptions(filtered);
     };
 
+    // Filtrar estudiantes según la carrera seleccionada
     const filterStudentsByCareer = (careerId) => {
         if (!careerId) {
             setFilteredStudentOptions([]);
+            setLineOptions([]); // Limpiar las líneas de investigación
         } else {
             const reservedStudentIds = new Set(
                 titleReservations.flatMap((reservation) => [reservation.student.id.toString(), reservation.studentTwo ? reservation.studentTwo.id.toString() : null].filter(Boolean))
             );
             const filteredByCareer = studentOptions.filter((student) => student.careerId === careerId && !reservedStudentIds.has(student.value));
             setFilteredStudentOptions(filteredByCareer);
+
+            // Obtener las líneas de investigación de la carrera seleccionada
+            fetchResearchLines(careerId);
         }
     };
 
+    // Añadir nueva reservación
     const addTitleReservations = async (selectedStudents) => {
         try {
             const titleReservationData = {
@@ -109,6 +120,8 @@ const TitleReservation = () => {
             Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
         }
     };
+
+    // Eliminar reservación
     const deleteTitleReservation = async (reservationId, studentId, resetForm) => {
         const result = await Swal.fire({
             title: '¿Estás seguro?',
@@ -125,107 +138,66 @@ const TitleReservation = () => {
             try {
                 await titleReservationsService.deleteTitleReservation(reservationId);
                 await fetchTitleReservations();
-                filterStudents(studentOptions);
+                filterStudents(studentOptions); // Actualizar lista de estudiantes
                 Swal.fire('Eliminado!', 'La reservación ha sido eliminada exitosamente.', 'success');
             } catch (error) {
                 Swal.fire('Error', 'Error al eliminar la reservación.', 'error');
             }
         }
     };
+    
+    const fetchResearchLines = useCallback(async (careerId) => {
+        try {
+            const researchLines = await lineResearchService.getResearchLinesByCareer(careerId); // Cambiar a lineResearchService
+            const options = researchLines.map((line) => ({
+                value: line.id,
+                label: line.nombre_linea_investigacion,
+            }));
+            setLineOptions(options);
+            setApiError(null);
+        } catch (error) {
+            console.error('Error en la llamada a la API:', error);
+            setApiError('Error al cargar las líneas de investigación.');
+        }
+    }, []);
+
+    // Guardar cambios en reservación
     const handleSaveReservation = async (reservationId, values) => {
-        // Verificar si meetsRequirements es true y observations está vacío
-        if (values?.meetRequirements === 'yes') {
-            Swal.fire({
-                html: `
-               
-                    <div style="font-size: 5rem;margin: 0; color: orange;">&#9888;</div> <!-- Ícono de advertencia grande -->
-                    <span style="color: #000; margin-bottom: 0.25rem;font-weight:bold;font-size:1.5rem;background-color: #  ;padding: 0    2px;border-radius:5px;">Atención</span>
-                    <p font-size: 1rem; text-align: center;">
-                        Esta acción es irreversible, no puede ser modificada despúes de enviarse.
-                    </p>
-                
-            `,
-                iconColor: '#f39c12', // Color del ícono
-                timer: 5000, // 5 segundos de espera
-                timerProgressBar: true,
-                showConfirmButton: false,
-                willClose: async () => {
-                    const result = await Swal.fire({
-                        title: 'Confirmar Reservación',
-                        text: '¿Quieres aceptar la reservación del título?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Aceptar',
-                        cancelButtonText: 'Cancelar',
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                    });
-
-                    if (result.isConfirmed) {
-                        try {
-                            // Realiza el guardado de la reservación solo si el usuario confirma
-                            const titleReservationData = {
-                                meetsRequirements: true,
-                                observations: '', // Observaciones vacías
-                            };
-
-                            const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
-
-                            if (!response) {
-                                Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
-                            } else {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Reservación Aceptada',
-                                    text: 'La reservación ha sido aceptada con éxito. Esta acción es irreversible.',
-                                    timer: 3000,
-                                    showConfirmButton: false,
-                                });
-                                await fetchTitleReservations(); // Actualizar lista de reservaciones
-                                closeModal(); // Cerrar el modal automáticamente después de la actualización
-                            }
-                        } catch (error) {
-                            Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
-                        }
-                    } else if (result.isDismissed) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Reservación Cancelada',
-                            text: 'La reservación ha sido cancelada.',
-                            timer: 3000,
-                            showConfirmButton: false,
-                        });
-                    }
-                },
-            });
-        } else {
-            // Continúa con el guardado normal si no cumple con la condición
-            try {
-                const titleReservationData = {
-                    meetsRequirements: values?.meetRequirements === 'yes',
-                    observations: values.observation || '', // Incluye observaciones si las hay
-                };
-
-                const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
-
-                if (!response) {
-                    Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
-                } else {
-                    Swal.fire('Éxito', 'Reservación actualizada correctamente', 'success');
-                    await fetchTitleReservations(); // Actualizar lista de reservaciones
-                    closeModal(); // Cerrar el modal automáticamente después de la actualización
-                }
-            } catch (error) {
-                Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
+        try {
+            // Crear el objeto de datos para la reservación, incluyendo la línea de investigación seleccionada
+            const titleReservationData = {
+                meetsRequirements: values?.meetRequirements === 'yes',
+                observations: values.observation || '',
+                lineOfResearch: values.lineOfResearch ? { id: values.lineOfResearch.value } : null, // Asegurar que enviamos la línea de investigación si existe
+            };
+    
+            const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
+    
+            if (!response) {
+                Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
+            } else {
+                Swal.fire('Éxito', 'Reservación actualizada correctamente', 'success');
+                await fetchTitleReservations(); // Actualizar lista de reservaciones
+                closeModal(); // Cerrar el modal
             }
+        } catch (error) {
+            Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
         }
     };
+    
+    
 
+    // Editar reservación
     const editReservation = (reservation) => {
-        console.log('Reservation seleccionada:', reservation); // Depura el objeto
+        // Obtener el careerId desde la reservación seleccionada
+        const careerId = reservation.student.career.id;
+
+        // Cargar las líneas de investigación para la carrera de la reservación seleccionada
+        fetchResearchLines(careerId);
         setEditingReservation(reservation); // Establece la reservación seleccionada
         setAddContactModal(true);
     };
+
     const closeModal = () => {
         setAddContactModal(false);
         setEditingReservation(null);
@@ -300,6 +272,7 @@ const TitleReservation = () => {
                 onClose={closeModal}
                 reservation={editingReservation} // Pasar la reservación seleccionada al modal
                 onSave={handleSaveReservation}
+                lineOptions={lineOptions} // Pasar las líneas de investigación filtradas al modal
             />
 
             <ReservationTable titleReservations={titleReservations} apiError={apiError} onEdit={editReservation} onDelete={deleteTitleReservation} />

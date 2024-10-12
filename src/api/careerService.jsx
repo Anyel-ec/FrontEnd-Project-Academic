@@ -22,7 +22,7 @@ const getCareers = async () => {
                 new Career(
                     careerData.id,
                     careerData.name,
-                    new Faculty(careerData.faculty.id, careerData.faculty.nombreFacultad) // Cambiado a nombreFacultad
+                    new Faculty(careerData.faculty.id, careerData.faculty.nameFaculty)
                 )
         );
     } catch (error) {

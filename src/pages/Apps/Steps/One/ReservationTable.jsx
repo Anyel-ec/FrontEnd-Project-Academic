@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importación es correcto
-
 const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [pdfDataMap, setPdfDataMap] = useState({}); // Mapea cada reserva a su PDF en base64
@@ -87,16 +86,18 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                                     <td className="flex gap-4 items-center justify-center">
                                         {/* Mostrar los botones de Editar y Eliminar solo si meetsRequirements es false */}
                                         {reservation.meetsRequirements ? (
-                                            <>
-                                            <button className="btn btn-sm btn-outline-primary cursor-not-allowed">
+                                            // Usar "disabled" en el botón cuando no se permite la descarga
+                                            <button className="btn btn-sm btn-outline-primary" >
                                                 Descargar Comprobante
                                             </button>
-                                        </>
                                         ) : (
                                             <>
+                                                {/* Botón de editar sin disabled */}
                                                 <button onClick={() => onEdit(reservation)} className="btn btn-sm btn-outline-primary">
                                                     Editar
                                                 </button>
+
+                                                {/* Botón de eliminar sin disabled */}
                                                 <button onClick={() => onDelete(reservation.id)} className="btn btn-sm btn-outline-danger">
                                                     Eliminar
                                                 </button>

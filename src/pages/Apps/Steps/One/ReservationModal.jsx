@@ -3,8 +3,11 @@ import { Fragment } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import IconX from '../../../../components/Icon/IconX';
+import { useSelector } from 'react-redux';
+import Select from 'react-select';
+import { HandleMode } from '../../styles/selectStyles';
 
-const ReservationModal = ({ isOpen, onClose, onSave, reservation, editingReservation,isDisabled }) => {
+const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions }) => {
     const validationSchema = Yup.object({
         studentCode: Yup.string().max(6, 'Máximo 6 caracteres').required('Requerido'),
         studentTwoCode: Yup.string().max(6, 'Máximo 6 caracteres'),
@@ -12,12 +15,15 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, editingReserva
         observation: Yup.string(),
     });
 
-    // Manejar correctamente los valores iniciales, considerando si studentTwo es null
+    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark'); // Obtener el tema desde Redux
+    const styles = HandleMode(isDarkMode); // Aplicar los estilos según el modo
+
     const initialValues = {
-        studentCode: reservation?.student?.studentCode || 'N/A', // Código del primer estudiante
-        studentTwoCode: reservation?.studentTwo?.studentCode || '', // Si no existe, devolver 'N/A'
-        meetRequirements: reservation?.meetsRequirements ? 'yes' : 'no', // Conversión de booleano a string
-        observation: reservation?.observations || '', // Observaciones
+        studentCode: reservation?.student?.studentCode || 'N/A',
+        studentTwoCode: reservation?.studentTwo?.studentCode || '',
+        meetRequirements: reservation?.meetsRequirements ? 'yes' : 'no',
+        observation: reservation?.observations || '',
+        lineOfResearch: lineOptions.find((option) => option.value === reservation?.lineOfResearch?.id) || null,
     };
 
     return (
@@ -37,13 +43,13 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, editingReserva
                                     validationSchema={validationSchema}
                                     onSubmit={(values) => {
                                         if (reservation && reservation.id) {
-                                            onSave(reservation.id, values); // Solo llamar si reservation tiene un id válido
+                                            onSave(reservation.id, values); // Llamar onSave con los datos
                                         } else {
                                             console.error('Error: No se ha definido un ID válido para la reservación.');
                                         }
                                     }}
                                 >
-                                    {({ errors, submitCount }) => (
+                                    {({ errors, submitCount, setFieldValue, values }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
@@ -66,6 +72,19 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, editingReserva
                                                     <ErrorMessage name="studentTwoCode" component="div" className="text-danger mt-1" />
                                                 </div>
                                             )}
+
+                                            <div className="">
+                                                <label htmlFor="lineOfResearch">Línea de Investigación</label>
+                                                <Select
+                                                    className=""
+                                                    styles={styles}
+                                                    options={lineOptions}
+                                                    value={values.lineOfResearch}
+                                                    onChange={(option) => setFieldValue('lineOfResearch', option)}
+                                                    placeholder="Seleccione una línea..."
+                                                />
+                                            </div>
+
                                             <div className={submitCount && errors.meetRequirements ? 'has-error' : ''}>
                                                 <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
