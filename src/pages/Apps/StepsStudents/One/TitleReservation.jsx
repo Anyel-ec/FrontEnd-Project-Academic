@@ -37,7 +37,7 @@ const TitleReservation = () => {
 
     // Actualiza el título de la página y carga las reservas cuando el usuario esté disponible
     useEffect(() => {
-        dispatch(setPageTitle('Reservación de Título'));
+        dispatch(setPageTitle('Constancia de Filtro'));
 
         if (user.username) {
             fetchTitleReservations();
@@ -61,7 +61,7 @@ const TitleReservation = () => {
 
     return (
         <div className="p-5">
-            <h1 className="text-2xl font-bold mb-5">Reservaciones de Títulos</h1>
+            <h1 className="text-2xl font-bold mb-5">Constancia de Filtro</h1>
             <ReservationTable titleReservations={titleReservations} user={user} apiError={apiError} />
         </div>
     );

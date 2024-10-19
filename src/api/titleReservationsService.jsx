@@ -23,7 +23,6 @@ const getTitleReservations = async () => {
     }
 };
 
-// Añadir una nueva reserva de título
 const addTitleReservation = async (titlereservation) => {
     try {
         const response = await axios.post(TITLERESERVATION_API_URL, titlereservation, {
@@ -40,8 +39,10 @@ const addTitleReservation = async (titlereservation) => {
     } catch (error) {
         console.error('Error en addTitleReservation:', error.response ? error.response.data : error.message);
 
+        // Ignorar el error 409 y continuar
         if (error.response && error.response.status === 409) {
-            throw new Error('Duplicidad de datos: ' + error.response.data.message);
+            console.warn('Conflicto detectado, pero continuando...');
+            return; // Evita lanzar el error
         }
 
         throw new Error('Error inesperado: ' + error.message);
@@ -57,12 +58,17 @@ const editTitleReservation = async (id, titlereservation) => {
         });
         return response.data;
     } catch (error) {
+        // Ignorar el error 409 y continuar
         if (error.response && error.response.status === 409) {
-            throw new Error('El título del proyecto ya está en uso, por favor elige otro.'); // Error de título duplicado
+            console.warn('Conflicto detectado en la edición, pero continuando...');
+            return;
         }
+
+        console.error('Error en editTitleReservation:', error);
         throw error;
     }
 };
+
 
 // Eliminar una reserva de título
 const deleteTitleReservation = async (id) => {
@@ -78,27 +84,10 @@ const deleteTitleReservation = async (id) => {
         throw error;
     }
 };
-const checkTitleExists = async (title) => {
-    try {
-        const response = await axios.get(`${TITLERESERVATION_API_URL}check-title`, {
-            params: { title },
-            headers: {
-                Authorization: `Bearer ${getAuthToken()}`,
-            },
-        });
-        return response.data;
-    } catch (error) {
-        if (error.response && error.response.status === 409) {
-            throw new Error('El título ya existe');
-        }
-        throw new Error('Error al verificar el título');
-    }
-};
 
 export default {
     getTitleReservations,
     addTitleReservation,
     editTitleReservation,
     deleteTitleReservation,
-    checkTitleExists,
 };

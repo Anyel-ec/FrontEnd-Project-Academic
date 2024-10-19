@@ -1,17 +1,14 @@
-import { useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
-import titleReservationsService from '../../../../api/titleReservationsService';
 import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
 
 const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions }) => {
-    const [modifiedTitle, setModifiedTitle] = useState(false); // Estado para controlar si el título fue modificado
 
     const validationSchema = Yup.object({
         studentCode: Yup.string().max(6, 'Máximo 6 caracteres').required('Requerido'),
@@ -34,26 +31,10 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
 
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
-            // Solo validar la duplicidad si el título fue modificado
-            if (modifiedTitle) {
-                const isDuplicate = await titleReservationsService.checkTitleExists(values.title);
-
-                if (isDuplicate) {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'El título ya existe. Por favor elige otro.',
-                        icon: 'error',
-                        confirmButtonText: 'Ok',
-                    });
-                    setSubmitting(false);
-                    return; // Salir de la función si el título es duplicado
-                }
-            }
-
-            // Guardar los cambios si no hay duplicados o si el título no fue modificado
+            // Guardar los cambios directamente sin validación de duplicados
             onSave(reservation.id, values); 
         } catch (error) {
-            Swal.fire('Error', 'Hubo un error al verificar el título: ' + error.message, 'error');
+            Swal.fire('Error', 'Hubo un error al guardar los datos: ' + error.message, 'error');
             setSubmitting(false);
         }
     };
@@ -111,14 +92,13 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                     // Monitorea si el usuario modifica el campo de título
                                                     onChange={(e) => {
                                                         setFieldValue('title', e.target.value);
-                                                        setModifiedTitle(true); // Cambiar la bandera si el título es modificado
                                                     }}
                                                 />
                                                 <ErrorMessage name="title" component="div" className="text-danger mt-1" />
                                             </div>
 
                                             {/* Select para la línea de investigación */}
-                                            <div className="">
+                                            <div className="col-span-2">
                                                 <label htmlFor="lineOfResearch">Línea de Investigación</label>
                                                 <Select
                                                     className=""

@@ -25,7 +25,7 @@ const TitleReservation = () => {
     const [addContactModal, setAddContactModal] = useState(false);
 
     useEffect(() => {
-        dispatch(setPageTitle('Reservación de Título'));
+        dispatch(setPageTitle('Constancia de Filtro'));
         fetchCareers();
         fetchStudents();
         fetchTitleReservations();
@@ -250,17 +250,13 @@ const TitleReservation = () => {
                     Swal.fire('Éxito', 'Reservación actualizada correctamente', 'success');
                     await fetchTitleReservations(); // Actualizar lista de reservaciones
                     closeModal();
-                    closeModal(); // Cerrar el modal
                 }
             } catch (error) {
-                if (error.response && error.response.status === 409) {
-                    Swal.fire('Error', 'El título ya existe. Por favor elige otro.', 'error');
-                } else {
-                    Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
-                }
+                Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
             }
         }
     };
+    
         
     
 
@@ -282,7 +278,7 @@ const TitleReservation = () => {
 
     return (
         <div className="p-5">
-            <h1 className="text-2xl font-bold mb-5">Reservaciones de Títulos</h1>
+            <h1 className="text-2xl font-bold mb-5">Constancia de Filtro</h1>
             <Formik
                 initialValues={{
                     career: editingReservation ? editingReservation.career : null,
