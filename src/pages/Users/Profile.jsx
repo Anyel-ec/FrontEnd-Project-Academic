@@ -40,10 +40,7 @@ const Profile = () => {
         }
         
     }, []);
-    
     console.log(user ? user.username : 'Usuario no disponible');
-
-
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -74,7 +71,7 @@ const Profile = () => {
             const reservation = titleReservations.find((res) => res.id === i);
             steps.push({
                 stepNumber: i,
-                progress: reservation ? (reservation.meetsRequirements ? 100 : 0) : 0,
+                progress:  reservation?.meetsRequirements ? 100 : 0,
                 lastUpdated: reservation ? reservation.updatedAt : null,
             });
         }

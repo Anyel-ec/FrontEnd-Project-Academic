@@ -1,48 +1,24 @@
+import { useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import IconX from '../../../../components/Icon/IconX';
+import Swal from 'sweetalert2';
 import titleReservationsService from '../../../../api/titleReservationsService';
-import { useSelector } from 'react-redux';
 import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
-import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
+import IconX from '../../../../components/Icon/IconX';
 
 const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions }) => {
+    const [modifiedTitle, setModifiedTitle] = useState(false); // Estado para controlar si el título fue modificado
+
     const validationSchema = Yup.object({
         studentCode: Yup.string().max(6, 'Máximo 6 caracteres').required('Requerido'),
-        title: Yup.string()
-            .required('El título es obligatorio')
-            .test('is-unique', 'El título ya existe. Por favor elige otro.', async function (value) {
-                try {
-                    // Llamar a una función para verificar si el título ya existe
-                    const isDuplicate = await titleReservationsService.checkTitleExists(value);
-    
-                    if (isDuplicate) {
-                        // Mostrar SweetAlert si el título ya existe
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'El título ya existe. Por favor elige otro.',
-                            icon: 'error',
-                            confirmButtonText: 'Ok',
-                        });
-    
-                        // Retornar false para que Yup lo considere inválido
-                        return false;
-                    }
-    
-                    // Retornar true si no es duplicado
-                    return true;
-                } catch (error) {
-                    // Retornar false si hubo un error
-                    return false;
-                }
-            }),
+        title: Yup.string().required('El título es obligatorio'),
         meetRequirements: Yup.string().required('Selecciona una opción'),
         observation: Yup.string(),
     });
-    
 
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
@@ -54,6 +30,32 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
         observation: reservation?.observations || '',
         title: reservation?.title || '', // Inicializa el título si existe
         lineOfResearch: lineOptions.find((option) => option.value === reservation?.lineOfResearch?.id) || null,
+    };
+
+    const handleSubmit = async (values, { setSubmitting }) => {
+        try {
+            // Solo validar la duplicidad si el título fue modificado
+            if (modifiedTitle) {
+                const isDuplicate = await titleReservationsService.checkTitleExists(values.title);
+
+                if (isDuplicate) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'El título ya existe. Por favor elige otro.',
+                        icon: 'error',
+                        confirmButtonText: 'Ok',
+                    });
+                    setSubmitting(false);
+                    return; // Salir de la función si el título es duplicado
+                }
+            }
+
+            // Guardar los cambios si no hay duplicados o si el título no fue modificado
+            onSave(reservation.id, values); 
+        } catch (error) {
+            Swal.fire('Error', 'Hubo un error al verificar el título: ' + error.message, 'error');
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -71,13 +73,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                 <Formik
                                     initialValues={initialValues}
                                     validationSchema={validationSchema}
-                                    onSubmit={(values) => {
-                                        if (reservation && reservation.id) {
-                                            onSave(reservation.id, values); // Enviar los valores al guardar
-                                        } else {
-                                            console.error('Error: No se ha definido un ID válido para la reservación.');
-                                        }
-                                    }}
+                                    onSubmit={handleSubmit}  // Manejar la lógica de envío
                                 >
                                     {({ errors, submitCount, setFieldValue, values }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -106,7 +102,18 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                             {/* Campo para el título */}
                                             <div className={submitCount && errors.title ? 'has-error' : ''}>
                                                 <label htmlFor="title">Título del Proyecto</label>
-                                                <Field name="title" type="text" id="title" placeholder="Ingrese el título del proyecto" className="form-input" />
+                                                <Field
+                                                    name="title"
+                                                    type="text"
+                                                    id="title"
+                                                    placeholder="Ingrese el título del proyecto"
+                                                    className="form-input"
+                                                    // Monitorea si el usuario modifica el campo de título
+                                                    onChange={(e) => {
+                                                        setFieldValue('title', e.target.value);
+                                                        setModifiedTitle(true); // Cambiar la bandera si el título es modificado
+                                                    }}
+                                                />
                                                 <ErrorMessage name="title" component="div" className="text-danger mt-1" />
                                             </div>
 

@@ -157,37 +157,111 @@ const TitleReservation = () => {
             setLineOptions(options);
             setApiError(null);
         } catch (error) {
-            console.error('Error en la llamada a la API:', error);
-            setApiError('Error al cargar las líneas de investigación.');
+            if (error.message === 'Network Error') {
+                console.error('Error de red: No se pudo conectar con el servidor.');
+                setApiError('No se pudo conectar con el servidor. Verifica tu conexión.');
+            } else {
+                console.error('Error en la llamada a la API:', error);
+                setApiError('Error al cargar las líneas de investigación.');
+            }
         }
+        
     }, []);
     const handleSaveReservation = async (reservationId, values) => {
-        try {
-            // Crear el objeto de datos para la reservación
-            const titleReservationData = {
-                meetsRequirements: values?.meetRequirements === 'yes',
-                observations: values.observation || '',
-                title: values.title || '', // Asegúrate de que el título se está enviando
-                lineOfResearch: values.lineOfResearch ? { id: values.lineOfResearch.value } : null,
-            };
+        if (values?.meetRequirements === 'yes') {
+            Swal.fire({
+                html: `
+                    <div style="font-size: 5rem;margin: 0; color: orange;">&#9888;</div>
+                    <span style="color: #000; margin-bottom: 0.25rem;font-weight:bold;font-size:1.5rem;">Atención</span>
+                    <p font-size="1rem" text-align="center">
+                        Esta acción es irreversible, no puede ser modificada después de enviarse.
+                    </p>
+                `,
+                iconColor: '#f39c12',
+                timer: 5000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                willClose: async () => {
+                    const result = await Swal.fire({
+                        title: 'Confirmar Reservación',
+                        text: '¿Quieres aceptar la reservación del título?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Aceptar',
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                    });
     
-            const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
+                    if (result.isConfirmed) {
+                        try {
+                            // Crear el objeto de datos para la reservación
+                            const titleReservationData = {
+                                meetsRequirements: true,
+                                observations: values.observation || '',
+                                title: values.title || '', // Asegúrate de que el título se está enviando
+                                lineOfResearch: values.lineOfResearch ? { id: values.lineOfResearch.value } : null,
+                            };
     
-            if (!response) {
-                Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
-            } else {
-                Swal.fire('Éxito', 'Reservación actualizada correctamente', 'success');
-                await fetchTitleReservations(); // Actualizar lista de reservaciones
-                closeModal(); // Cerrar el modal
-            }
-        } catch (error) {
-            if (error.response && error.response.status === 409) {
-                Swal.fire('Error', 'El título ya existe. Por favor elige otro.', 'error');
-            } else {
-                Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
+                            const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
+    
+                            if (!response) {
+                                Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
+                            } else {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Reservación Aceptada',
+                                    text: 'La reservación ha sido aceptada con éxito. Esta acción es irreversible.',
+                                    timer: 3000,
+                                    showConfirmButton: false,
+                                });
+                                await fetchTitleReservations(); // Actualizar lista de reservaciones
+                                closeModal(); // Cerrar el modal automáticamente después de la actualización
+                            }
+                        } catch (error) {
+                            Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
+                        }
+                    } else if (result.isDismissed) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Reservación Cancelada',
+                            text: 'La reservación ha sido cancelada.',
+                            timer: 3000,
+                            showConfirmButton: false,
+                        });
+                    }
+                },
+            });
+        } else {
+            // Si no cumple con los requisitos, solo guarda la reservación sin mostrar la alerta
+            try {
+                const titleReservationData = {
+                    meetsRequirements: values?.meetRequirements === 'yes',
+                    observations: values.observation || '',
+                    title: values.title || '', 
+                    lineOfResearch: values.lineOfResearch ? { id: values.lineOfResearch.value } : null,
+                };
+    
+                const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
+    
+                if (!response) {
+                    Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
+                } else {
+                    Swal.fire('Éxito', 'Reservación actualizada correctamente', 'success');
+                    await fetchTitleReservations(); // Actualizar lista de reservaciones
+                    closeModal();
+                    closeModal(); // Cerrar el modal
+                }
+            } catch (error) {
+                if (error.response && error.response.status === 409) {
+                    Swal.fire('Error', 'El título ya existe. Por favor elige otro.', 'error');
+                } else {
+                    Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
+                }
             }
         }
     };
+        
     
 
     // Editar reservación
