@@ -22,8 +22,24 @@ const Profile = () => {
 
     // Aquí defines el número total de pasos.
     const totalSteps = 5; // Cambia según el número de pasos que necesites.
-    
+
     const isStudent = user.rol && user.rol.id === 2;
+
+    // Define fetchTitleReservations antes de que lo llames en el useEffect
+    const fetchTitleReservations = useCallback(async () => {
+        try {
+            const reservations = await titleReservationsService.getTitleReservations();
+            console.log('Reservaciones obtenidas:', reservations); // Verificar la respuesta
+            const filteredReservations = reservations.filter(
+                (reservation) =>
+                    (reservation.student && reservation.student.studentCode === user.username) ||
+                    (reservation.studentTwo && reservation.studentTwo.studentCode === user.username)
+            );
+            setTitleReservations(filteredReservations);
+        } catch (error) {
+            console.error('Error al obtener las reservaciones de títulos:', error);
+        }
+    }, [user.username]);
 
     useEffect(() => {
         dispatch(setPageTitle('Perfil'));
@@ -38,46 +54,41 @@ const Profile = () => {
                 confirmButtonText: 'Aceptar',
             });
         }
-        
-    }, []);
-    console.log(user ? user.username : 'Usuario no disponible');
+    }, [dispatch]);
+
+    useEffect(() => {
+        console.log('Usuario logueado:', user.username);
+        if (user.username) {
+            fetchTitleReservations(); // Aquí llamas a la función después de definirla
+        }
+    }, [user.username, fetchTitleReservations]);
+
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
         return new Date(dateString).toLocaleString('es-ES', options);
     };
 
-    const fetchTitleReservations = useCallback(async () => {
-        try {
-            const reservations = await titleReservationsService.getTitleReservations();
-            const filteredReservations = reservations.filter(
-                (reservation) => reservation.student.studentCode === user.username || (reservation.studentTwo && reservation.studentTwo.studentCode === user.username)
-            );
-            setTitleReservations(filteredReservations);
-        } catch (error) {
-            console.error('Error al obtener las reservaciones de títulos:', error);
-        }
-    }, [user.username]);
-
-    useEffect(() => {
-        if (user.username) {
-            fetchTitleReservations();
-        }
-    }, [user.username, fetchTitleReservations]);
-
     const getFullStepList = () => {
         const steps = [];
+        
         for (let i = 1; i <= totalSteps; i++) {
-            const reservation = titleReservations.find((res) => res.id === i);
+            // Recorre titleReservations directamente, asumiendo que cada reserva representa un paso
+            const reservation = titleReservations[i - 1]; // Acceder secuencialmente
+            console.log(titleReservations); // Verificar qué hay en titleReservations
+    
             steps.push({
                 stepNumber: i,
-                progress:  reservation?.meetsRequirements ? 100 : 0,
+                progress: reservation 
+                    ? (reservation.meetsRequirements ? 100 : 50) 
+                    : 0,
                 lastUpdated: reservation ? reservation.updatedAt : null,
             });
         }
+    
         return steps;
     };
-    // Cambiamos la lógica para verificar si el usuario tiene rol de estudiante basado en id_rol
+    
     return (
         <div className="pt-5">
             <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-5">
@@ -107,7 +118,6 @@ const Profile = () => {
                     </div>
                 </div>
                 {isStudent && (
-                    
                     <div className="panel lg:col-span-2 xl:col-span-3">
                         <div className="mb-5">
                             <h5 className="font-semibold text-lg dark:text-white-light">Tareas</h5>
