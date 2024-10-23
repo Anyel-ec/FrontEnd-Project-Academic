@@ -1,49 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import AppEnvironments from '../../../../config/AppEnvironments';
 
 // Función para obtener el token de autenticación del localStorage
 const getAuthToken = () => {
     return localStorage.getItem('token');
 };
+const PDFONE_API_URL = `${AppEnvironments.baseUrl}api/v1/pdfDocument/OneStep/`;
 
 const TitleUpload = ({ reservaId }) => {
-    const [pdfExists, setPdfExists] = useState(null); // true si existe, false si no, null mientras carga
+    const [pdfExists, setPdfExists] = useState(null);
 
     useEffect(() => {
-        if (!reservaId) {
-            console.error('El ID de la reserva es indefinido.');
-            return;
-        }
-
-        // Hacer una petición para verificar si el PDF existe sin cargarlo completamente
-        fetch(`http://localhost:8080/api/v1/pdfDocument/OneStep/${reservaId}/exists`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${getAuthToken()}`,
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => {
+        const checkPDFExists = async () => {
+            if (!reservaId) {
+                console.error('El ID de la reserva es indefinido.');
+                return;
+            }
+            try {
+                const response = await fetch(`${PDFONE_API_URL}${reservaId}/exists`, {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${getAuthToken()}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
                 if (response.ok) {
-                    return response.json();
+                    const data = await response.json();
+                    setPdfExists(data.exists);
                 } else if (response.status === 404) {
                     setPdfExists(false);
                 } else {
                     throw new Error('Error al verificar la existencia del PDF.');
                 }
-            })
-            .then((data) => {
-                if (data && data.exists) {
-                    setPdfExists(true);
-                } else {
-                    setPdfExists(false);
-                }
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error('Error al verificar la existencia del PDF:', error);
                 setPdfExists(false);
-            });
+            }
+        };
+
+        checkPDFExists();
     }, [reservaId]);
+
 
     const viewPDF = () => {
         if (!reservaId) {
@@ -56,7 +54,7 @@ const TitleUpload = ({ reservaId }) => {
         }
 
         // Llamada al backend para obtener el PDF asociado cuando se presiona el botón
-        fetch(`http://localhost:8080/api/v1/pdfDocument/OneStep/${reservaId}/view`, {
+        fetch(`${PDFONE_API_URL}${reservaId}/view`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${getAuthToken()}`,
@@ -102,13 +100,12 @@ const TitleUpload = ({ reservaId }) => {
             <button
                 onClick={viewPDF}
                 className="btn btn-sm btn-outline-secondary m-0 w-[5rem]"
-                disabled={!pdfExists}
+                disabled={pdfExists === false} // El botón se deshabilita cuando no hay PDF disponible
             >
-                {pdfExists === null ? 'Cargando...' : pdfExists ? 'Ver PDF' : 'No disponible'}
+               {pdfExists === null ? 'Cargando...' : (pdfExists ? 'Ver PDF' : 'No disponible')}
             </button>
         </div>
     );
 };
 
 export default TitleUpload;
-    

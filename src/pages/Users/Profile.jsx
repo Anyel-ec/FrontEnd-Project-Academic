@@ -73,7 +73,6 @@ const Profile = () => {
         const steps = [];
         
         for (let i = 1; i <= totalSteps; i++) {
-            // Recorre titleReservations directamente, asumiendo que cada reserva representa un paso
             const reservation = titleReservations[i - 1]; // Acceder secuencialmente
             console.log(titleReservations); // Verificar qué hay en titleReservations
     

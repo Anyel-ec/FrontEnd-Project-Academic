@@ -257,9 +257,6 @@ const TitleReservation = () => {
         }
     };
     
-        
-    
-
     // Editar reservación
     const editReservation = (reservation) => {
         // Obtener el careerId desde la reservación seleccionada
