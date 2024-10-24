@@ -9,7 +9,7 @@ import { ProtectedRoute, StudentRoute } from '../security/ProtectedRoute';
 import AuthRoute from '../security/AuthRoute ';
 import Swal from 'sweetalert2';
 const Index = lazy(() => import('../pages/Index'));
-const Analytics = lazy(() => import('../pages/Analytics'));
+const Progress = lazy(() => import('../pages/Progress'));
 const Finance = lazy(() => import('../pages/Finance'));
 const Crypto = lazy(() => import('../pages/Crypto'));
 const Todolist = lazy(() => import('../pages/Apps/Todolist'));
@@ -182,8 +182,8 @@ const routes = [
 
     ///---FIN----------------------------------------------------------------/////
     {
-        path: '/analytics',
-        element: <Analytics />,
+        path: '/progress',
+        element: <Progress />,
     },
     // finance page
     {
