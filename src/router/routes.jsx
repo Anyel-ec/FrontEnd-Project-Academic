@@ -7,7 +7,6 @@ import ThesisAdvisory from '../pages/Apps/ThesisAdvisory';
 import { ProtectedRoute, StudentRoute } from '../security/ProtectedRoute';
 
 import AuthRoute from '../security/AuthRoute ';
-import Swal from 'sweetalert2';
 const Index = lazy(() => import('../pages/Index'));
 const Progress = lazy(() => import('../pages/Progress'));
 const Finance = lazy(() => import('../pages/Finance'));

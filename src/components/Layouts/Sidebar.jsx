@@ -108,38 +108,38 @@ const Sidebar = () => {
                     </div>
                     <PerfectScrollbar className="h-[calc(100vh-80px)] relative">
                         <ul className="relative font-semibold space-y-0.5 p-4 py-0">
-                            <li className="menu nav-item">
-                                <button type="button" className={`${currentMenu === 'dashboard' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('dashboard')}>
-                                    <div className="flex items-center">
-                                        <IconMenuDashboard className="group-hover:!text-primary shrink-0" />
-                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('dashboard')}</span>
-                                    </div>
-
-                                    <div className={currentMenu !== 'dashboard' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                        <IconCaretDown />
-                                    </div>
-                                </button>
-
-                                <AnimateHeight duration={300} height={currentMenu === 'dashboard' ? 'auto' : 0}>
-                                    <ul className="sub-menu text-gray-500">
-                                        <li>
-                                            <NavLink to="/">{t('sales')}</NavLink>
-                                        </li>
-                                        <li>
-                                            <NavLink to="/progress">{t('progress')}</NavLink>
-                                        </li>
-                                        <li>
-                                            <NavLink to="/finance">{t('finance')}</NavLink>
-                                        </li>
-                                        <li>
-                                            <NavLink to="/crypto">{t('crypto')}</NavLink>
-                                        </li>
-                                    </ul>
-                                </AnimateHeight>
-                            </li>
                             <div>
                                 {isAdmin && (
                                     <>
+                                        <li className="menu nav-item">
+                                            <button type="button" className={`${currentMenu === 'dashboard' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('dashboard')}>
+                                                <div className="flex items-center">
+                                                    <IconMenuDashboard className="group-hover:!text-primary shrink-0" />
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('dashboard')}</span>
+                                                </div>
+
+                                                <div className={currentMenu !== 'dashboard' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                                    <IconCaretDown />
+                                                </div>
+                                            </button>
+
+                                            <AnimateHeight duration={300} height={currentMenu === 'dashboard' ? 'auto' : 0}>
+                                                <ul className="sub-menu text-gray-500">
+                                                    <li>
+                                                        <NavLink to="/">{t('sales')}</NavLink>
+                                                    </li>
+                                                    <li>
+                                                        <NavLink to="/progress">{t('Progreso')}</NavLink>
+                                                    </li>
+                                                    <li>
+                                                        <NavLink to="/finance">{t('finance')}</NavLink>
+                                                    </li>
+                                                    <li>
+                                                        <NavLink to="/crypto">{t('crypto')}</NavLink>
+                                                    </li>
+                                                </ul>
+                                            </AnimateHeight>
+                                        </li>
                                         {/* Modulo de administrador ------------------------------------------ inicio */}
                                         <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                             <IconMinus className="w-4 h-5 flex-none hidden" />
@@ -343,8 +343,6 @@ const Sidebar = () => {
                                                 </ul>
                                             </AnimateHeight>
                                         </li>
-                                        {/* modulo de pasos --------------------------------fin*/}
-                                        {/* //TODO CERRAR ISADMIN  */}
                                     </>
                                 )}
                             </div>{' '}
@@ -431,48 +429,6 @@ const Sidebar = () => {
                                                     <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
                                                         <div className="flex items-center">
                                                             <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('8: Constancia de Filtro')}</span>
-                                                        </div>
-                                                    </NavLink>
-                                                </li>
-                                                {/* Paso 9 */}
-                                                <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                        <div className="flex items-center">
-                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('9: Ampliación de Plazo')}</span>
-                                                        </div>
-                                                    </NavLink>
-                                                </li>
-                                                {/* Paso 10 */}
-                                                <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                        <div className="flex items-center">
-                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('10: Emision de Resolución')}</span>
-                                                        </div>
-                                                    </NavLink>
-                                                </li>
-                                                {/* Paso 11 */}
-                                                <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                        <div className="flex items-center">
-                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                                {t('11: Notificación de Jurados')}
-                                                            </span>
-                                                        </div>
-                                                    </NavLink>
-                                                </li>
-                                                {/* Paso 12 */}
-                                                <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                        <div className="flex items-center">
-                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('12: Aprobación Resolutiva')}</span>
-                                                        </div>
-                                                    </NavLink>
-                                                </li>
-                                                {/* Paso 13 */}
-                                                <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                        <div className="flex items-center">
-                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('13: Constancia Conformidad')}</span>
                                                         </div>
                                                     </NavLink>
                                                 </li>
