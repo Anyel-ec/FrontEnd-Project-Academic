@@ -24,14 +24,15 @@ const ReservationTable = ({ titleReservations, apiError }) => {
                     <thead>
                         <tr>
                             <th>Código</th>
-                            <th>Cumple Requisitos</th>
+                            {/* <th>Cumple Requisitos</th> */}
                             <th>Estudiante(s)</th>
                             <th>Carrera</th>
                             <th>Proyecto</th>
-                            <th>Observaciones</th>
-                            <th>Fecha Creación</th>
-                            <th>Fecha Actualización</th>
-                            {reservations.meetsRequirements ? <th className="!text-center">PDF</th> : <></>}
+                            {/* <th>Observaciones</th> */}
+                            {/* <th>Fecha Creación</th> */}
+                            {/* <th>Fecha Actualización</th> */}
+                            {/* {reservations.meetsRequirements ? <th className="!text-center">PDF</th> : <></>} */}
+                            {<th className="!text-center">PDF</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -48,7 +49,7 @@ const ReservationTable = ({ titleReservations, apiError }) => {
                                         )}
                                     </td>
 
-                                    <td>{reservation.meetsRequirements ? 'Sí' : 'No'}</td>
+                                    {/* <td>{reservation.meetsRequirements ? 'Sí' : 'No'}</td> */}
                                     <td>
                                         {reservation.student.firstNames ?? ''} {reservation.student.lastName ?? ''}
                                         {reservation.studentTwo && (
@@ -59,10 +60,10 @@ const ReservationTable = ({ titleReservations, apiError }) => {
                                     </td>
 
                                     <td>{reservation.student.career.name}</td>
-                                    <td>{reservation.project ? 'Sí' : 'No'}</td>
-                                    <td>{reservation.observations || 'Ninguna'}</td>
+                                     <td>{reservation.project ? 'Sí' : 'No'}</td>
+                                    {/*<td>{reservation.observations || 'Ninguna'}</td>
                                     <td>{new Date(reservation.createdAt).toLocaleString()}</td>
-                                    <td>{new Date(reservation.updatedAt).toLocaleString()}</td>
+                                    <td>{new Date(reservation.updatedAt).toLocaleString()}</td> */}
                                     {reservation.meetsRequirements ? (
                                         <></>
                                     ) : (

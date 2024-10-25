@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const TeacherTable = ({ teachers, onEdit, onDelete }) => {
     const [expandedRow, setExpandedRow] = useState(null);
     const [currentPage, setCurrentPage] = useState(1); // Página actual
-    const itemsPerPage = 5; // Elementos por página
+    const itemsPerPage = 10; // Elementos por página
 
     const totalPages = Math.ceil(teachers.length / itemsPerPage); // Total de páginas
 

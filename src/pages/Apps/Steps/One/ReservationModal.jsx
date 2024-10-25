@@ -27,6 +27,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
         observation: reservation?.observations || '',
         title: reservation?.title || '', // Inicializa el título si existe
         lineOfResearch: lineOptions.find((option) => option.value === reservation?.lineOfResearch?.id) || null,
+        projectSimilarity: reservation?.projectSimilarity || null,
     };
 
     const handleSubmit = async (values, { setSubmitting }) => {
@@ -98,7 +99,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                             </div>
 
                                             {/* Select para la línea de investigación */}
-                                            <div className="col-span-2">
+                                            <div className="col-span-1">
                                                 <label htmlFor="lineOfResearch">Línea de Investigación</label>
                                                 <Select
                                                     className=""
@@ -108,6 +109,11 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                     onChange={(option) => setFieldValue('lineOfResearch', option)}
                                                     placeholder="Seleccione una línea..."
                                                 />
+                                            </div>
+                                            <div className="col-span-1">
+                                                <label htmlFor="projectSimilarity">Simlitud del proyecto</label>
+                                                <Field name="projectSimilarity" type="text" id="projectSimilarity" placeholder="Ingrese valores decimales.." className="form-input" />
+                                                <ErrorMessage name="projectSimilarity" component="div" className="text-danger mt-1" />
                                             </div>
 
                                             <div className={submitCount && errors.meetRequirements ? 'has-error' : ''}>

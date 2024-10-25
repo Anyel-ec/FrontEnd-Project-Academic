@@ -40,6 +40,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                             <th>Carrera</th>
                             <th>Proyecto</th>
                             <th>Observaciones</th>
+                            <th>Similitud</th>
                             <th>Fecha Creación</th>
                             <th>Fecha Actualización</th>
                             <th className="!text-center">PDF</th>
@@ -50,6 +51,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                         {currentReservations.length > 0 ? (
                             currentReservations.map((reservation) => (
                                 <tr key={reservation.id}>
+                                    {console.log(reservation)}
                                     <td>
                                         {reservation.student?.studentCode || 'N/A'}
                                         {reservation.studentTwo && (
@@ -59,7 +61,6 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                                             </>
                                         )}
                                     </td>
-
                                     <td>{reservation.meetsRequirements ? 'Sí' : 'No'}</td>
                                     <td>
                                         {reservation.student?.firstNames ?? ''} {reservation.student?.lastName ?? ''}
@@ -73,6 +74,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                                     <td>{reservation.student?.career?.name || 'N/A'}</td>
                                     <td>{reservation.project ? 'Sí' : 'No'}</td>
                                     <td>{reservation.observations || 'Ninguna'}</td>
+                                    <td>{reservation.projectSimilarity}</td>
                                     <td>{new Date(reservation.createdAt).toLocaleString()}</td>
                                     <td>{new Date(reservation.updatedAt).toLocaleString()}</td>
                                     <td className="gap-4">
@@ -87,9 +89,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                                         {/* Mostrar los botones de Editar y Eliminar solo si meetsRequirements es false */}
                                         {reservation.meetsRequirements ? (
                                             // Usar "disabled" en el botón cuando no se permite la descarga
-                                            <button className="btn btn-sm btn-outline-primary" >
-                                                Descargar Comprobante
-                                            </button>
+                                            <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
                                         ) : (
                                             <>
                                                 {/* Botón de editar sin disabled */}

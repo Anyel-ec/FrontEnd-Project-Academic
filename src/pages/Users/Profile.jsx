@@ -74,12 +74,11 @@ const Profile = () => {
         
         for (let i = 1; i <= totalSteps; i++) {
             const reservation = titleReservations[i - 1]; // Acceder secuencialmente
-            console.log(titleReservations); // Verificar qué hay en titleReservations
     
             steps.push({
                 stepNumber: i,
                 progress: reservation 
-                    ? (reservation.meetsRequirements ? 100 : 50) 
+                    ? (reservation.meetsRequirements ? 75 : 30) 
                     : 0,
                 lastUpdated: reservation ? reservation.updatedAt : null,
             });
