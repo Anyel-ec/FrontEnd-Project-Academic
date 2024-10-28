@@ -77,7 +77,6 @@ const TitleReservation = () => {
             setApiError('Error al cargar las carreras.');
         }
     }, []);
-    
 
     // Filtrar estudiantes según las reservaciones actuales
     const filterStudents = (students) => {
@@ -165,7 +164,6 @@ const TitleReservation = () => {
                 setApiError('Error al cargar las líneas de investigación.');
             }
         }
-        
     }, []);
     const handleSaveReservation = async (reservationId, values) => {
         if (values?.meetRequirements === 'yes') {
@@ -192,19 +190,22 @@ const TitleReservation = () => {
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
                     });
-    
+
                     if (result.isConfirmed) {
                         try {
                             // Crear el objeto de datos para la reservación
                             const titleReservationData = {
-                                meetsRequirements: true,
+                                meetsRequirements: values?.meetRequirements === 'yes',
                                 observations: values.observation || '',
-                                title: values.title || '', // Asegúrate de que el título se está enviando
+                                title: values.title || '',
+                                projectSimilarity: parseFloat(values.projectSimilarity) || 0,
+
                                 lineOfResearch: values.lineOfResearch ? { id: values.lineOfResearch.value } : null,
                             };
-    
+                            console.log("Datos de reservación antes de enviar al backend:", titleReservationData);
+
                             const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
-    
+
                             if (!response) {
                                 Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
                             } else {
@@ -238,12 +239,14 @@ const TitleReservation = () => {
                 const titleReservationData = {
                     meetsRequirements: values?.meetRequirements === 'yes',
                     observations: values.observation || '',
-                    title: values.title || '', 
+                    title: values.title || '',
+                    projectSimilarity: parseFloat(values.projectSimilarity) || 0, // Asegura que projectSimilarity sea un número
                     lineOfResearch: values.lineOfResearch ? { id: values.lineOfResearch.value } : null,
                 };
-    
+                console.log("Datos de reservación antes de enviar al backend:", titleReservationData);
+
                 const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
-    
+
                 if (!response) {
                     Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
                 } else {
@@ -256,7 +259,7 @@ const TitleReservation = () => {
             }
         }
     };
-    
+
     // Editar reservación
     const editReservation = (reservation) => {
         // Obtener el careerId desde la reservación seleccionada
@@ -286,6 +289,7 @@ const TitleReservation = () => {
                     students: Yup.array().min(1, 'Debes seleccionar al menos un estudiante').max(2, 'Solo puedes seleccionar hasta dos estudiantes'),
                 })}
                 enableReinitialize={true}
+                
                 onSubmit={(values, { setSubmitting, resetForm }) => {
                     const selectedStudents = values.students;
 
@@ -340,9 +344,11 @@ const TitleReservation = () => {
             <ReservationModal
                 isOpen={addContactModal}
                 onClose={closeModal}
-                reservation={editingReservation} // Pasar la reservación seleccionada al modal
+                reservation={editingReservation}
                 onSave={handleSaveReservation}
-                lineOptions={lineOptions} // Pasar las líneas de investigación filtradas al modal
+                lineOptions={lineOptions}
+                enableReinitialize // Asegura que los valores iniciales se reinicien
+            
             />
 
             <ReservationTable titleReservations={titleReservations} apiError={apiError} onEdit={editReservation} onDelete={deleteTitleReservation} />

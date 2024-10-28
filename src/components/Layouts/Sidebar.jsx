@@ -195,8 +195,6 @@ const Sidebar = () => {
                                             </ul>
                                         </li> */}
                                         {/* Modulo de asignaciones a carreras --------------------------------fin */}
-
-                                        {/* modulo de pasos ------------------------------------------ inicio   */}
                                         <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                             <IconMinus className="w-4 h-5 flex-none hidden" />
                                             <span>{t('Pasos')}</span>
@@ -218,9 +216,9 @@ const Sidebar = () => {
                                                 <ul className="sub-menu text-gray-500">
                                                     {/* Paso 1 */}
                                                     <li className="nav-item">
-                                                        <NavLink to="/apps/paso/reservacion-titulo" className="group">
+                                                        <NavLink to="/apps/paso/constancia-filtro" className="group">
                                                             <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('1: Reserva de Titulos')}</span>
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('1: Constancia de Filtro')}</span>
                                                             </div>
                                                         </NavLink>
                                                     </li>
@@ -229,7 +227,7 @@ const Sidebar = () => {
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
                                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                                    {t('2: Constancia de Filtro')}
+                                                                    {t('2: Aprobación de Proyecto')}
                                                                 </span>
                                                             </div>
                                                         </NavLink>
@@ -239,7 +237,7 @@ const Sidebar = () => {
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
                                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('3: Aprobación de Tesis')}</span>
-                                                            </div>
+                                                            </div>  
                                                         </NavLink>
                                                     </li>
                                                     {/* Paso 4 */}
@@ -289,55 +287,7 @@ const Sidebar = () => {
                                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
                                                                     {t('8: Constancia de Filtro')}
                                                                 </span>
-                                                            </div>
-                                                        </NavLink>
-                                                    </li>
-                                                    {/* Paso 9 */}
-                                                    <li className="nav-item">
-                                                        <NavLink to="/apps/docentes" className="group">
-                                                            <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('9: Ampliación de Plazo')}</span>
-                                                            </div>
-                                                        </NavLink>
-                                                    </li>
-                                                    {/* Paso 10 */}
-                                                    <li className="nav-item">
-                                                        <NavLink to="/apps/docentes" className="group">
-                                                            <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                                    {t('10: Emision de Resolución')}
-                                                                </span>
-                                                            </div>
-                                                        </NavLink>
-                                                    </li>
-                                                    {/* Paso 11 */}
-                                                    <li className="nav-item">
-                                                        <NavLink to="/apps/docentes" className="group">
-                                                            <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                                    {t('11: Notificación de Jurados')}
-                                                                </span>
-                                                            </div>
-                                                        </NavLink>
-                                                    </li>
-                                                    {/* Paso 12 */}
-                                                    <li className="nav-item">
-                                                        <NavLink to="/apps/docentes" className="group">
-                                                            <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                                    {t('12: Aprobación Resolutiva')}
-                                                                </span>
-                                                            </div>
-                                                        </NavLink>
-                                                    </li>
-                                                    {/* Paso 13 */}
-                                                    <li className="nav-item">
-                                                        <NavLink to="/apps/docentes" className="group">
-                                                            <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                                    {t('13: Constancia Conformidad')}
-                                                                </span>
-                                                            </div>
+                                                             </div>
                                                         </NavLink>
                                                     </li>
                                                 </ul>

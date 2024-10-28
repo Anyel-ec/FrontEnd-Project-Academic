@@ -1,8 +1,8 @@
 import { lazy } from 'react';
 import Students from '../pages/Apps/Student/Students';
 import Teachers from '../pages/Apps/Teacher/Teachers';
-import TitleReservation from '../pages/Apps/Steps/One/TitleReservation';
-import TitleReservationStudents from '../pages/Apps/StepsStudents/One/TitleReservation';
+import Constancy from '../pages/Apps/Steps/One/TitleReservation';
+import ConstancyStudents from '../pages/Apps/StepsStudents/One/TitleReservation';
 import ThesisAdvisory from '../pages/Apps/ThesisAdvisory';
 import { ProtectedRoute, StudentRoute } from '../security/ProtectedRoute';
 
@@ -153,19 +153,19 @@ const routes = [
         ),
     },
     {
-        path: 'apps/paso/reservacion-titulo',
+        path: 'apps/paso/constancia-filtro',
         element: (
             <ProtectedRoute>
-                <TitleReservation />
+                <Constancy />
             </ProtectedRoute>
         ),
     },
     // Estudiantes
     {
-        path: 'apps/paso-estudiante/reservacion-titulo',
+        path: 'apps/paso-estudiante/constancia-filtro',
         element: (
             <StudentRoute>
-                <TitleReservationStudents />
+                <ConstancyStudents />
             </StudentRoute>
         ),
     },

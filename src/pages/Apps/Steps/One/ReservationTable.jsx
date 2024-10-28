@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import ConstancyVoucher from './ConstancyVoucher';
 import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importación es correcto
 const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -51,7 +53,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                         {currentReservations.length > 0 ? (
                             currentReservations.map((reservation) => (
                                 <tr key={reservation.id}>
-                                    {console.log(reservation)}
+                                    {/* {console.log(reservation)} */}
                                     <td>
                                         {reservation.student?.studentCode || 'N/A'}
                                         {reservation.studentTwo && (
@@ -88,8 +90,11 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                                     <td className="flex gap-4 items-center justify-center">
                                         {/* Mostrar los botones de Editar y Eliminar solo si meetsRequirements es false */}
                                         {reservation.meetsRequirements ? (
-                                            // Usar "disabled" en el botón cuando no se permite la descarga
-                                            <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
+                                            <PDFDownloadLink document={<ConstancyVoucher reservation={reservation} />} fileName="constancia.pdf">
+                                                {({ blob, url, loading, error }) =>
+                                                    loading ? 'Cargando documento...' : <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
+                                                }
+                                            </PDFDownloadLink>
                                         ) : (
                                             <>
                                                 {/* Botón de editar sin disabled */}

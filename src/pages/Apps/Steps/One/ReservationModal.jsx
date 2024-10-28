@@ -9,7 +9,6 @@ import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
 
 const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions }) => {
-
     const validationSchema = Yup.object({
         studentCode: Yup.string().max(6, 'Máximo 6 caracteres').required('Requerido'),
         title: Yup.string().required('El título es obligatorio'),
@@ -25,15 +24,15 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
         studentTwoCode: reservation?.studentTwo?.studentCode || '',
         meetRequirements: reservation?.meetsRequirements ? 'yes' : 'no',
         observation: reservation?.observations || '',
-        title: reservation?.title || '', // Inicializa el título si existe
+        title: reservation?.title || '',
         lineOfResearch: lineOptions.find((option) => option.value === reservation?.lineOfResearch?.id) || null,
-        projectSimilarity: reservation?.projectSimilarity || null,
+        projectSimilarity: reservation?.projectSimilarity || 0,
     };
 
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
-            // Guardar los cambios directamente sin validación de duplicados
-            onSave(reservation.id, values); 
+            console.log('Valores enviados al backend:', values); // Verifica el valor de projectSimilarity aquí
+            onSave(reservation.id, values);
         } catch (error) {
             Swal.fire('Error', 'Hubo un error al guardar los datos: ' + error.message, 'error');
             setSubmitting(false);
@@ -52,13 +51,10 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                             </button>
                             <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">Aceptar Reservación</div>
                             <div className="p-5">
-                                <Formik
-                                    initialValues={initialValues}
-                                    validationSchema={validationSchema}
-                                    onSubmit={handleSubmit}  // Manejar la lógica de envío
-                                >
+                                <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} enableReinitialize>
                                     {({ errors, submitCount, setFieldValue, values }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                            {console.log('Valor de projectSimilarity en Formik:', values.projectSimilarity)}
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
                                                 <Field name="studentCode" type="text" id="studentCode" readOnly placeholder="Ingrese el código del estudiante" maxLength={6} className="form-input" />
@@ -90,7 +86,6 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                     id="title"
                                                     placeholder="Ingrese el título del proyecto"
                                                     className="form-input"
-                                                    // Monitorea si el usuario modifica el campo de título
                                                     onChange={(e) => {
                                                         setFieldValue('title', e.target.value);
                                                     }}
@@ -102,17 +97,29 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                             <div className="col-span-1">
                                                 <label htmlFor="lineOfResearch">Línea de Investigación</label>
                                                 <Select
-                                                    className=""
+                                                    id="lineOfResearch"
                                                     styles={styles}
                                                     options={lineOptions}
                                                     value={values.lineOfResearch}
-                                                    onChange={(option) => setFieldValue('lineOfResearch', option)}
+                                                    onChange={(option) => {
+                                                        setFieldValue('lineOfResearch', option);
+                                                    }}
                                                     placeholder="Seleccione una línea..."
                                                 />
                                             </div>
+
+                                            {/* Campo para la similitud del proyecto */}
                                             <div className="col-span-1">
-                                                <label htmlFor="projectSimilarity">Simlitud del proyecto</label>
-                                                <Field name="projectSimilarity" type="text" id="projectSimilarity" placeholder="Ingrese valores decimales.." className="form-input" />
+                                                <label htmlFor="projectSimilarity">Similitud del proyecto</label>
+                                                <Field
+                                                    name="projectSimilarity"
+                                                    type="number"
+                                                    id="projectSimilarity"
+                                                    placeholder="Ingrese valores decimales.."
+                                                    className="form-input"
+                                                    onChange={(e) => setFieldValue('projectSimilarity', parseFloat(e.target.value) || '')}
+                                                />
+
                                                 <ErrorMessage name="projectSimilarity" component="div" className="text-danger mt-1" />
                                             </div>
 
