@@ -224,7 +224,7 @@ const Sidebar = () => {
                                                     </li>
                                                     {/* Paso 2 */}
                                                     <li className="nav-item">
-                                                        <NavLink to="/apps/docentes" className="group">
+                                                        <NavLink to="/apps/paso/aprobación-de-proyecto" className="group">
                                                             <div className="flex items-center">
                                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
                                                                     {t('2: Aprobación de Proyecto')}

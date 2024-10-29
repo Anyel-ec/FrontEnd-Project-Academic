@@ -1,35 +1,17 @@
 import React, { useState } from 'react';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import ConstancyVoucherOne from './ConstancyVoucherOne';
-import ConstancyVoucherTwo from './ConstancyVoucherTwo';
-import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importación es correcto
-const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => {
+
+const ApprovalTable = ({ projectApprovals, apiError, onEdit, onDelete }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [pdfDataMap, setPdfDataMap] = useState({}); // Mapea cada reserva a su PDF en base64
 
     const itemsPerPage = 4;
-    const totalPages = Math.ceil(titleReservations.length / itemsPerPage);
+    const totalPages = Math.ceil(projectApprovals.length / itemsPerPage);
 
     const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentReservations = titleReservations.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
-
-    // Manejo de éxito en la carga de PDF
-    const handlePDFUploadSuccess = (reservationId, base64Data) => {
-        setPdfDataMap((prev) => ({
-            ...prev,
-            [reservationId]: base64Data, // Mapea el PDF a la reserva correspondiente
-        }));
-        console.log('PDF cargado y convertido a Base64 para la reserva:', reservationId);
-    };
-
-    // Manejo de fallos en la carga de PDF
-    const handlePDFUploadFailure = (error) => {
-        console.error('Error al cargar el PDF:', error);
-    };
-
+    const currentProjects = projectApprovals.slice(indexOfFirstItem, indexOfLastItem);
+    console.log(currentProjects)
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
             {apiError && <div className="text-danger">{apiError}</div>}
@@ -44,78 +26,50 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                             <th>Proyecto</th>
                             <th>Observaciones</th>
                             <th>Similitud</th>
+                            <th>Asesor</th>
                             <th>Fecha Creación</th>
                             <th>Fecha Actualización</th>
-                            <th className="!text-center">PDF</th>
                             <th className="!text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {currentReservations.length > 0 ? (
-                            currentReservations.map((reservation) => (
-                                <tr key={reservation.id}>
+                        {currentProjects.length > 0 ? (
+                            currentProjects.map((project) => (
+                                <tr key={project.id}>
                                     <td>
-                                        {reservation.student?.studentCode || 'N/A'}
-                                        {reservation.studentTwo && (
+                                        {project.titleReservationStepOne.student?.studentCode || 'N/A'}
+                                        {project.titleReservationStepOne.studentTwo && (
                                             <>
                                                 <br />
-                                                {reservation.studentTwo.studentCode || 'N/A'}
+                                                {project.titleReservationStepOne.studentTwo.studentCode || 'N/A'}
                                             </>
                                         )}
                                     </td>
-                                    <td>{reservation.meetsRequirements ? 'Sí' : 'No'}</td>
+                                    <td>{project.titleReservationStepOne.meetsRequirements ? 'Sí' : 'No'}</td>
                                     <td>
-                                        {reservation.student?.firstNames ?? ''} {reservation.student?.lastName ?? ''}
-                                        {reservation.studentTwo && (
+                                        {project.titleReservationStepOne.student?.firstNames ?? ''} {project.titleReservationStepOne.student?.lastName ?? ''}
+                                        {project.titleReservationStepOne.studentTwo && (
                                             <p>
-                                                {reservation.studentTwo?.firstNames ?? ''} {reservation.studentTwo?.lastName ?? ''}
+                                                {project.titleReservationStepOne.studentTwo?.firstNames ?? ''} {project.titleReservationStepOne.studentTwo?.lastName ?? ''}
                                             </p>
                                         )}
                                     </td>
-
-                                    <td>{reservation.student?.career?.name || 'N/A'}</td>
-                                    <td>{reservation.project ? 'Sí' : 'No'}</td>
-                                    <td>{reservation.observations || 'Ninguna'}</td>
-                                    <td>{reservation.projectSimilarity}%</td>
-                                    <td>{new Date(reservation.createdAt).toLocaleString()}</td>
-                                    <td>{new Date(reservation.updatedAt).toLocaleString()}</td>
-                                    <td className="gap-4">
-                                        {/* Componente de carga de PDF */}
-                                        <TitleUpload
-                                            reservaId={reservation.id} // Pasa el ID de la reservación al componente de carga
-                                            onUploadSuccess={(base64Data) => handlePDFUploadSuccess(reservation.id, base64Data)} // Mapea el PDF a la reservación correspondiente
-                                            onUploadFailure={handlePDFUploadFailure}
-                                        />
-                                    </td>
+                                    <td>{project.titleReservationStepOne.student?.career?.name || 'N/A'}</td>
+                                    <td>{project.titleReservationStepOne.project ? 'Sí' : 'No'}</td>
+                                    <td>{project.observations || 'Ninguna'}</td>
+                                    <td>{project.titleReservationStepOne.projectSimilarity}</td>
+                                    <td>{project.adviser || 'Ninguno'}</td>
+                                    <td>{new Date(project.createdAt).toLocaleString()}</td>
+                                    <td>{new Date(project.updatedAt).toLocaleString()}</td>
                                     <td className="flex gap-4 items-center justify-center">
-                                        {/* Mostrar los botones de Editar y Eliminar solo si meetsRequirements es false */}
-
-
-                                        {reservation.meetsRequirements ? (
-                                            reservation.studentTwo ? (
-
-                                            <PDFDownloadLink document={<ConstancyVoucherTwo reservation={reservation} />} fileName="constancia.pdf">
-                                                {({ blob, url, loading, error }) =>
-                                                    loading ? 'Cargando documento...' : <button className="btn btn-sm btn-outline-primary">Descargar Comprobante D</button>
-                                                }
-                                            </PDFDownloadLink>
-                                            ):(
-                                                <PDFDownloadLink document={<ConstancyVoucherOne reservation={reservation} />} fileName="constancia.pdf">
-                                                {({ blob, url, loading, error }) =>
-                                                    loading ? 'Cargando documento...' : <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
-                                                }
-                                            </PDFDownloadLink>
-                                            )
-                                            
+                                        {project.meetsRequirements ? (
+                                            <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
                                         ) : (
                                             <>
-                                                {/* Botón de editar sin disabled */}
-                                                <button onClick={() => onEdit(reservation)} className="btn btn-sm btn-outline-primary">
+                                                <button onClick={() => onEdit(project)} className="btn btn-sm btn-outline-primary">
                                                     Editar
                                                 </button>
-
-                                                {/* Botón de eliminar sin disabled */}
-                                                <button onClick={() => onDelete(reservation.id)} className="btn btn-sm btn-outline-danger">
+                                                <button onClick={() => onDelete(project.id)} className="btn btn-sm btn-outline-danger">
                                                     Eliminar
                                                 </button>
                                             </>
@@ -126,7 +80,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                         ) : (
                             <tr>
                                 <td colSpan="10" className="px-4 py-2 text-center">
-                                    No hay reservaciones disponibles
+                                    No hay proyectos disponibles para aprobación
                                 </td>
                             </tr>
                         )}
@@ -180,4 +134,4 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
     );
 };
 
-export default ReservationTable;
+export default ApprovalTable;

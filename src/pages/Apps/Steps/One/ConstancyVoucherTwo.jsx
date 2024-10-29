@@ -69,13 +69,14 @@ const ConstancyVoucher = ({ reservation }) => (
                     <Text style={styles.footerText}>“AÑO DEL BICENTENARIO, DE LA CONSOLIDACIÓN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIÓN DE LAS HEROICAS DE JUNÍN Y AYACUCHO”</Text>
                 </View>
 
-                <Text style={styles.h1}>CONSTANCIA Nº 018-2024-D. UIFI-UNAMBA</Text>
+                <Text style={styles.h1}>CONSTANCIA Nº {reservation.id}-2024-D. UIFI-UNAMBA</Text>
 
                 <Text style={styles.p}>EL DIRECTOR DE LA UNIDAD DE INVESTIGACIÓN DE LA FACULTAD DE INGENIERÍA DE LA UNIVERSIDAD NACIONAL MICAELA BASTIDAS DE APURÍMAC</Text>
 
                 <Text style={styles.p}>
                     Que, el Bach. {reservation.student.firstNames}  {reservation.student.lastName}, identificada con DNI N°
-                    {reservation.student.dni} y Código de estudiante N° {reservation.student.studentCode} de la Escuela Académico Profesional de {reservation.student?.career?.name} de la Facultad de Ingeniería, presentó el
+                    {reservation.student.dni} y Código de estudiante N° {reservation.student.studentCode} y {reservation.studentTwo.firstNames}  {reservation.studentTwo.lastName}, identificada con DNI N°
+                    {reservation.studentTwo.dni} y Código de estudiante N° de la Escuela Académico Profesional de {reservation.studentTwo?.career?.name} de la Facultad de Ingeniería, presentaron el
                     Proyecto de Tesis: “{reservation.title}” , para ser evaluado mediante FILTRO DE SIMILITUD de acuerdo al Art.24 del Reglamento de investigación vigente.
                 </Text>
 

@@ -9,6 +9,15 @@ const getAuthToken = () => {
     return localStorage.getItem('token');
 };
 
+const getTeachersByCareer = async (careerId) => {
+    try {
+        const response = await axios.get(`${TEACHER_API_URL}carrera/${careerId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener docentes por carrera:', error);
+        throw error;
+    }
+};
 const getTeachers = async () => {
     try {
         const response = await axios.get(TEACHER_API_URL, {
@@ -76,8 +85,7 @@ const editTeacher = async (id, teacher) => {
             response.data.institutionalEmail,
             response.data.phone,
             response.data.address,
-            response.data.career,
-
+            response.data.career
         );
     } catch (error) {
         console.error("Error editing teacher", error);
@@ -101,6 +109,7 @@ const deleteTeacher = async (id) => {
 
 export default {
     getTeachers,
+    getTeachersByCareer, // Nuevo servicio agregado
     addTeacher,
     editTeacher,
     deleteTeacher

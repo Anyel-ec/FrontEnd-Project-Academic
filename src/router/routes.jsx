@@ -2,6 +2,7 @@ import { lazy } from 'react';
 import Students from '../pages/Apps/Student/Students';
 import Teachers from '../pages/Apps/Teacher/Teachers';
 import Constancy from '../pages/Apps/Steps/One/TitleReservation';
+import ProjectAproval from '../pages/Apps/Steps/Two/ProjectApproval';
 import ConstancyStudents from '../pages/Apps/StepsStudents/One/TitleReservation';
 import ThesisAdvisory from '../pages/Apps/ThesisAdvisory';
 import { ProtectedRoute, StudentRoute } from '../security/ProtectedRoute';
@@ -157,6 +158,15 @@ const routes = [
         element: (
             <ProtectedRoute>
                 <Constancy />
+            </ProtectedRoute>
+        ),
+
+    },
+    {
+        path: 'apps/paso/aprobación-de-proyecto',
+        element: (
+            <ProtectedRoute>
+                <ProjectAproval />
             </ProtectedRoute>
         ),
     },
