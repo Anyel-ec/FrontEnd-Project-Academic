@@ -1,62 +1,12 @@
 import React from 'react';
-import { Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, View, Text, Image } from '@react-pdf/renderer';
 import PropTypes from 'prop-types';
+import { obtenerFechaEscrita, obtenerAnioActual } from './Dates'
 import Logo from './BANNER.png';
+import styles from './ConstancyVoucherStyles';
 
-const styles = StyleSheet.create({
-    container: {
-        margin: '0 auto',
-        backgroundColor: 'white',
-        padding: '20px 40px',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-    },
-    header: {
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    headerSection: {
-        marginBottom: 10,
-    },
-    banner: {
-        width: '100%',
-        height: 'auto',
-    },
-    h1: {
-        textAlign: 'center',
-        fontSize: 14,
-        marginVertical: 10,
-        textDecoration: 'underline',
-    },
-    p: {
-        fontSize: 12,
-        marginBottom: 10,
-        textAlign: 'justify',
-    },
-    footerText: {
-        fontSize: 14,
-    },
-    ul: {
-        marginVertical: 10,
-        paddingLeft: 20,
-    },
-    ulLi: {
-        fontSize: 12,
-        marginBottom: 5,
-    },
-    footer: {
-        marginTop: 40,
-    },
-    hr: {
-        marginTop: 10,
-        marginBottom: 10,
-        borderBottom: '1px solid #000',
-    },
-    footerInfo: {
-        textAlign: 'right',
-        fontSize: 10,
-        marginTop: 10,
-    },
-});
+const actualData = obtenerFechaEscrita();
+const anio = obtenerAnioActual();
 
 const ConstancyVoucher = ({ reservation }) => (
     <Document>
@@ -108,7 +58,21 @@ const ConstancyVoucher = ({ reservation }) => (
     </Document>
 );
 
-// ConstancyVoucher.propTypes = {
-//   reservation: PropTypes.object.isRequired, // o el tipo que corresponda
-//   };
+ConstancyVoucher.propTypes = {
+    reservation: PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        title: PropTypes.string.isRequired,
+        projectSimilarity: PropTypes.number.isRequired,
+        student: PropTypes.shape({
+            firstNames: PropTypes.string.isRequired,
+            lastName: PropTypes.string.isRequired,
+            dni: PropTypes.string.isRequired,
+            studentCode: PropTypes.string.isRequired,
+            career: PropTypes.shape({
+                name: PropTypes.string.isRequired,
+            }),
+        }).isRequired,
+    }).isRequired,
+};
+
 export default ConstancyVoucher;
