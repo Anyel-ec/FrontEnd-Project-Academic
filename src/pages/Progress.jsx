@@ -1,7 +1,6 @@
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../store/themeConfigSlice';
-import React from 'react';
 import titleReservationsService from '../api/titleReservationsService';
 
 const Progress = () => {
@@ -93,7 +92,7 @@ const Progress = () => {
                                         reservation.students.map((student, index) => (
                                             <React.Fragment key={`${reservation.id}-${index}`}>
                                                 <tr>
-                                                    <td colSpan="4">{`${student.firstNames} ${student.lastName}`}</td>
+                                                    <td colSpan="4"className='font-bold text-white' >{`${student.firstNames} ${student.lastName}`}</td>
                                                 </tr>
                                                 {getFullStepList(reservation).map((step) => (
                                                     <tr key={step.stepNumber}>

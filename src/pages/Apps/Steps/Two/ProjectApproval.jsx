@@ -1,90 +1,84 @@
-import { useEffect, useState } from 'react';
-import projectApprovalService from '../../../../api/projectApprovalService';
-import teacherService from '../../../../api/teacherService';
+import titleReservationsService from '../../../../api/titleReservationsService';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { setPageTitle } from '../../../../store/themeConfigSlice';
 import ApprovalTable from './ApprovalTable';
-import ApprovalModal from './ApprovalModal';
 
 const ProjectApproval = () => {
-    const [projectApproval, setProjectApproval] = useState([]);
-    const [error, setError] = useState(null);
-    const [selectedProject, setSelectedProject] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [advisers, setAdvisers] = useState([]); // Estado para almacenar los docentes
+    const dispatch = useDispatch();
+    const [reservacionesEstudiantes, setReservacionesEstudiantes] = useState([]);
+    const [queryBusqueda, setQueryBusqueda] = useState('');
+
+    const obtenerReservacionesTitulo = useCallback(async () => {
+        try {
+            const reservaciones = await titleReservationsService.getTitleReservations();
+
+            // Filtrar las reservaciones para mostrar solo las que cumplen con los requisitos
+            const reservacionesCumplenRequisitos = reservaciones
+                .filter((reservacion) => reservacion.meetsRequirements) // Solo las que cumplen requisitos
+                .flatMap((reservacion) => {
+                    const entradaBase = {
+                        ...reservacion,
+                        estudiantes: [{ ...reservacion.student }],
+                    };
+                    if (reservacion.studentTwo) {
+                        entradaBase.estudiantes.push({ ...reservacion.studentTwo });
+                    }
+                    return entradaBase;
+                });
+
+            // Filtrar estudiantes según el texto de búsqueda
+            const reservacionesFiltradas = reservacionesCumplenRequisitos.filter((reservacion) =>
+                reservacion.estudiantes.some(
+                    (estudiante) =>
+                        estudiante.firstNames.toLowerCase().includes(queryBusqueda.toLowerCase()) ||
+                        estudiante.lastName.toLowerCase().includes(queryBusqueda.toLowerCase()) ||
+                        estudiante.studentCode.toLowerCase().includes(queryBusqueda.toLowerCase())
+                )
+            );
+            setReservacionesEstudiantes(reservacionesFiltradas);
+        } catch (error) {
+            console.error('Error al obtener las reservaciones de títulos:', error);
+        }
+    }, [queryBusqueda]);
 
     useEffect(() => {
-        const fetchProjectApprovals = async () => {
-            try {
-                const approvals = await projectApprovalService.getProjectApproval();
-                setProjectApproval(approvals);
-            } catch (err) {
-                setError('Error al cargar las aprobaciones de proyecto');
-                console.error('Error al obtener aprobaciones:', err);
-            }
-        };
+        dispatch(setPageTitle('Detalles de Estudiantes - Paso 2'));
+        obtenerReservacionesTitulo();
+    }, [dispatch, obtenerReservacionesTitulo]);
 
-        fetchProjectApprovals();
-    }, []);
-
-    const handleEdit = async (project) => {
-        setSelectedProject(project);
-        setIsModalOpen(true);
-        
-        // Obtener docentes por careerId de la reserva
-        try {
-            const careerId = project.titleReservationStepOne.student.career.id;
-            const advisers = await teacherService.getTeachersByCareer(careerId);
-            setAdvisers (advisers);
-            console.log("Docentes obtenidos:", advisers);
-        } catch (error) {
-            console.error("Error al obtener los docentes:", error);
-        }
+    const formatearFecha = (dateString) => {
+        if (!dateString) return 'N/A';
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+        return new Date(dateString).toLocaleString('es-ES', options);
     };
 
-    const handleDelete = (projectId) => {
-        console.log("Eliminando el proyecto con ID:", projectId);
-        // Lógica para eliminar el proyecto
-    };
-
-    const handleSave = async (projectId, updatedData) => {
-        try {
-            const updatedProject = await projectApprovalService.updateProject(projectId, updatedData);
-            setProjectApproval((prevApprovals) =>
-                prevApprovals.map((proj) => (proj.id === projectId ? updatedProject : proj))
-            );
-            setIsModalOpen(false);
-        } catch (error) {
-            console.error("Error al guardar el proyecto:", error);
-        }
-    };
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setSelectedProject(null);
+    const manejarCambioBusqueda = (event) => {
+        setQueryBusqueda(event.target.value);
     };
 
     return (
-        <div className="p-5">
-            <h1 className="text-2xl font-bold mb-5">Aprobación de Proyecto</h1>
-            {error && <p className="text-red-500">{error}</p>}
-            {projectApproval.length === 0 ? (
-                <p>No hay proyectos disponibles para aprobación.</p>
-            ) : (
-                <ApprovalTable
-                    projectApprovals={projectApproval}
-                    apiError={error}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                />
-            )}
-            {isModalOpen && (
-                <ApprovalModal
-                    isOpen={isModalOpen}
-                    onClose={handleCloseModal}
-                    onSave={handleSave}
-                    project={selectedProject} // Pasar docentes al modal
-                    adviserOptions={advisers}
-                />
-            )}
+        <div className="pt-5">
+            <div className="grid grid-cols-1 mb-5">
+                <div className="panel lg:col-span-2 xl:col-span-3">
+                    <div className="mb-5">
+                        <h5 className="font-semibold text-lg dark:text-white-light">Detalles de Estudiantes - Paso 2</h5>
+                        <input
+                            type="text"
+                            className="form-input p-2 w-full mt-3"
+                            placeholder="Buscar por nombre, apellido o código"
+                            value={queryBusqueda}
+                            onChange={manejarCambioBusqueda}
+                        />
+                    </div>
+                    <div className="mb-5">
+                        <ApprovalTable
+                            reservacionesEstudiantes={reservacionesEstudiantes}
+                            formatearFecha={formatearFecha}
+                        />
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

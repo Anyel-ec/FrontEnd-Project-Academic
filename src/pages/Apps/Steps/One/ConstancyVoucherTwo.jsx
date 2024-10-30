@@ -1,13 +1,12 @@
-import React from 'react';
 import { Document, Page, View, Text, Image } from '@react-pdf/renderer';
 import PropTypes from 'prop-types';
-import { obtenerFechaEscrita, obtenerAnioActual } from './Dates'
+import { obtenerFechaEscrita, obtenerAnioActual } from './Dates';
 import Logo from './BANNER.png';
 import styles from './ConstancyVoucherStyles';
 
-
 const actualData = obtenerFechaEscrita();
 const anio = obtenerAnioActual();
+
 const ConstancyVoucher = ({ reservation }) => (
     <Document>
         <Page size="A4">
@@ -16,17 +15,21 @@ const ConstancyVoucher = ({ reservation }) => (
                     <View style={styles.headerSection}>
                         <Image style={styles.banner} src={Logo} />
                     </View>
-                    <Text style={styles.headerText}>“AÑO DEL BICENTENARIO, DE LA CONSOLIDACIÓN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIÓN DE LAS HEROICAS DE JUNÍN Y AYACUCHO”</Text>
+                    <Text style={styles.headerText}>
+                        “AÑO DEL BICENTENARIO, DE LA CONSOLIDACIÓN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIÓN DE LAS HEROICAS DE JUNÍN Y AYACUCHO”
+                    </Text>
                 </View>
 
                 <Text style={styles.h1}>CONSTANCIA Nº {reservation.id}-{anio}-D. UIFI-UNAMBA</Text>
 
-                <Text style={styles.p}>EL DIRECTOR DE LA UNIDAD DE INVESTIGACIÓN DE LA FACULTAD DE INGENIERÍA DE LA UNIVERSIDAD NACIONAL MICAELA BASTIDAS DE APURÍMAC</Text>
+                <Text style={styles.p}>
+                    EL DIRECTOR DE LA UNIDAD DE INVESTIGACIÓN DE LA FACULTAD DE INGENIERÍA DE LA UNIVERSIDAD NACIONAL MICAELA BASTIDAS DE APURÍMAC
+                </Text>
 
                 <Text style={styles.p}>
-                    Que, el Bach. {reservation.student.firstNames}  {reservation.student.lastName}, identificada con DNI N°
-                    {reservation.student.dni} y Código de estudiante N° {reservation.student.studentCode} y {reservation.studentTwo.firstNames}  {reservation.studentTwo.lastName}, identificada con DNI N°
-                    {reservation.studentTwo.dni} y Código de estudiante N° de la Escuela Académico Profesional de {reservation.student?.career?.name} de la Facultad de Ingeniería, presentaron el
+                    Que, el Bach. {reservation.student.firstNames.toUpperCase()} {reservation.student.lastName.toUpperCase()}, identificada con DNI N°
+                    {reservation.student.dni} y Código de estudiante N° {reservation.student.studentCode} y {reservation.studentTwo.firstNames.toUpperCase()} {reservation.studentTwo.lastName.toUpperCase()}, identificada con DNI N°
+                    {reservation.studentTwo.dni} y Código de estudiante N° {reservation.studentTwo.studentCode} de la Escuela Académico Profesional de {reservation.student?.career?.name} de la Facultad de Ingeniería, presentaron el
                     Proyecto de Tesis: “{reservation.title}” , para ser evaluado mediante FILTRO DE SIMILITUD de acuerdo al Art.24 del Reglamento de investigación vigente.
                 </Text>
 
@@ -38,9 +41,13 @@ const ConstancyVoucher = ({ reservation }) => (
                     <Text style={styles.ulLi}>• Excluir fuentes 15 palabras</Text>
                 </View>
 
-                <Text style={styles.p}>El cual obtuvo un {reservation.projectSimilarity}% DE SIMILITUD tal como se puede evidenciar en el reporte adjunto.</Text>
+                <Text style={styles.p}>
+                    El cual obtuvo un {reservation.projectSimilarity}% DE SIMILITUD tal como se puede evidenciar en el reporte adjunto.
+                </Text>
 
-                <Text style={styles.p}>Se expide la presente, a solicitud del interesado,{actualData}, para los fines que estime conveniente.</Text>
+                <Text style={styles.p}>
+                    Se expide la presente, a solicitud del interesado, {actualData}, para los fines que estime conveniente.
+                </Text>
 
                 <View style={styles.footerText}>
                     <Text>Atentamente,</Text>

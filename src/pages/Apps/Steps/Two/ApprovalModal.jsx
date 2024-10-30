@@ -7,6 +7,7 @@ import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
+import PropTypes from 'prop-types';
 
 const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => {
     const validationSchema = Yup.object({
@@ -15,7 +16,6 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
         meetRequirements: Yup.string().required('Selecciona una opción'),
         observation: Yup.string(),
     });
-    console.log(adviserOptions);
 
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
@@ -29,18 +29,26 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
         observation: project?.observations || '',
         title: project?.title || '',
         projectSimilarity: project?.titleReservationStepOne?.projectSimilarity || 0,
-        adviser: null, // Campo para el asesor seleccionado
+        adviser: null,
+        coadviser: null,
     };
 
-   const handleSubmit = async (values, { setSubmitting }) => {
+    const handleSubmit = async (values, { setSubmitting }) => {
+        const transformedValues = {
+            ...values,
+            adviser: values.adviser?.value || values.adviser, // Extract the value if it's an object
+            coadviser: values.coadviser?.value || values.coadviser,
+        };
         try {
-            onSave(project.id, values);
+            await onSave(project?.id, transformedValues);
+            Swal.fire('Éxito', project ? 'Proyecto actualizado correctamente.' : 'Proyecto creado correctamente.', 'success');
         } catch (error) {
             Swal.fire('Error', 'Hubo un error al guardar los datos: ' + error.message, 'error');
+        } finally {
             setSubmitting(false);
         }
     };
-
+    
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" open={isOpen} onClose={onClose} className="relative z-[51]">
@@ -51,20 +59,20 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                             <button type="button" onClick={onClose} className="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none">
                                 <IconX />
                             </button>
-                            <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">Editar Proyecto</div>
+                            <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
+                                {project ? 'Editar Proyecto' : 'Crear Proyecto'}
+                            </div>
                             <div className="p-5">
                                 <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} enableReinitialize>
-                                    {({ errors, submitCount, setFieldValue, values }) => (
+                                    {({ errors, submitCount, setFieldValue, values, isSubmitting }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                            {console.log('Valor de projectSimilarity en Formik:', values.projectSimilarity)}
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
                                                 <Field name="studentCode" type="text" id="studentCode" readOnly placeholder="Ingrese el código del estudiante" maxLength={6} className="form-input" />
                                                 <ErrorMessage name="studentCode" component="div" className="text-danger mt-1" />
                                             </div>
 
-
-                                            {project.titleReservationStepOne.studentTwo && (
+                                            {project?.titleReservationStepOne.studentTwo && (
                                                 <div className={submitCount && errors.studentTwoCode ? 'has-error' : ''}>
                                                     <label htmlFor="studentTwoCode">Segundo Estudiante</label>
                                                     <Field
@@ -80,29 +88,13 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                 </div>
                                             )}
 
-                                            {/* Campo para el título del proyecto */}
-                                            {/* <div className={submitCount && errors.title ? 'has-error' : ''}>
-                                                <label htmlFor="title">Título del Proyecto</label>
-                                                <Field
-                                                    name="title"
-                                                    type="text"
-                                                    id="title"
-                                                    placeholder="No existente"
-                                                    className="form-input"
-                                                    readOnly    
-                                                />
-                                                <ErrorMessage name="title" component="div" className="text-danger mt-1" />
-                                            </div> */}
-
-                                            {/* Select para la línea de investigación */}
-       
                                             <div className="col-span-1">
                                                 <label htmlFor="adviser">Seleccionar Asesor</label>
                                                 <Select
                                                     id="adviser"
                                                     styles={styles}
                                                     options={adviserOptions
-                                                        .filter((adviser) => adviser.id && adviser.firstNames && adviser.lastName) // Filtra datos completos
+                                                        .filter((adviser) => adviser.id !== values.coadviser?.value)
                                                         .map((adviser) => ({
                                                             value: adviser.id,
                                                             label: `${adviser.firstNames} ${adviser.lastName}`,
@@ -112,21 +104,25 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                     }}
                                                     placeholder="Seleccione un asesor..."
                                                 />
-                                            </div> 
-                                            {/* Campo para la similitud del proyecto */}
-                                            {/* <div className="col-span-1">
-                                                <label htmlFor="projectSimilarity">Similitud del proyecto</label>
-                                                <Field
-                                                    name="projectSimilarity"
-                                                    type="number"
-                                                    id="projectSimilarity"
-                                                    placeholder="Ingrese valores decimales.."
-                                                    className="form-input"
-                                                    onChange={(e) => setFieldValue('projectSimilarity', parseFloat(e.target.value) || '')}
+                                            </div>
+                                            <div className="col-span-1">
+                                                <label htmlFor="coadviser">Seleccionar Coasesor</label>
+                                                <Select
+                                                    id="coadviser"
+                                                    styles={styles}
+                                                    options={adviserOptions
+                                                        .filter((adviser) => adviser.id !== values.adviser?.value)
+                                                        .map((adviser) => ({
+                                                            value: adviser.id,
+                                                            label: `${adviser.firstNames} ${adviser.lastName}`,
+                                                        }))}
+                                                    onChange={(option) => {
+                                                        setFieldValue('coadviser', option);
+                                                    }}
+                                                    placeholder="Seleccione un coasesor..."
+                                                    isDisabled={!values.adviser}
                                                 />
-                                                <ErrorMessage name="projectSimilarity" component="div" className="text-danger mt-1" />
-                                            </div> */}
-
+                                            </div>
 
                                             <div className={submitCount && errors.meetRequirements ? 'has-error' : ''}>
                                                 <label htmlFor="meetRequirements">Proyecto Aprobado</label>
@@ -152,8 +148,8 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                 <button type="button" className="btn btn-outline-danger" onClick={onClose}>
                                                     Cancelar
                                                 </button>
-                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
-                                                    Actualizar
+                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4" disabled={isSubmitting}>
+                                                    {project ? "Actualizar" : "Crear"}
                                                 </button>
                                             </div>
                                         </Form>
@@ -166,6 +162,14 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
             </Dialog>
         </Transition>
     );
+};
+
+ApprovalModal.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onSave: PropTypes.func.isRequired,
+    project: PropTypes.object,
+    adviserOptions: PropTypes.array.isRequired,
 };
 
 export default ApprovalModal;

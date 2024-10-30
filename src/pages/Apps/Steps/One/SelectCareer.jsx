@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector } from 'react-redux'; // Para acceder al estado global
 import Select from 'react-select';
 import { ErrorMessage } from 'formik';

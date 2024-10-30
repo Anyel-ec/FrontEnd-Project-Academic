@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import ConstancyVoucherOne from './ConstancyVoucherOne';
+import { obtenerAnioActual } from './Dates';
 import ConstancyVoucherTwo from './ConstancyVoucherTwo';
 import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importación es correcto
 const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => {
@@ -11,7 +12,8 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
     const totalPages = Math.ceil(titleReservations.length / itemsPerPage);
 
     const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
-
+    const anio = obtenerAnioActual();
+    console.log('anioActual', anio)
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentReservations = titleReservations.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
@@ -94,13 +96,13 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                                         {reservation.meetsRequirements ? (
                                             reservation.studentTwo ? (
 
-                                            <PDFDownloadLink document={<ConstancyVoucherTwo reservation={reservation} />} fileName="constancia.pdf">
+                                            <PDFDownloadLink document={<ConstancyVoucherTwo reservation={reservation} />} fileName={`constancia-${reservation.id}-${obtenerAnioActual()}.pdf`}>
                                                 {({ blob, url, loading, error }) =>
-                                                    loading ? 'Cargando documento...' : <button className="btn btn-sm btn-outline-primary">Descargar Comprobante D</button>
+                                                    loading ? 'Cargando documento...' : <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
                                                 }
                                             </PDFDownloadLink>
                                             ):(
-                                                <PDFDownloadLink document={<ConstancyVoucherOne reservation={reservation} />} fileName="constancia.pdf">
+                                                <PDFDownloadLink document={<ConstancyVoucherOne reservation={reservation} />} fileName={`constancia-${reservation.id}-${obtenerAnioActual()}.pdf`}>
                                                 {({ blob, url, loading, error }) =>
                                                     loading ? 'Cargando documento...' : <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
                                                 }
@@ -125,7 +127,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="10" className="px-4 py-2 text-center">
+                                <td colSpan="11" className="px-4 py-2 text-center">
                                     No hay reservaciones disponibles
                                 </td>
                             </tr>

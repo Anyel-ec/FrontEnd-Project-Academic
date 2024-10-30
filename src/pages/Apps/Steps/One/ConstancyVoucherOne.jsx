@@ -1,4 +1,3 @@
-import React from 'react';
 import { Document, Page, View, Text, Image } from '@react-pdf/renderer';
 import PropTypes from 'prop-types';
 import { obtenerFechaEscrita, obtenerAnioActual } from './Dates'
@@ -24,7 +23,7 @@ const ConstancyVoucher = ({ reservation }) => (
                 <Text style={styles.p}>EL DIRECTOR DE LA UNIDAD DE INVESTIGACIÓN DE LA FACULTAD DE INGENIERÍA DE LA UNIVERSIDAD NACIONAL MICAELA BASTIDAS DE APURÍMAC</Text>
 
                 <Text style={styles.p}>
-                    Que, el Bach. {reservation.student.firstNames}  {reservation.student.lastName}, identificada con DNI N°
+                    Que, el Bach. {reservation.student.firstNames.toUpperCase()}  {reservation.student.lastName.toUpperCase()}, identificada con DNI N°
                     {reservation.student.dni} y Código de estudiante N° {reservation.student.studentCode} de la Escuela Académico Profesional de {reservation.student?.career?.name} de la Facultad de Ingeniería, presentó el
                     Proyecto de Tesis: “{reservation.title}” , para ser evaluado mediante FILTRO DE SIMILITUD de acuerdo al Art.24 del Reglamento de investigación vigente.
                 </Text>

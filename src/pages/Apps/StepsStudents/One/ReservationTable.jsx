@@ -81,7 +81,7 @@ const ReservationTable = ({ titleReservations, apiError }) => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="10" className="px-4 py-2 text-center">
+                                <td colSpan="11" className="px-4 py-2 text-center">
                                     No hay reservaciones disponibles
                                 </td>
                             </tr>

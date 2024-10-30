@@ -51,7 +51,7 @@ const addProjectApproval = async (projectApproval) => {
 
 const editProjectApproval = async (id, projectApproval) => {
     try {
-        const response = await axios.put(`${PROJECTAPPROVAL_API_URL}${id}`, projectApproval, {
+        const response = await axios.put(`${PROJECTAPPROVAL_API_URL}/${id}`, projectApproval, {
             headers: {
                 Authorization: `Bearer ${getAuthToken()}`,
             },
