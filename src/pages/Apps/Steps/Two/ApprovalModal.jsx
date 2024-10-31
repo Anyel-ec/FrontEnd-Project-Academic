@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
 import PropTypes from 'prop-types';
 
-const ApprovalModal = ({ isOpen, onClose, onSave, adviserOptions }) => {
+const ApprovalModal = ({ isOpen, onClose, currentReservation, adviserOptions }) => {
     const validationSchema = Yup.object({
         studentCode: Yup.string().max(6, 'Máximo 6 caracteres').required('Requerido'),
         title: Yup.string(),
@@ -19,17 +19,20 @@ const ApprovalModal = ({ isOpen, onClose, onSave, adviserOptions }) => {
 
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
-
-    const handleSubmit = async (values, { setSubmitting }) => {
-        try {
-            await onSave(values);
-            Swal.fire('Éxito', 'Datos guardados correctamente.', 'success');
-        } catch (error) {
-            Swal.fire('Error', 'Hubo un error al guardar los datos: ' + error.message, 'error');
-        } finally {
-            setSubmitting(false);
-        }
+    
+const initialValues = {
+        studentCode: currentReservation?.student?.studentCode || 'N/A',
+        studentTwoCode: currentReservation?.studentTwo?.studentCode || '',
+        studentFirstNames: currentReservation?.student?.firstNames || 'N/A',
+        studentTwoFirstNames: currentReservation?.studentTwo?.firstNames || '',
+        meetRequirements: currentReservation?.meetsRequirements ? 'yes' : 'no',
+        observation: currentReservation?.observations || '',
+        title: currentReservation?.title || '',
+        projectSimilarity: currentReservation?.projectSimilarity || 0,
+        adviser: null,
+        coadviser: null,
     };
+
     
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -42,33 +45,71 @@ const ApprovalModal = ({ isOpen, onClose, onSave, adviserOptions }) => {
                                 <IconX />
                             </button>
                             <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
-                                {isOpen ? 'Editar Proyecto' : 'Crear Proyecto'}
+                                {currentReservation ? 'Editar Proyecto' : 'Crear Proyecto'}
                             </div>
                             <div className="p-5">
-                                <Formik initialValues={{}} validationSchema={validationSchema} onSubmit={handleSubmit}>
-                                    {({ errors, setFieldValue, isSubmitting }) => (
+                            {/* onSubmit={handleSubmit} */}
+                                <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize>
+                                    {({ errors, submitCount, setFieldValue, values, isSubmitting }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                            <div className={errors.studentCode ? 'has-error' : ''}>
+                                            <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
-                                                <Field name="studentCode" type="text" id="studentCode" placeholder="Ingrese el código del estudiante" maxLength={6} className="form-input" />
+                                                <Field name="studentCode" type="text" id="studentCode" readOnly placeholder="Ingrese el código del estudiante" maxLength={6} className="form-input" />
                                                 <ErrorMessage name="studentCode" component="div" className="text-danger mt-1" />
                                             </div>
 
+                                            {currentReservation?.studentTwo && (
+                                                <div className={submitCount && errors.studentTwoCode ? 'has-error' : ''}>
+                                                    <label htmlFor="studentTwoCode">Segundo Estudiante</label>
+                                                    <Field
+                                                        name="studentTwoCode"
+                                                        type="text"
+                                                        id="studentTwoCode"
+                                                        placeholder="Ingrese el código del segundo estudiante"
+                                                        maxLength={6}
+                                                        readOnly
+                                                        className="form-input"
+                                                    />
+                                                    <ErrorMessage name="studentTwoCode" component="div" className="text-danger mt-1" />
+                                                </div>
+                                            )}
                                             <div className="col-span-1">
                                                 <label htmlFor="adviser">Seleccionar Asesor</label>
                                                 <Select
                                                     id="adviser"
                                                     styles={styles}
-                                                    options={adviserOptions.map((adviser) => ({
-                                                        value: adviser.id,
-                                                        label: `${adviser.firstNames} ${adviser.lastName}`,
-                                                    }))}
-                                                    onChange={(option) => setFieldValue('adviser', option)}
+                                                    options={adviserOptions
+                                                        .filter((adviser) => adviser.id !== values.coadviser?.value)
+                                                        .map((adviser) => ({
+                                                            value: adviser.id,
+                                                            label: `${adviser.firstNames} ${adviser.lastName}`,
+                                                        }))}
+                                                    onChange={(option) => {
+                                                        setFieldValue('adviser', option);
+                                                    }}
                                                     placeholder="Seleccione un asesor..."
                                                 />
                                             </div>
+                                            <div className="col-span-1">
+                                                <label htmlFor="coadviser">Seleccionar Coasesor</label>
+                                                <Select
+                                                    id="coadviser"
+                                                    styles={styles}
+                                                    options={adviserOptions
+                                                        .filter((adviser) => adviser.id !== values.adviser?.value)
+                                                        .map((adviser) => ({
+                                                            value: adviser.id,
+                                                            label: `${adviser.firstNames} ${adviser.lastName}`,
+                                                        }))}
+                                                    onChange={(option) => {
+                                                        setFieldValue('coadviser', option);
+                                                    }}
+                                                    placeholder="Seleccione un coasesor..."
+                                                    isDisabled={!values.adviser}
+                                                />
+                                            </div>
 
-                                            <div className={errors.meetRequirements ? 'has-error' : ''}>
+                                            <div className={submitCount && errors.meetRequirements ? 'has-error' : ''}>
                                                 <label htmlFor="meetRequirements">Proyecto Aprobado</label>
                                                 <div className="flex gap-4">
                                                     <label>
@@ -82,7 +123,6 @@ const ApprovalModal = ({ isOpen, onClose, onSave, adviserOptions }) => {
                                                 </div>
                                                 <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" />
                                             </div>
-
                                             <div className="col-span-2">
                                                 <label htmlFor="observation">Observaciones</label>
                                                 <Field name="observation" as="textarea" id="observation" placeholder="Ingrese observaciones" className="form-input" />
@@ -94,7 +134,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, adviserOptions }) => {
                                                     Cancelar
                                                 </button>
                                                 <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4" disabled={isSubmitting}>
-                                                    {isOpen ? "Actualizar" : "Crear"}
+                                                    {currentReservation ? "Actualizar" : "Crear"}
                                                 </button>
                                             </div>
                                         </Form>
@@ -109,11 +149,6 @@ const ApprovalModal = ({ isOpen, onClose, onSave, adviserOptions }) => {
     );
 };
 
-ApprovalModal.propTypes = {
-    isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    onSave: PropTypes.func.isRequired,
-    adviserOptions: PropTypes.array.isRequired,
-};
+
 
 export default ApprovalModal;
