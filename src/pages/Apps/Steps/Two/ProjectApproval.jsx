@@ -3,82 +3,72 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
 import ApprovalTable from './ApprovalTable';
+import ApprovalModal from './ApprovalModal';
 
 const ProjectApproval = () => {
     const dispatch = useDispatch();
     const [reservacionesEstudiantes, setReservacionesEstudiantes] = useState([]);
-    const [queryBusqueda, setQueryBusqueda] = useState('');
-
+    const [addProjectModal, setAddProjectModal] = useState(false);
+    const [editingReservation, setEditingReservation] = useState(null);
+    
     const obtenerReservacionesTitulo = useCallback(async () => {
         try {
             const reservaciones = await titleReservationsService.getTitleReservations();
-
-            // Filtrar las reservaciones para mostrar solo las que cumplen con los requisitos
             const reservacionesCumplenRequisitos = reservaciones
-                .filter((reservacion) => reservacion.meetsRequirements) // Solo las que cumplen requisitos
-                .flatMap((reservacion) => {
-                    const entradaBase = {
-                        ...reservacion,
-                        estudiantes: [{ ...reservacion.student }],
-                    };
-                    if (reservacion.studentTwo) {
-                        entradaBase.estudiantes.push({ ...reservacion.studentTwo });
-                    }
-                    return entradaBase;
-                });
-
-            // Filtrar estudiantes según el texto de búsqueda
-            const reservacionesFiltradas = reservacionesCumplenRequisitos.filter((reservacion) =>
-                reservacion.estudiantes.some(
-                    (estudiante) =>
-                        estudiante.firstNames.toLowerCase().includes(queryBusqueda.toLowerCase()) ||
-                        estudiante.lastName.toLowerCase().includes(queryBusqueda.toLowerCase()) ||
-                        estudiante.studentCode.toLowerCase().includes(queryBusqueda.toLowerCase())
-                )
-            );
-            setReservacionesEstudiantes(reservacionesFiltradas);
+                .filter((reservacion) => reservacion.meetsRequirements)
+                .map((reservacion) => ({
+                    ...reservacion,
+                    estudiantes: [
+                        { ...reservacion.student },
+                        ...(reservacion.studentTwo ? [reservacion.studentTwo] : [])
+                    ]
+                }));
+                
+            setReservacionesEstudiantes(reservacionesCumplenRequisitos);
         } catch (error) {
             console.error('Error al obtener las reservaciones de títulos:', error);
         }
-    }, [queryBusqueda]);
+    }, []);
+
+    // Function to open the modal and set the selected project for editing
+    const editReservation = (reservation) => {
+        setEditingReservation(reservation);
+        setAddProjectModal(true);
+    };
+
+    // Function to close the modal
+    const closeModal = () => {
+        setAddProjectModal(false);
+        setEditingReservation(null);
+    };
+
+    // Save function to handle the form submission in the modal
+    const handleSave = async (updatedReservation) => {
+        // Logic to save the edited reservation (could be an API call)
+        console.log("Updated reservation:", updatedReservation);
+        closeModal(); // Close the modal after saving
+    };
 
     useEffect(() => {
-        dispatch(setPageTitle('Detalles de Estudiantes - Paso 2'));
+        dispatch(setPageTitle('Comprobación de Proyecto'));
         obtenerReservacionesTitulo();
     }, [dispatch, obtenerReservacionesTitulo]);
 
-    const formatearFecha = (dateString) => {
-        if (!dateString) return 'N/A';
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-        return new Date(dateString).toLocaleString('es-ES', options);
-    };
-
-    // const manejarCambioBusqueda = (event) => {
-    //     setQueryBusqueda(event.target.value);
-    // };
-
     return (
         <div className="pt-5">
-            <div className="grid grid-cols-1 mb-5">
-                        {/* <input
-                            type="text"
-                            className="form-input p-2 w-full mt-3"
-                            placeholder="Buscar por nombre, apellido o código"
-                            value={queryBusqueda}
-                            onChange={manejarCambioBusqueda}
-                            /> */}
-                            <div className="mb-5">
-                                <h5 className="font-semibold text-lg dark:text-white-light">Detalles de Estudiantes - Paso 2</h5>
-                            </div>
-                <div className="panel lg:col-span-2 xl:col-span-3">
-                    <div className="mb-5">
-                        <ApprovalTable
-                            reservacionesEstudiantes={reservacionesEstudiantes}
-                            formatearFecha={formatearFecha}
-                        />
-                    </div>
-                </div>
-            </div>
+            <h1 className="text-2xl font-bold mb-5">Comprobación de Proyecto</h1>
+
+            {/* Pass editReservation as onEdit to ApprovalTable */}
+            <ApprovalTable reservacionesEstudiantes={reservacionesEstudiantes} onEdit={editReservation} />
+            
+            {/* Pass editingReservation and handleSave to ApprovalModal */}
+            <ApprovalModal
+                isOpen={addProjectModal}
+                onClose={closeModal}
+                project={editingReservation}
+                onSave={handleSave}
+                adviserOptions={[]} // Replace with actual adviser options
+            />
         </div>
     );
 };

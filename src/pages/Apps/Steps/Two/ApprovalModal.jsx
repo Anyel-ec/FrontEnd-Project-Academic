@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
 import PropTypes from 'prop-types';
 
-const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => {
+const ApprovalModal = ({ isOpen, onClose, onSave, adviserOptions }) => {
     const validationSchema = Yup.object({
         studentCode: Yup.string().max(6, 'Máximo 6 caracteres').required('Requerido'),
         title: Yup.string(),
@@ -20,28 +20,10 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
 
-    const initialValues = {
-        studentCode: project?.titleReservationStepOne.student?.studentCode || 'N/A',
-        studentTwoCode: project?.titleReservationStepOne.studentTwo?.studentCode || '',
-        studentFirstNames: project?.titleReservationStepOne.student?.firstNames || 'N/A',
-        studentTwoFirstNames: project?.titleReservationStepOne.studentTwo?.firstNames || '',
-        meetRequirements: project?.titleReservationStepOne.meetsRequirements ? 'yes' : 'no',
-        observation: project?.observations || '',
-        title: project?.title || '',
-        projectSimilarity: project?.titleReservationStepOne?.projectSimilarity || 0,
-        adviser: null,
-        coadviser: null,
-    };
-
     const handleSubmit = async (values, { setSubmitting }) => {
-        const transformedValues = {
-            ...values,
-            adviser: values.adviser?.value || values.adviser, // Extract the value if it's an object
-            coadviser: values.coadviser?.value || values.coadviser,
-        };
         try {
-            await onSave(project?.id, transformedValues);
-            Swal.fire('Éxito', project ? 'Proyecto actualizado correctamente.' : 'Proyecto creado correctamente.', 'success');
+            await onSave(values);
+            Swal.fire('Éxito', 'Datos guardados correctamente.', 'success');
         } catch (error) {
             Swal.fire('Error', 'Hubo un error al guardar los datos: ' + error.message, 'error');
         } finally {
@@ -60,71 +42,33 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                 <IconX />
                             </button>
                             <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
-                                {project ? 'Editar Proyecto' : 'Crear Proyecto'}
+                                {isOpen ? 'Editar Proyecto' : 'Crear Proyecto'}
                             </div>
                             <div className="p-5">
-                                <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} enableReinitialize>
-                                    {({ errors, submitCount, setFieldValue, values, isSubmitting }) => (
+                                <Formik initialValues={{}} validationSchema={validationSchema} onSubmit={handleSubmit}>
+                                    {({ errors, setFieldValue, isSubmitting }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                            <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
+                                            <div className={errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
-                                                <Field name="studentCode" type="text" id="studentCode" readOnly placeholder="Ingrese el código del estudiante" maxLength={6} className="form-input" />
+                                                <Field name="studentCode" type="text" id="studentCode" placeholder="Ingrese el código del estudiante" maxLength={6} className="form-input" />
                                                 <ErrorMessage name="studentCode" component="div" className="text-danger mt-1" />
                                             </div>
-
-                                            {project?.titleReservationStepOne.studentTwo && (
-                                                <div className={submitCount && errors.studentTwoCode ? 'has-error' : ''}>
-                                                    <label htmlFor="studentTwoCode">Segundo Estudiante</label>
-                                                    <Field
-                                                        name="studentTwoCode"
-                                                        type="text"
-                                                        id="studentTwoCode"
-                                                        placeholder="Ingrese el código del segundo estudiante"
-                                                        maxLength={6}
-                                                        readOnly
-                                                        className="form-input"
-                                                    />
-                                                    <ErrorMessage name="studentTwoCode" component="div" className="text-danger mt-1" />
-                                                </div>
-                                            )}
 
                                             <div className="col-span-1">
                                                 <label htmlFor="adviser">Seleccionar Asesor</label>
                                                 <Select
                                                     id="adviser"
                                                     styles={styles}
-                                                    options={adviserOptions
-                                                        .filter((adviser) => adviser.id !== values.coadviser?.value)
-                                                        .map((adviser) => ({
-                                                            value: adviser.id,
-                                                            label: `${adviser.firstNames} ${adviser.lastName}`,
-                                                        }))}
-                                                    onChange={(option) => {
-                                                        setFieldValue('adviser', option);
-                                                    }}
+                                                    options={adviserOptions.map((adviser) => ({
+                                                        value: adviser.id,
+                                                        label: `${adviser.firstNames} ${adviser.lastName}`,
+                                                    }))}
+                                                    onChange={(option) => setFieldValue('adviser', option)}
                                                     placeholder="Seleccione un asesor..."
                                                 />
                                             </div>
-                                            <div className="col-span-1">
-                                                <label htmlFor="coadviser">Seleccionar Coasesor</label>
-                                                <Select
-                                                    id="coadviser"
-                                                    styles={styles}
-                                                    options={adviserOptions
-                                                        .filter((adviser) => adviser.id !== values.adviser?.value)
-                                                        .map((adviser) => ({
-                                                            value: adviser.id,
-                                                            label: `${adviser.firstNames} ${adviser.lastName}`,
-                                                        }))}
-                                                    onChange={(option) => {
-                                                        setFieldValue('coadviser', option);
-                                                    }}
-                                                    placeholder="Seleccione un coasesor..."
-                                                    isDisabled={!values.adviser}
-                                                />
-                                            </div>
 
-                                            <div className={submitCount && errors.meetRequirements ? 'has-error' : ''}>
+                                            <div className={errors.meetRequirements ? 'has-error' : ''}>
                                                 <label htmlFor="meetRequirements">Proyecto Aprobado</label>
                                                 <div className="flex gap-4">
                                                     <label>
@@ -138,6 +82,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                 </div>
                                                 <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" />
                                             </div>
+
                                             <div className="col-span-2">
                                                 <label htmlFor="observation">Observaciones</label>
                                                 <Field name="observation" as="textarea" id="observation" placeholder="Ingrese observaciones" className="form-input" />
@@ -149,7 +94,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                     Cancelar
                                                 </button>
                                                 <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4" disabled={isSubmitting}>
-                                                    {project ? "Actualizar" : "Crear"}
+                                                    {isOpen ? "Actualizar" : "Crear"}
                                                 </button>
                                             </div>
                                         </Form>
@@ -168,7 +113,6 @@ ApprovalModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
-    project: PropTypes.object,
     adviserOptions: PropTypes.array.isRequired,
 };
 
