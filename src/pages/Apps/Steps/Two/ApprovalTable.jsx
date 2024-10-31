@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ApprovalModal from './ApprovalModal';
 
 const ApprovalTable = ({ reservacionesEstudiantes, formatearFecha }) => {
     return (
@@ -13,8 +14,8 @@ const ApprovalTable = ({ reservacionesEstudiantes, formatearFecha }) => {
                         <th>Proyecto de Tesis</th>
                         <th>Similitud</th>
                         <th>Última Actualización</th>
+                        <th className='!text-center'>Acciones</th>
                     </tr>
-
                 </thead>
                 <tbody className="dark:text-white-dark">
                     {reservacionesEstudiantes.map((reservacion) => {
@@ -22,28 +23,36 @@ const ApprovalTable = ({ reservacionesEstudiantes, formatearFecha }) => {
                         return (
                             <tr key={reservacion.id}>
                                 <td>
-                                {reservacion.student.firstNames} {reservacion.student.lastName}
-                                {reservacion.studentTwo && (
-                                    <>
-                                        <br />
-                                        {reservacion.studentTwo.firstNames} {reservacion.studentTwo.lastName}
-                                    </>
-                                )}
-                            </td>
-                            {/* Códigos de estudiantes */}
-                            <td>
-                                {reservacion.student.studentCode || 'N/A'}
-                                {reservacion.studentTwo && (
-                                    <>
-                                        <br />
-                                        {reservacion.studentTwo.studentCode || 'N/A'}
-                                    </>
-                                )}
-                            </td>
+                                    {reservacion.student.firstNames} {reservacion.student.lastName}
+                                    {reservacion.studentTwo && (
+                                        <>
+                                            <br />
+                                            {reservacion.studentTwo.firstNames} {reservacion.studentTwo.lastName}
+                                        </>
+                                    )}
+                                </td>
+                                {/* Códigos de estudiantes */}
+                                <td>
+                                    {reservacion.student.studentCode || 'N/A'}
+                                    {reservacion.studentTwo && (
+                                        <>
+                                            <br />
+                                            {reservacion.studentTwo.studentCode || 'N/A'}
+                                        </>
+                                    )}
+                                </td>
                                 <td>{reservacion.student.career?.name || 'N/A'}</td>
                                 <td>{reservacion.title || 'Sin título'}</td>
                                 <td>{`${reservacion.projectSimilarity || 0}%`}</td>
                                 <td>{formatearFecha(reservacion.updatedAt)}</td>
+                                <td className="flex gap-4 items-center justify-center">
+                                    <button onClick={() => onEdit(project)} className="btn btn-sm btn-outline-primary">
+                                        Editar
+                                    </button>
+                                    <button onClick={() => onDelete(project.id)} className="btn btn-sm btn-outline-danger">
+                                        Eliminar
+                                    </button>
+                                </td>
                             </tr>
                         );
                     })}

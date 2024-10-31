@@ -53,24 +53,24 @@ const ProjectApproval = () => {
         return new Date(dateString).toLocaleString('es-ES', options);
     };
 
-    const manejarCambioBusqueda = (event) => {
-        setQueryBusqueda(event.target.value);
-    };
+    // const manejarCambioBusqueda = (event) => {
+    //     setQueryBusqueda(event.target.value);
+    // };
 
     return (
         <div className="pt-5">
             <div className="grid grid-cols-1 mb-5">
-                <div className="panel lg:col-span-2 xl:col-span-3">
-                    <div className="mb-5">
-                        <h5 className="font-semibold text-lg dark:text-white-light">Detalles de Estudiantes - Paso 2</h5>
-                        <input
+                        {/* <input
                             type="text"
                             className="form-input p-2 w-full mt-3"
                             placeholder="Buscar por nombre, apellido o código"
                             value={queryBusqueda}
                             onChange={manejarCambioBusqueda}
-                        />
-                    </div>
+                            /> */}
+                            <div className="mb-5">
+                                <h5 className="font-semibold text-lg dark:text-white-light">Detalles de Estudiantes - Paso 2</h5>
+                            </div>
+                <div className="panel lg:col-span-2 xl:col-span-3">
                     <div className="mb-5">
                         <ApprovalTable
                             reservacionesEstudiantes={reservacionesEstudiantes}
