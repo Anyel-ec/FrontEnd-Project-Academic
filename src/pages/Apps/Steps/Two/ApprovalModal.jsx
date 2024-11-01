@@ -1,24 +1,12 @@
 import { Dialog, Transition } from '@headlessui/react';
-import React,{ Fragment, useMemo } from 'react';
+import React,{ Fragment } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import Swal from 'sweetalert2';
 import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
-import PropTypes from 'prop-types';
 
 const ApprovalModal = ({ isOpen, onClose, onSave, currentReservation, adviserOptions }) => {
-    console.log('ApprovalModal renderizado con isOpen:', isOpen); // Verificar si el modal se abre
-
-    // const validationSchema = Yup.object({
-    //     studentCode: Yup.string().max(6, 'Máximo 6 caracteres').required('Requerido'),
-    //     title: Yup.string(),
-    //     meetRequirements: Yup.string().required('Selecciona una opción'),
-    //     observation: Yup.string(),
-    // });
-
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
     const initialValues = React.useMemo(() => ({

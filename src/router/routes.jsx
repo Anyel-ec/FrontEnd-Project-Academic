@@ -3,6 +3,7 @@ import Students from '../pages/Apps/Student/Students';
 import Teachers from '../pages/Apps/Teacher/Teachers';
 import Constancy from '../pages/Apps/Steps/One/TitleReservation';
 import ProjectAproval from '../pages/Apps/Steps/Two/ProjectApproval';
+import JuryAppointment from '../pages/Apps/Steps/Three/JuryAppointment';
 import ConstancyStudents from '../pages/Apps/StepsStudents/One/TitleReservation';
 import ThesisAdvisory from '../pages/Apps/ThesisAdvisory';
 import { ProtectedRoute, StudentRoute } from '../security/ProtectedRoute';
@@ -163,10 +164,18 @@ const routes = [
 
     },
     {
-        path: 'apps/paso/aprobación-de-proyecto',
+        path: 'apps/paso/aprobacion-de-proyecto',
         element: (
             <ProtectedRoute>
                 <ProjectAproval />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: 'apps/paso/asignacion-de-jurados',
+        element: (
+            <ProtectedRoute>
+                <JuryAppointment />
             </ProtectedRoute>
         ),
     },

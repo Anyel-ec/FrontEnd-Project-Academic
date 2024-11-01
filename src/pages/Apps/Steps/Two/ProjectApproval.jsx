@@ -46,7 +46,6 @@ const ProjectApproval = () => {
             const careerId = reservacion.student.career.id;
             const advisers = await teacherService.getTeachersByCareer(careerId);
             setAdvisers(advisers);
-            console.log('Docentes obtenidos:', advisers);
         } catch (error) {
             console.error('Error al obtener los docentes:', error);
         }
