@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment } from 'react';
+import React,{ Fragment, useMemo } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
@@ -9,31 +9,30 @@ import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
 import PropTypes from 'prop-types';
 
-const ApprovalModal = ({ isOpen, onClose, currentReservation, adviserOptions }) => {
-    const validationSchema = Yup.object({
-        studentCode: Yup.string().max(6, 'Máximo 6 caracteres').required('Requerido'),
-        title: Yup.string(),
-        meetRequirements: Yup.string().required('Selecciona una opción'),
-        observation: Yup.string(),
-    });
+const ApprovalModal = ({ isOpen, onClose, onSave, currentReservation, adviserOptions }) => {
+    console.log('ApprovalModal renderizado con isOpen:', isOpen); // Verificar si el modal se abre
+
+    // const validationSchema = Yup.object({
+    //     studentCode: Yup.string().max(6, 'Máximo 6 caracteres').required('Requerido'),
+    //     title: Yup.string(),
+    //     meetRequirements: Yup.string().required('Selecciona una opción'),
+    //     observation: Yup.string(),
+    // });
 
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
-    
-const initialValues = {
+    const initialValues = React.useMemo(() => ({
+        titleReservationStepOne: currentReservation?.id || '',
         studentCode: currentReservation?.student?.studentCode || 'N/A',
         studentTwoCode: currentReservation?.studentTwo?.studentCode || '',
         studentFirstNames: currentReservation?.student?.firstNames || 'N/A',
         studentTwoFirstNames: currentReservation?.studentTwo?.firstNames || '',
-        meetRequirements: currentReservation?.meetsRequirements ? 'yes' : 'no',
         observation: currentReservation?.observations || '',
-        title: currentReservation?.title || '',
-        projectSimilarity: currentReservation?.projectSimilarity || 0,
         adviser: null,
         coadviser: null,
-    };
-
+    }), [currentReservation]);
     
+
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" open={isOpen} onClose={onClose} className="relative z-[51]">
@@ -48,8 +47,26 @@ const initialValues = {
                                 {currentReservation ? 'Editar Proyecto' : 'Crear Proyecto'}
                             </div>
                             <div className="p-5">
-                            {/* onSubmit={handleSubmit} */}
-                                <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize>
+                                <Formik
+                                    initialValues={initialValues}
+                                    onSubmit={(values) => {
+                                        const transformedValues = {
+                                            titleReservationStepOne: {
+                                                id: values.titleReservationStepOne,
+                                            },
+                                            adviser: {
+                                                id: values.adviser ? values.adviser.value : null,
+                                            },
+                                            coadviser: values.coadviser ? { id: values.coadviser.value } : null,
+                                            observations: values.observation || '',
+                                        };
+                                    
+                                        console.log('Llamando a onSave con:', transformedValues); // Verificar que onSave se está llamando con los valores correctos
+                                        onSave(transformedValues);
+                                    }}
+                                    
+                                    enableReinitialize
+                                >
                                     {({ errors, submitCount, setFieldValue, values, isSubmitting }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
@@ -79,7 +96,7 @@ const initialValues = {
                                                     id="adviser"
                                                     styles={styles}
                                                     options={adviserOptions
-                                                        .filter((adviser) => adviser.id !== values.coadviser?.value)
+                                                        .filter((adviser) => adviser.id !== values.coadviser?.id)
                                                         .map((adviser) => ({
                                                             value: adviser.id,
                                                             label: `${adviser.firstNames} ${adviser.lastName}`,
@@ -96,7 +113,7 @@ const initialValues = {
                                                     id="coadviser"
                                                     styles={styles}
                                                     options={adviserOptions
-                                                        .filter((adviser) => adviser.id !== values.adviser?.value)
+                                                        .filter((adviser) => adviser.id !== values.adviser?.id)
                                                         .map((adviser) => ({
                                                             value: adviser.id,
                                                             label: `${adviser.firstNames} ${adviser.lastName}`,
@@ -107,21 +124,6 @@ const initialValues = {
                                                     placeholder="Seleccione un coasesor..."
                                                     isDisabled={!values.adviser}
                                                 />
-                                            </div>
-
-                                            <div className={submitCount && errors.meetRequirements ? 'has-error' : ''}>
-                                                <label htmlFor="meetRequirements">Proyecto Aprobado</label>
-                                                <div className="flex gap-4">
-                                                    <label>
-                                                        <Field type="radio" name="meetRequirements" value="yes" className="form-radio" />
-                                                        Sí
-                                                    </label>
-                                                    <label>
-                                                        <Field type="radio" name="meetRequirements" value="no" className="form-radio" />
-                                                        No
-                                                    </label>
-                                                </div>
-                                                <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className="col-span-2">
                                                 <label htmlFor="observation">Observaciones</label>
@@ -134,7 +136,7 @@ const initialValues = {
                                                     Cancelar
                                                 </button>
                                                 <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4" disabled={isSubmitting}>
-                                                    {currentReservation ? "Actualizar" : "Crear"}
+                                                    Crear
                                                 </button>
                                             </div>
                                         </Form>
@@ -148,7 +150,5 @@ const initialValues = {
         </Transition>
     );
 };
-
-
 
 export default ApprovalModal;

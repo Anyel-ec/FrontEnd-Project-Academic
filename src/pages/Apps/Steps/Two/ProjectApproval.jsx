@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
+import Swal from 'sweetalert2';
+
 import ApprovalTable from './ApprovalTable';
 import ApprovalModal from './ApprovalModal';
 import titleReservationsService from '../../../../api/titleReservationsService';
 import teacherService from '../../../../api/teacherService';
+import projectApprovalService from '../../../../api/projectApprovalService'; // Importa el servicio de aprobación de proyecto
 
 const ProjectApproval = () => {
     const dispatch = useDispatch();
@@ -13,6 +16,10 @@ const ProjectApproval = () => {
     const [selectedProject, setSelectedProject] = useState(null);
     const [advisers, setAdvisers] = useState([]);
 
+    useEffect(() => {
+        dispatch(setPageTitle('Comprobación de Proyecto'));
+        obtenerReservacionesTitulo();
+    }, [dispatch]);
     const obtenerReservacionesTitulo = useCallback(async () => {
         try {
             const reservaciones = await titleReservationsService.getTitleReservations();
@@ -26,19 +33,14 @@ const ProjectApproval = () => {
         } catch (error) {
             console.error('Error al obtener las reservaciones de títulos:', error);
         }
-    }, []);
-
-    useEffect(() => {
-        dispatch(setPageTitle('Comprobación de Proyecto'));
-        obtenerReservacionesTitulo();
-    }, [dispatch, obtenerReservacionesTitulo]);
+    }, [reservacionesEstudiantes]);
 
     const handleEdit = async (reservacion) => {
         setSelectedProject(reservacion);
         setIsModalOpen(true);
 
         console.log('Career ID:', reservacion.student.career.id);
-        
+
         // Obtener docentes por careerId de la reserva seleccionada
         try {
             const careerId = reservacion.student.career.id;
@@ -50,38 +52,60 @@ const ProjectApproval = () => {
         }
     };
 
-    const handleDelete = (projectId) => {
-        console.log('Eliminando el proyecto con ID:', projectId);
-        // Aquí agregar la lógica para eliminar el proyecto
+    const handleDelete = async (projectId) => {
+        try {
+            await projectApprovalService.deleteProjectApproval(projectId);
+            console.log('Eliminando el proyecto con ID:', projectId);
+            obtenerReservacionesTitulo(); // Refrescar la lista después de eliminar
+        } catch (error) {
+            console.error('Error al eliminar el proyecto:', error);
+        }
     };
 
-    const handleCloseModal = () => {
+    const handleSave = async (updatedProject) => {
+        console.log('Ejecutando handleSave en ProjectApproval'); // Agrega este console.log
+        try {
+            console.log('Datos recibidos para guardar:', updatedProject);
+
+            const projectData = {
+                titleReservationStepOne: {
+                    id: updatedProject.titleReservationStepOne.id,
+                },
+                adviser: {
+                    id: updatedProject.adviser.id,
+                },
+                coadviser: updatedProject.coadviser ? { id: updatedProject.coadviser.id } : null,
+                observations: updatedProject.observations,
+            };
+
+            console.log('Datos transformados para enviar:', projectData);
+
+            await projectApprovalService.addProjectApproval(projectData);
+            console.log('Proyecto creado:', projectData);
+            Swal.fire('Éxito', 'Proyecto creado correctamente.', 'success');
+
+            await obtenerReservacionesTitulo();
+            closeModal(); // Cerrar el modal automáticamente después de la actualización
+        } catch (error) {
+            console.error('Error al guardar el proyecto:', error);
+            Swal.fire('Error', 'Hubo un problema al guardar el proyecto.', 'error');
+        }
+    };
+
+    const closeModal = () => {
         setIsModalOpen(false);
         setSelectedProject(null);
-    };
-
-    const handleSave = async (id, updatedProject) => {
-        console.log('Actualizando proyecto:', id, updatedProject);
-        // Aquí agregar la lógica para guardar o actualizar el proyecto
-        setIsModalOpen(false);
-        obtenerReservacionesTitulo(); // Refrescar la lista después de guardar
     };
 
     return (
         <div className="pt-5">
             <h1 className="text-2xl font-bold mb-5">Comprobación de Proyecto</h1>
 
-            {/* Pasar handleEdit y handleDelete a ApprovalTable */}
-            <ApprovalTable
-                reservacionesEstudiantes={reservacionesEstudiantes}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-            />
+            <ApprovalTable reservacionesEstudiantes={reservacionesEstudiantes} onEdit={handleEdit} onDelete={handleDelete} />
 
-            {/* Modal para edición del proyecto */}
             <ApprovalModal
                 isOpen={isModalOpen}
-                onClose={handleCloseModal}
+                onClose={closeModal}
                 onSave={handleSave} // Asignar la función handleSave
                 currentReservation={selectedProject} // Enviar el proyecto seleccionado al modal
                 adviserOptions={advisers} // Pasar los docentes como opciones de asesor

@@ -39,12 +39,6 @@ const addProjectApproval = async (projectApproval) => {
     } catch (error) {
         console.error('Error en addProjectApproval:', error.response ? error.response.data : error.message);
 
-        // Ignorar el error 409 y continuar
-        if (error.response && error.response.status === 409) {
-            console.warn('Conflicto detectado, pero continuando...');
-            return; // Evita lanzar el error
-        }
-
         throw new Error('Error inesperado: ' + error.message);
     }
 };
@@ -68,7 +62,6 @@ const editProjectApproval = async (id, projectApproval) => {
         throw error;
     }
 };
-
 
 // Eliminar una reserva de título
 const deleteProjectApproval = async (id) => {
