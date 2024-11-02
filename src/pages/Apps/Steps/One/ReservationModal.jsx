@@ -31,7 +31,6 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
 
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
-            console.log('Valores enviados al backend:', values); // Verifica el valor de projectSimilarity aquí
             onSave(reservation.id, values);
         } catch (error) {
             Swal.fire('Error', 'Hubo un error al guardar los datos: ' + error.message, 'error');

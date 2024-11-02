@@ -56,8 +56,8 @@ const AppointmentTable = ({ currentProject, onEdit, onDelete }) => {
                                     </td>
                                     <td>{project.titleReservationStepOne.student.career?.name || 'N/A'}</td>
                                     <td>{project.titleReservationStepOne.title || 'Sin título'}</td>
-                                    <td>{`${project.adviser.firstNames}  ${project.adviser.lastName}`}</td>
-                                    <td>{project.coadviser ? `${project.coadviser.firstNames}  ${project.coadviser.lastName}` : 'N/A'}</td>
+                                    <td>{project.adviser ? `${project.adviser.firstNames || ' '} ${project.adviser.lastName || ' '}` : 'N/A'}</td>
+                                    <td>{project.coadviser ? `${project.coadviser.firstNames || ' '} ${project.coadviser.lastName || ' '}` : 'N/A'}</td>
                                     <td>{formatearFecha(project.updatedAt)}</td>
                                     <td className="flex gap-4 items-center justify-center">
                                         <button onClick={() => onEdit(project)} className="btn btn-sm btn-outline-primary">

@@ -10,7 +10,6 @@ const ApprovalTable = ({ projects, onEdit, onDelete, disabledProjects }) => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentProjects = projects.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
-    console.log('proyectos-tabla:', currentProjects);
     // for(let i = 0; i < currentProject.length; i++) {
     //     console.log("respuesta", currentProject[i])
     //     if(currentProject[i].titleReservationStepOne.id)  {
@@ -61,7 +60,7 @@ const ApprovalTable = ({ projects, onEdit, onDelete, disabledProjects }) => {
                                         )}
                                     </td>
                                     <td>{project.titleReservationStepOne.student.career?.name || 'N/A'}</td>
-                                    <td>{project.approvedProject ? 'SI' : 'NO'}</td>
+                                    <td>{project.approvedProject? 'Sí' : 'No'}</td>
                                     <td>{project.adviser ? `${project.adviser.firstNames || ' '} ${project.adviser.lastName || ' '}` : 'N/A'}</td>
                                     <td>{project.coadviser ? `${project.coadviser.firstNames || ' '} ${project.coadviser.lastName || ' '}` : 'N/A'}</td>
                                     <td>{formatearFecha(project.updatedAt)}</td>

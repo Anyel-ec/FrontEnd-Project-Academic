@@ -13,7 +13,6 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
 
     const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
     const anio = obtenerAnioActual();
-    console.log('anioActual', anio)
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentReservations = titleReservations.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);

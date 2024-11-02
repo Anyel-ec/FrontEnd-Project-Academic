@@ -10,16 +10,21 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
 
-    const initialValues = React.useMemo(() => ({
-        titleReservationStepOne: project?.titleReservationStepOne?.id || '',
-        studentCode: project?.titleReservationStepOne?.student?.studentCode || 'N/A',
-        studentTwoCode: project?.titleReservationStepOne?.studentTwo?.studentCode || '',
-        studentFirstNames: project?.titleReservationStepOne?.student?.firstNames || 'N/A',
-        studentTwoFirstNames: project?.titleReservationStepOne?.studentTwo?.firstNames || '',
-        observation: project?.titleReservationStepOne?.observations || '',
-        adviser: project?.adviser ? { value: project.adviser.id, label: `${project.adviser.firstNames} ${project.adviser.lastName}` } : null,
-        coadviser: project?.coadviser ? { value: project.coadviser.id, label: `${project.coadviser.firstNames} ${project.coadviser.lastName}` } : null,
-    }), [project, adviserOptions]);
+    const initialValues = React.useMemo(
+        () => ({
+            titleReservationStepOne: project?.titleReservationStepOne?.id || '',
+            studentCode: project?.titleReservationStepOne?.student?.studentCode || 'N/A',
+            studentTwoCode: project?.titleReservationStepOne?.studentTwo?.studentCode || '',
+            studentFirstNames: project?.titleReservationStepOne?.student?.firstNames || 'N/A',
+            studentTwoFirstNames: project?.titleReservationStepOne?.studentTwo?.firstNames || '',
+            observation: project?.titleReservationStepOne?.observations || '',
+            adviser: project?.adviser ? { value: project.adviser.id, label: `${project.adviser.firstNames} ${project.adviser.lastName}` } : null,
+            coadviser: project?.coadviser ? { value: project.coadviser.id, label: `${project.coadviser.firstNames} ${project.coadviser.lastName}` } : null,
+            approvedProject: project?.approvedProject ? 'yes' : 'no',
+        }),
+        [project, adviserOptions]
+    );
+    console.log('repsonse', project?.approvedProject);
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -47,10 +52,11 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                             },
                                             coadviser: values.coadviser ? { id: values.coadviser.value } : null,
                                             observations: values.observation || '',
+                                            approvedProject: values.approvedProject === 'yes', // Conversión a booleano
                                         };
 
                                         console.log('Llamando a onSave con:', transformedValues);
-                                        onSave(transformedValues, project.id); // Pasamos el ID del proyecto solo como argumento
+                                        onSave(transformedValues, project.id);
                                     }}
                                     enableReinitialize
                                 >
@@ -65,13 +71,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                             {project?.titleReservationStepOne?.studentTwo && (
                                                 <div className={submitCount && errors.studentTwoCode ? 'has-error' : ''}>
                                                     <label htmlFor="studentTwoCode">Segundo Estudiante</label>
-                                                    <Field
-                                                        name="studentTwoCode"
-                                                        type="text"
-                                                        id="studentTwoCode"
-                                                        readOnly
-                                                        className="form-input"
-                                                    />
+                                                    <Field name="studentTwoCode" type="text" id="studentTwoCode" readOnly className="form-input" />
                                                     <ErrorMessage name="studentTwoCode" component="div" className="text-danger mt-1" />
                                                 </div>
                                             )}
@@ -112,7 +112,20 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                     isDisabled={!values.adviser}
                                                 />
                                             </div>
-
+                                            <div>
+                                                <label htmlFor="approvedProject">Cumple Requisitos</label>
+                                                <div className="flex gap-4">
+                                                    <label>
+                                                        <Field type="radio" name="approvedProject" value="yes" className="form-radio" />
+                                                        Sí
+                                                    </label>
+                                                    <label>
+                                                        <Field type="radio" name="approvedProject" value="no" className="form-radio" />
+                                                        No
+                                                    </label>
+                                                </div>
+                                                <ErrorMessage name="approvedProject" component="div" className="text-danger mt-1" />
+                                            </div>
                                             <div className="col-span-2">
                                                 <label htmlFor="observation">Observaciones</label>
                                                 <Field name="observation" as="textarea" id="observation" placeholder="Ingrese observaciones" className="form-input" />
