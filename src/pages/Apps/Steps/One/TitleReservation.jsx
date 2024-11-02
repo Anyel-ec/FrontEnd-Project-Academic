@@ -102,7 +102,6 @@ const TitleReservation = () => {
         }
     };
 
-    // Añadir nueva reservación
     const addTitleReservations = async (selectedStudents) => {
         try {
             const titleReservationData = {
@@ -117,7 +116,11 @@ const TitleReservation = () => {
                 await fetchTitleReservations();
             }
         } catch (error) {
-            Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
+            if (error.response && error.response.data.includes('Ya existe una reserva con este título')) {
+                Swal.fire('Error', error.response.data, 'error');
+            } else {
+                Swal.fire('Error', 'Error inesperado: ' + error.message, 'error');
+            }
         }
     };
 
@@ -165,109 +168,43 @@ const TitleReservation = () => {
             }
         }
     }, []);
+
     const handleSaveReservation = async (reservationId, values) => {
-        if (values?.meetRequirements === 'yes') {
-            Swal.fire({
-                html: `
-                    <div style="font-size: 5rem;margin: 0; color: orange;">&#9888;</div>
-                    <span style="color: #000; margin-bottom: 0.25rem;font-weight:bold;font-size:1.5rem;">Atención</span>
-                    <p font-size="1rem" text-align="center">
-                        Esta acción es irreversible, no puede ser modificada después de enviarse.
-                    </p>
-                `,
-                iconColor: '#f39c12',
-                timer: 5000,
-                timerProgressBar: true,
-                showConfirmButton: false,
-                willClose: async () => {
-                    const result = await Swal.fire({
-                        title: 'Confirmar Reservación',
-                        text: '¿Quieres aceptar la reservación del título?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Aceptar',
-                        cancelButtonText: 'Cancelar',
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                    });
+        let title; // Define title aquí para que esté disponible en el bloque catch
+        try {
+            const titleReservationData = {
+                meetsRequirements: values?.meetRequirements === 'yes',
+                observations: values.observation || '',
+                title: values.title || '',
+                projectSimilarity: parseFloat(values.projectSimilarity) || 0,
+                lineOfResearch: values.lineOfResearch ? { id: values.lineOfResearch.value } : null,
+            };
 
-                    if (result.isConfirmed) {
-                        try {
-                            // Crear el objeto de datos para la reservación
-                            const titleReservationData = {
-                                meetsRequirements: values?.meetRequirements === 'yes',
-                                observations: values.observation || '',
-                                title: values.title || '',
-                                projectSimilarity: parseFloat(values.projectSimilarity) || 0,
+            title = titleReservationData.title; // Asigna el valor de title aquí
 
-                                lineOfResearch: values.lineOfResearch ? { id: values.lineOfResearch.value } : null,
-                            };
-                            console.log("Datos de reservación antes de enviar al backend:", titleReservationData);
-
-                            const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
-
-                            if (!response) {
-                                Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
-                            } else {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Reservación Aceptada',
-                                    text: 'La reservación ha sido aceptada con éxito. Esta acción es irreversible.',
-                                    timer: 3000,
-                                    showConfirmButton: false,
-                                });
-                                await fetchTitleReservations(); // Actualizar lista de reservaciones
-                                closeModal(); // Cerrar el modal automáticamente después de la actualización
-                            }
-                        } catch (error) {
-                            Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
-                        }
-                    } else if (result.isDismissed) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Reservación Cancelada',
-                            text: 'La reservación ha sido cancelada.',
-                            timer: 3000,
-                            showConfirmButton: false,
-                        });
-                    }
-                },
-            });
-        } else {
-            // Si no cumple con los requisitos, solo guarda la reservación sin mostrar la alerta
-            try {
-                const titleReservationData = {
-                    meetsRequirements: values?.meetRequirements === 'yes',
-                    observations: values.observation || '',
-                    title: values.title || '',
-                    projectSimilarity: parseFloat(values.projectSimilarity) || 0, // Asegura que projectSimilarity sea un número
-                    lineOfResearch: values.lineOfResearch ? { id: values.lineOfResearch.value } : null,
-                };
-                console.log("Datos de reservación antes de enviar al backend:", titleReservationData);
-
-                const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
-
-                if (!response) {
-                    Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
-                } else {
-                    Swal.fire('Éxito', 'Reservación actualizada correctamente', 'success');
-                    await fetchTitleReservations(); // Actualizar lista de reservaciones
-                    closeModal();
-                }
-            } catch (error) {
-                Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
+            const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
+            if (!response) {
+                Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
+            } else {
+                Swal.fire('Éxito', 'Reservación actualizada correctamente', 'success');
+                await fetchTitleReservations();
+                closeModal();
+            }
+            response.status === 409 ? console.log("repetido",title): console.log("czxc");
+            console.log(titleReservationData.title);
+        } catch (error) {
+            if (error.response && error.response.data.includes('Ya existe una reserva con este título')) {
+                Swal.fire('Error', `${error.response.data}: ${title}`, 'error'); // Usando title en el mensaje de error
+            } else {
+                Swal.fire('Duplicidad', `Ya existe el título de proyecto "${title}"`, 'error'); // Usando title en el mensaje de error
             }
         }
     };
 
-    // Editar reservación
     const editReservation = (reservation) => {
-        // Obtener el careerId desde la reservación seleccionada
         const careerId = reservation.student.career.id;
-
-        // Cargar las líneas de investigación para la carrera de la reservación seleccionada
         fetchResearchLines(careerId);
-        setEditingReservation(reservation); // Establece la reservación seleccionada
+        setEditingReservation(reservation);
         setAddContactModal(true);
     };
 
@@ -289,10 +226,8 @@ const TitleReservation = () => {
                     students: Yup.array().min(1, 'Debes seleccionar al menos un estudiante').max(2, 'Solo puedes seleccionar hasta dos estudiantes'),
                 })}
                 enableReinitialize={true}
-                
                 onSubmit={(values, { setSubmitting, resetForm }) => {
                     const selectedStudents = values.students;
-
                     if (selectedStudents.length > 0) {
                         if (editingReservation) {
                             handleSaveReservation(editingReservation.id, values)
@@ -341,15 +276,7 @@ const TitleReservation = () => {
                 )}
             </Formik>
 
-            <ReservationModal
-                isOpen={addContactModal}
-                onClose={closeModal}
-                reservation={editingReservation}
-                onSave={handleSaveReservation}
-                lineOptions={lineOptions}
-                enableReinitialize // Asegura que los valores iniciales se reinicien
-            
-            />
+            <ReservationModal isOpen={addContactModal} onClose={closeModal} reservation={editingReservation} onSave={handleSaveReservation} lineOptions={lineOptions} enableReinitialize />
 
             <ReservationTable titleReservations={titleReservations} apiError={apiError} onEdit={editReservation} onDelete={deleteTitleReservation} />
         </div>

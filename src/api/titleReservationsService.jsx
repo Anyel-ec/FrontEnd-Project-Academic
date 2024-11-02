@@ -30,21 +30,14 @@ const addTitleReservation = async (titlereservation) => {
                 Authorization: `Bearer ${getAuthToken()}`,
             },
         });
-
-        if (response.data) {
-            return response.data;
-        } else {
-            throw new Error('El servidor no devolvió datos en la respuesta.');
-        }
+        return response.data;
     } catch (error) {
-        console.error('Error en addTitleReservation:', error.response ? error.response.data : error.message);
-
-        // Ignorar el error 409 y continuar
-        if (error.response && error.response.status === 409) {
-            console.warn('Conflicto detectado, pero continuando...');
-            return; // Evita lanzar el error
+        // Verificar si es un error de duplicación de título (código 400 con mensaje específico)
+        if (error.response && error.response.status === 409 && error.response.data.includes("Ya existe una reserva con este título")) {
+            throw new Error("Ya existe una reserva con este título. Por favor, elige otro título.");
         }
 
+        console.error('Error en addTitleReservation:', error.response ? error.response.data : error.message);
         throw new Error('Error inesperado: ' + error.message);
     }
 };
@@ -58,17 +51,15 @@ const editTitleReservation = async (id, titlereservation) => {
         });
         return response.data;
     } catch (error) {
-        // Ignorar el error 409 y continuar
-        if (error.response && error.response.status === 409) {
-            console.warn('Conflicto detectado en la edición, pero continuando...');
-            return;
+        // Verificar si es un error de duplicación de título en la edición
+        if (error.response && error.response.status === 400 && error.response.data.includes("Ya existe una reserva con este título")) {
+            throw new Error("Ya existe una reserva con este título. Por favor, elige otro título.");
         }
 
         console.error('Error en editTitleReservation:', error);
-        throw error;
+        throw new Error('Error inesperado: ' + error.message);
     }
 };
-
 
 // Eliminar una reserva de título
 const deleteTitleReservation = async (id) => {

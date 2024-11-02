@@ -1,25 +1,25 @@
 import { Dialog, Transition } from '@headlessui/react';
-import React,{ Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
 
-const ApprovalModal = ({ isOpen, onClose, onSave, currentReservation, adviserOptions }) => {
+const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => {
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
+
     const initialValues = React.useMemo(() => ({
-        titleReservationStepOne: currentReservation?.id || '',
-        studentCode: currentReservation?.student?.studentCode || 'N/A',
-        studentTwoCode: currentReservation?.studentTwo?.studentCode || '',
-        studentFirstNames: currentReservation?.student?.firstNames || 'N/A',
-        studentTwoFirstNames: currentReservation?.studentTwo?.firstNames || '',
-        observation: currentReservation?.observations || '',
-        adviser: null,
-        coadviser: null,
-    }), [currentReservation]);
-    
+        titleReservationStepOne: project?.titleReservationStepOne?.id || '',
+        studentCode: project?.titleReservationStepOne?.student?.studentCode || 'N/A',
+        studentTwoCode: project?.titleReservationStepOne?.studentTwo?.studentCode || '',
+        studentFirstNames: project?.titleReservationStepOne?.student?.firstNames || 'N/A',
+        studentTwoFirstNames: project?.titleReservationStepOne?.studentTwo?.firstNames || '',
+        observation: project?.titleReservationStepOne?.observations || '',
+        adviser: project?.adviser ? { value: project.adviser.id, label: `${project.adviser.firstNames} ${project.adviser.lastName}` } : null,
+        coadviser: project?.coadviser ? { value: project.coadviser.id, label: `${project.coadviser.firstNames} ${project.coadviser.lastName}` } : null,
+    }), [project, adviserOptions]);
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -32,7 +32,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, currentReservation, adviserOpt
                                 <IconX />
                             </button>
                             <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
-                                {currentReservation ? 'Editar Proyecto' : 'Crear Proyecto'}
+                                {project ? 'Editar Proyecto' : 'Crear Proyecto'}
                             </div>
                             <div className="p-5">
                                 <Formik
@@ -48,71 +48,71 @@ const ApprovalModal = ({ isOpen, onClose, onSave, currentReservation, adviserOpt
                                             coadviser: values.coadviser ? { id: values.coadviser.value } : null,
                                             observations: values.observation || '',
                                         };
-                                    
-                                        console.log('Llamando a onSave con:', transformedValues); // Verificar que onSave se está llamando con los valores correctos
-                                        onSave(transformedValues);
+
+                                        console.log('Llamando a onSave con:', transformedValues);
+                                        onSave(transformedValues, project.id); // Pasamos el ID del proyecto solo como argumento
                                     }}
-                                    
                                     enableReinitialize
                                 >
                                     {({ errors, submitCount, setFieldValue, values, isSubmitting }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
-                                                <Field name="studentCode" type="text" id="studentCode" readOnly placeholder="Ingrese el código del estudiante" maxLength={6} className="form-input" />
+                                                <Field name="studentCode" type="text" id="studentCode" readOnly className="form-input" />
                                                 <ErrorMessage name="studentCode" component="div" className="text-danger mt-1" />
                                             </div>
 
-                                            {currentReservation?.studentTwo && (
+                                            {project?.titleReservationStepOne?.studentTwo && (
                                                 <div className={submitCount && errors.studentTwoCode ? 'has-error' : ''}>
                                                     <label htmlFor="studentTwoCode">Segundo Estudiante</label>
                                                     <Field
                                                         name="studentTwoCode"
                                                         type="text"
                                                         id="studentTwoCode"
-                                                        placeholder="Ingrese el código del segundo estudiante"
-                                                        maxLength={6}
                                                         readOnly
                                                         className="form-input"
                                                     />
                                                     <ErrorMessage name="studentTwoCode" component="div" className="text-danger mt-1" />
                                                 </div>
                                             )}
+
+                                            {/* Seleccionar Asesor */}
                                             <div className="col-span-1">
                                                 <label htmlFor="adviser">Seleccionar Asesor</label>
                                                 <Select
                                                     id="adviser"
                                                     styles={styles}
                                                     options={adviserOptions
-                                                        .filter((adviser) => adviser.id !== values.coadviser?.id)
+                                                        .filter((adviser) => adviser.id !== values.coadviser?.value)
                                                         .map((adviser) => ({
                                                             value: adviser.id,
                                                             label: `${adviser.firstNames} ${adviser.lastName}`,
                                                         }))}
-                                                    onChange={(option) => {
-                                                        setFieldValue('adviser', option);
-                                                    }}
+                                                    value={values.adviser}
+                                                    onChange={(option) => setFieldValue('adviser', option)}
                                                     placeholder="Seleccione un asesor..."
                                                 />
                                             </div>
+
+                                            {/* Seleccionar Coasesor */}
                                             <div className="col-span-1">
                                                 <label htmlFor="coadviser">Seleccionar Coasesor</label>
                                                 <Select
                                                     id="coadviser"
                                                     styles={styles}
                                                     options={adviserOptions
-                                                        .filter((adviser) => adviser.id !== values.adviser?.id)
+                                                        .filter((adviser) => adviser.id !== values.adviser?.value)
                                                         .map((adviser) => ({
                                                             value: adviser.id,
                                                             label: `${adviser.firstNames} ${adviser.lastName}`,
                                                         }))}
-                                                    onChange={(option) => {
-                                                        setFieldValue('coadviser', option);
-                                                    }}
+                                                    value={values.coadviser}
+                                                    onChange={(option) => setFieldValue('coadviser', option)}
                                                     placeholder="Seleccione un coasesor..."
                                                     isDisabled={!values.adviser}
                                                 />
                                             </div>
+
                                             <div className="col-span-2">
                                                 <label htmlFor="observation">Observaciones</label>
                                                 <Field name="observation" as="textarea" id="observation" placeholder="Ingrese observaciones" className="form-input" />
@@ -124,7 +124,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, currentReservation, adviserOpt
                                                     Cancelar
                                                 </button>
                                                 <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4" disabled={isSubmitting}>
-                                                    Crear
+                                                    Guardar
                                                 </button>
                                             </div>
                                         </Form>

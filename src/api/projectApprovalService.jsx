@@ -66,7 +66,7 @@ const editProjectApproval = async (id, projectApproval) => {
 // Eliminar una reserva de título
 const deleteProjectApproval = async (id) => {
     try {
-        const response = await axios.delete(`${PROJECTAPPROVAL_API_URL}${id}`, {
+        const response = await axios.delete(`${PROJECTAPPROVAL_API_URL}/${id}`, {
             headers: {
                 Authorization: `Bearer ${getAuthToken()}`,
             },

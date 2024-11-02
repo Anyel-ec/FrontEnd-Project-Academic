@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-const ApprovalTable = ({ reservacionesEstudiantes, onEdit }) => {
+const ApprovalTable = ({ projects, onEdit, onDelete, disabledProjects }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const itemsPerPage = 1;
-    const totalPages = Math.ceil(reservacionesEstudiantes.length / itemsPerPage);
+    const totalPages = Math.ceil(projects.length / itemsPerPage);
     const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentReservations = reservacionesEstudiantes.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
-
+    const currentProjects = projects.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
+    console.log('proyectos-tabla:', currentProjects);
+    // for(let i = 0; i < currentProject.length; i++) {
+    //     console.log("respuesta", currentProject[i])
+    //     if(currentProject[i].titleReservationStepOne.id)  {
+    //         console.log("si existe",currentProject[i].titleReservationStepOne.id)
+    //     }
+    // }
     const formatearFecha = (dateString) => {
         if (!dateString) return 'N/A';
         const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -23,55 +29,59 @@ const ApprovalTable = ({ reservacionesEstudiantes, onEdit }) => {
                 <table className="table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>Estudiantes</th>
+                            <th>Estudiante(s)</th>
                             <th>Código(s)</th>
                             <th>Carrera</th>
-                            <th>Proyecto de Tesis</th>
-                            <th>Similitud</th>
+                            <th>Proyecto Aceptado</th>
+                            <th>Asesor</th>
+                            <th>Co-Asesor</th>
                             <th>Última Actualización</th>
                             <th className="!text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody className="dark:text-white-dark">
-                        {currentReservations.length > 0 ? (
-                            currentReservations.map((reservacion) => (
-                                <tr key={reservacion.id}>
+                        {currentProjects.length > 0 ? (
+                            currentProjects.map((project) => (
+                                <tr key={project.id}>
                                     <td>
-                                        {reservacion.student.firstNames} {reservacion.student.lastName}
-                                        {reservacion.studentTwo && (
+                                        {project.titleReservationStepOne.student.firstNames} {project.titleReservationStepOne.student.lastName}
+                                        {project.titleReservationStepOne.studentTwo && (
                                             <>
-                                                <br />
-                                                {reservacion.studentTwo.firstNames} {reservacion.studentTwo.lastName}
+                                                <span className='font-bold'> - </span><br />{project.titleReservationStepOne.studentTwo.firstNames} {project.titleReservationStepOne.studentTwo.lastName}
                                             </>
                                         )}
                                     </td>
                                     <td>
-                                        {reservacion.student.studentCode || 'N/A'}
-                                        {reservacion.studentTwo && (
+                                        {project.titleReservationStepOne.student.studentCode || 'N/A'}
+                                        {project.titleReservationStepOne.studentTwo && (
                                             <>
                                                 <br />
-                                                {reservacion.studentTwo.studentCode || 'N/A'}
+                                                {project.titleReservationStepOne.studentTwo.studentCode || 'N/A'}
                                             </>
                                         )}
                                     </td>
-                                    <td>{reservacion.student.career?.name || 'N/A'}</td>
-                                    <td>{reservacion.title || 'Sin título'}</td>
-                                    <td>{`${reservacion.projectSimilarity || 0}%`}</td>
-                                    <td>{formatearFecha(reservacion.updatedAt)}</td>
+                                    <td>{project.titleReservationStepOne.student.career?.name || 'N/A'}</td>
+                                    <td>{project.approvedProject ? 'SI' : 'NO'}</td>
+                                    <td>{project.adviser ? `${project.adviser.firstNames || ' '} ${project.adviser.lastName || ' '}` : 'N/A'}</td>
+                                    <td>{project.coadviser ? `${project.coadviser.firstNames || ' '} ${project.coadviser.lastName || ' '}` : 'N/A'}</td>
+                                    <td>{formatearFecha(project.updatedAt)}</td>
                                     <td className="flex gap-4 items-center justify-center">
-                                        <button onClick={() => onEdit(reservacion)} className="btn btn-sm btn-outline-primary">
+                                        <button onClick={() => onEdit(project)} className="btn btn-sm btn-outline-primary">
                                             Editar
                                         </button>
-                                        <button onClick={() => onDelete(reservacion.id)} className="btn btn-sm btn-outline-danger">
+                                        {/* <button
+                                            onClick={() => onDelete(project.id)}
+                                            className="btn btn-sm btn-outline-danger"
+                                        >
                                             Eliminar
-                                        </button>
+                                        </button> */}
                                     </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
                                 <td colSpan="7" className="px-4 py-2 text-center">
-                                    No hay reservaciones disponibles
+                                    No hay projectes disponibles
                                 </td>
                             </tr>
                         )}
@@ -123,7 +133,7 @@ const ApprovalTable = ({ reservacionesEstudiantes, onEdit }) => {
 };
 
 ApprovalTable.propTypes = {
-    reservacionesEstudiantes: PropTypes.array.isRequired,
+    projects: PropTypes.array.isRequired,
     onEdit: PropTypes.func.isRequired,
 };
 
