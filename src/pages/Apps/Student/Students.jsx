@@ -1,13 +1,13 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { useDispatch } from "react-redux";
-import { setPageTitle } from "../../../store/themeConfigSlice";
-import Swal from "sweetalert2";
-import studentService from "../../../api/studentService";
-import careerService from "../../../api/careerService";
-import Header from "./StudentHeader";
-import StudentTable from "./StudentTable";
-import StudentModal from "./StudentModal";
-import { showMessage } from "../showMessage";
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+import { setPageTitle } from '../../../store/themeConfigSlice';
+import Swal from 'sweetalert2';
+import studentService from '../../../api/studentService';
+import careerService from '../../../api/careerService';
+import Header from './StudentHeader';
+import StudentTable from './StudentTable';
+import StudentModal from './StudentModal';
+import { showMessage } from '../showMessage';
 
 const Students = () => {
     const dispatch = useDispatch();
@@ -15,11 +15,11 @@ const Students = () => {
     const [addContactModal, setAddContactModal] = useState(false);
     const [careerOptions, setCareerOptions] = useState([]);
     const [contactList, setContactList] = useState([]);
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useState('');
     const [editingStudent, setEditingStudent] = useState(null);
 
     useEffect(() => {
-        dispatch(setPageTitle("Estudiantes"));
+        dispatch(setPageTitle('Estudiantes'));
         fetchCareers();
     }, [dispatch]);
 
@@ -33,16 +33,16 @@ const Students = () => {
             }));
             setCareerOptions(options);
         } catch (error) {
-            console.error("Error fetching careers:", error);
+            console.error('Error fetching careers:', error);
         }
     }, []);
-    
+
     const fetchStudents = useCallback(async () => {
         try {
             const data = await studentService.getStudents();
             setContactList(data);
         } catch (error) {
-            showMessage("Error al buscar estudiantes", "error");
+            showMessage('Error al buscar estudiantes', 'error');
         }
     }, []);
 
@@ -51,15 +51,22 @@ const Students = () => {
     }, [fetchStudents]);
 
     const filteredItems = useMemo(() => {
-        return contactList.filter((student) =>
-            `${student.firstNames} ${student.lastName}`.toLowerCase().includes(search.toLowerCase())
-        );
+        return contactList.filter((student) => {
+            const fullName = `${student.firstNames} ${student.lastName}`.toLowerCase();
+            return (
+                fullName.includes(search.toLowerCase()) ||
+                student.studentCode.toString().includes(search) || // Convertimos dni a string para asegurar la comparación
+                student.dni.toString().includes(search) || // Convertimos dni a string para asegurar la comparación
+                student.firstNames.toLowerCase().includes(search.toLowerCase()) ||
+                student.lastName.toLowerCase().includes(search.toLowerCase())
+            );
+        });
     }, [contactList, search]);
 
     const saveStudent = async (values, { resetForm }) => {
         const payload = {
             ...values,
-            gender: values.gender === "true",  // Convertir string a booleano   
+            gender: values.gender === 'true', // Convertir string a booleano
             career: {
                 id: values.career.value,
                 name: values.career.label,
@@ -70,22 +77,18 @@ const Students = () => {
         try {
             if (editingStudent) {
                 const updatedStudent = await studentService.editStudent(editingStudent.id, payload);
-                setContactList((prev) =>
-                    prev.map((student) =>
-                        student.id === updatedStudent.id ? updatedStudent : student
-                    )
-                );
-                showMessage("Estudiante actualizado exitosamente.");
+                setContactList((prev) => prev.map((student) => (student.id === updatedStudent.id ? updatedStudent : student)));
+                showMessage('Estudiante actualizado exitosamente.');
             } else {
                 const addedStudent = await studentService.addStudent(payload);
                 setContactList((prev) => [addedStudent, ...prev]);
-                showMessage("Estudiante agregado exitosamente.");
+                showMessage('Estudiante agregado exitosamente.');
             }
             resetForm();
             closeModal();
         } catch (error) {
-            console.error("Error guardando el estudiante:", error);
-            showMessage("Error guardando el estudiante. Por favor, inténtalo de nuevo más tarde.", "error");
+            console.error('Error guardando el estudiante:', error);
+            showMessage('Error guardando el estudiante. Por favor, inténtalo de nuevo más tarde.', 'error');
         }
     };
 
@@ -96,24 +99,24 @@ const Students = () => {
 
     const deleteUser = useCallback(async (student) => {
         const result = await Swal.fire({
-            title: "¿Estás seguro?",
-            text: "¿Realmente quieres eliminar a este estudiante?",
-            icon: "warning",
+            title: '¿Estás seguro?',
+            text: '¿Realmente quieres eliminar a este estudiante?',
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Sí, ¡elimínalo!",
-            cancelButtonText: "Cancelar",
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, ¡elimínalo!',
+            cancelButtonText: 'Cancelar',
         });
 
         if (result.isConfirmed) {
             try {
                 await studentService.deleteStudent(student.id);
                 setContactList((prev) => prev.filter((d) => d.id !== student.id));
-                showMessage("El estudiante ha sido eliminado exitosamente.");
+                showMessage('El estudiante ha sido eliminado exitosamente.');
             } catch (error) {
-                console.error("Error al eliminar estudiante:", error);
-                showMessage("Error al eliminar el estudiante", "error");
+                console.error('Error al eliminar estudiante:', error);
+                showMessage('Error al eliminar el estudiante', 'error');
             }
         }
     }, []);
@@ -127,13 +130,7 @@ const Students = () => {
         <div>
             <Header search={search} setSearch={setSearch} onAddStudent={() => editUser()} />
             <StudentTable students={filteredItems} onEdit={editUser} onDelete={deleteUser} />
-            <StudentModal
-                isOpen={addContactModal}
-                onClose={closeModal}
-                onSave={saveStudent}
-                student={editingStudent}
-                careerOptions={careerOptions}
-            />
+            <StudentModal isOpen={addContactModal} onClose={closeModal} onSave={saveStudent} student={editingStudent} careerOptions={careerOptions} />
         </div>
     );
 };

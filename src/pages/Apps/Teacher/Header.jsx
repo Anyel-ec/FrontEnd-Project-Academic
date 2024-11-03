@@ -15,23 +15,14 @@ const Header = ({ search, setSearch, onAddTeacher }) => {
                         <IconUserPlus className="ltr:mr-2 rtl:ml-2" />
                         Agregar docentes
                     </button>
+                    
                 </div>
                 <div className="relative">
-                    <input
-                        type="text"
-                        placeholder="Buscar"
-                        className="form-input py-2 ltr:pr-11 rtl:pl-11 peer"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                    <button
-                        type="button"
-                        className="absolute ltr:right-[11px] rtl:left-[11px] top-1/2 -translate-y-1/2 peer-focus:text-primary"
-                    >
+                    <input type="text" placeholder="Buscar por DNI, codigo y nombre" className="form-input py-2 ltr:pr-11 rtl:pl-11 peer" value={search} onChange={(e) => setSearch(e.target.value)} />
+                    <button type="button" className="absolute ltr:right-[11px] rtl:left-[11px] top-1/2 -translate-y-1/2 peer-focus:text-primary" aria-label="Buscar">
                         <IconSearch className="mx-auto" />
                     </button>
-                </div>
-            </div>
+                </div>            </div>
         </div>
     );
 };
