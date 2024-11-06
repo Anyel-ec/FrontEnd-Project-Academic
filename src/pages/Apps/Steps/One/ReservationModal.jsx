@@ -18,7 +18,6 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
 
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
-
     const initialValues = {
         studentCode: reservation?.student?.studentCode || 'N/A',
         studentTwoCode: reservation?.studentTwo?.studentCode || '',
@@ -56,7 +55,17 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                             {console.log('Valor de projectSimilarity en Formik:', values.projectSimilarity)}
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
-                                                <Field name="studentCode" type="text" id="studentCode" readOnly placeholder="Ingrese el código del estudiante" maxLength={6} className="form-input" />
+                                                <Field
+                                                    name="studentCode"
+                                                    type="text"
+                                                    id="studentCode"
+                                                    readOnly
+                                                    placeholder="Ingrese el código del estudiante"
+                                                    max={25}
+                                                    min={0}
+                                                    maxLength={6}
+                                                    className="form-input"
+                                                />
                                                 <ErrorMessage name="studentCode" component="div" className="text-danger mt-1" />
                                             </div>
 
@@ -113,6 +122,8 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                 <Field
                                                     name="projectSimilarity"
                                                     type="number"
+                                                    min="0"
+                                                    max="25"
                                                     id="projectSimilarity"
                                                     placeholder="Ingrese valores decimales.."
                                                     className="form-input"

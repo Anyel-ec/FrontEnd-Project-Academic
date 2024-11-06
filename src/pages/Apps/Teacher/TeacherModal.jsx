@@ -34,6 +34,8 @@ const validationSchema = Yup.object().shape({
         .length(9, 'Celular debe tener 9 dígitos')
         .matches(/\d+/, 'Celular solo puede contener números'),
     address: Yup.string().required('Dirección es requerida').max(255, 'Dirección debe tener menos de 255 caracteres'),
+    career: Yup.object().required('Campo requerido').nullable(),
+
 });
 
 const TeacherModal = ({ isOpen, onClose, onSave, teacher, careerOptions }) => {
@@ -193,7 +195,6 @@ const TeacherModal = ({ isOpen, onClose, onSave, teacher, careerOptions }) => {
                                                         if (!/\d/.test(e.key) && e.key !== 'Backspace' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
                                                             e.preventDefault();
                                                         }
-
                                                     }}
                                                 />
                                                 <ErrorMessage name="phone" component="div" className="text-danger mt-1" />

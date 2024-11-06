@@ -20,7 +20,7 @@ const Header = ({ search, setSearch, onAddStudent }) => {
                     <input
                         type="text"
                         placeholder="Buscar por DNI, codigo y nombre"
-                        className="form-input py-2 ltr:pr-11 rtl:pl-11 peer"
+                        className="form-input py-2 ltr:pr-8 rtl:pl-8 peer"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />

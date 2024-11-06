@@ -12,6 +12,7 @@ import SelectCareer from './SelectCareer';
 import MultiSelectStudent from './MultiSelectStudent'; // Componente MultiSelect
 import ReservationTable from './ReservationTable';
 import ReservationModal from './ReservationModal';
+import IconSearch from '../../../../components/Icon/IconSearch';
 
 const TitleReservation = () => {
     const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const TitleReservation = () => {
     const [apiError, setApiError] = useState(null);
     const [editingReservation, setEditingReservation] = useState(null); // Reservación que se está editando
     const [addContactModal, setAddContactModal] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         dispatch(setPageTitle('Constancia de Filtro'));
@@ -182,16 +184,74 @@ const TitleReservation = () => {
 
             title = titleReservationData.title; // Asigna el valor de title aquí
 
-            const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
-            if (!response) {
-                Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
+            if (values?.meetRequirements === 'yes') {
+                Swal.fire({
+                    html: `
+                        <div style="font-size: 5rem; margin: 0; color: orange;">&#9888;</div>
+                        <span style="color: #000; margin-bottom: 0.25rem; font-weight: bold; font-size: 1.5rem;">Atención</span>
+                        <p style="font-size: 1rem; text-align: center;">
+                            Esta acción es irreversible, no puede ser modificada después de enviarse.
+                        </p>
+                    `,
+                    iconColor: '#f39c12',
+                    timer: 5000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    willClose: async () => {
+                        const result = await Swal.fire({
+                            title: 'Confirmar Reservación',
+                            text: '¿Quieres aceptar la reservación del título?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Aceptar',
+                            cancelButtonText: 'Cancelar',
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                        });
+
+                        if (result.isConfirmed) {
+                            try {
+                                const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
+
+                                if (!response) {
+                                    Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
+                                } else {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Reservación Aceptada',
+                                        text: 'La reservación ha sido aceptada con éxito. Esta acción es irreversible.',
+                                        timer: 3000,
+                                        showConfirmButton: false,
+                                    });
+                                    await fetchTitleReservations(); // Actualizar lista de reservaciones
+                                    closeModal(); // Cerrar el modal automáticamente después de la actualización
+                                }
+                            } catch (error) {
+                                Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
+                            }
+                        } else if (result.isDismissed) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Reservación Cancelada',
+                                text: 'La reservación ha sido cancelada.',
+                                timer: 3000,
+                                showConfirmButton: false,
+                            });
+                        }
+                    },
+                });
             } else {
-                Swal.fire('Éxito', 'Reservación actualizada correctamente', 'success');
-                await fetchTitleReservations();
-                closeModal();
+                const response = await titleReservationsService.editTitleReservation(reservationId, titleReservationData);
+                if (!response) {
+                    Swal.fire('Error', 'Respuesta inesperada del servidor', 'error');
+                } else {
+                    Swal.fire('Éxito', 'Reservación actualizada correctamente', 'success');
+                    await fetchTitleReservations();
+                    closeModal();
+                }
+                response.status === 409 ? console.log('repetido', title) : console.log('czxc');
+                console.log(titleReservationData.title);
             }
-            response.status === 409 ? console.log("repetido",title): console.log("czxc");
-            console.log(titleReservationData.title);
         } catch (error) {
             if (error.response && error.response.data.includes('Ya existe una reserva con este título')) {
                 Swal.fire('Error', `${error.response.data}: ${title}`, 'error'); // Usando title en el mensaje de error
@@ -216,6 +276,25 @@ const TitleReservation = () => {
     return (
         <div className="p-5">
             <h1 className="text-2xl font-bold mb-5">Constancia de Filtro</h1>
+            <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className=""></div>
+                <div className="flex sm:flex-row flex-col sm:items-center sm:gap-3 gap-4 w-full sm:w-auto">
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Buscar por DNI, codigo y nombre"
+                            className="form-input py-2 ltr:pr-11 rtl:pl-11 peer"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+
+                        <button type="button" className="absolute ltr:right-[11px] rtl:left-[11px] top-1/2 -translate-y-1/2 peer-focus:text-primary" aria-label="Buscar">
+                            <IconSearch className="mx-auto" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <Formik
                 initialValues={{
                     career: editingReservation ? editingReservation.career : null,
@@ -278,7 +357,7 @@ const TitleReservation = () => {
 
             <ReservationModal isOpen={addContactModal} onClose={closeModal} reservation={editingReservation} onSave={handleSaveReservation} lineOptions={lineOptions} enableReinitialize />
 
-            <ReservationTable titleReservations={titleReservations} apiError={apiError} onEdit={editReservation} onDelete={deleteTitleReservation} />
+            <ReservationTable titleReservations={titleReservations} apiError={apiError} onEdit={editReservation} onDelete={deleteTitleReservation} searchTerm={searchTerm} />
         </div>
     );
 };

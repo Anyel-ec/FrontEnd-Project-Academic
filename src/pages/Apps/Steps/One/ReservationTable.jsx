@@ -4,19 +4,27 @@ import ConstancyVoucherOne from './ConstancyVoucherOne';
 import { obtenerAnioActual } from './Dates';
 import ConstancyVoucherTwo from './ConstancyVoucherTwo';
 import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importación es correcto
-const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => {
+const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete, searchTerm }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [pdfDataMap, setPdfDataMap] = useState({}); // Mapea cada reserva a su PDF en base64
+    const itemsPerPage = 8;
+    
+    // Filter reservations based on the search term
+    const normalizedSearchTerm = searchTerm.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-    const itemsPerPage = 4;
-    const totalPages = Math.ceil(titleReservations.length / itemsPerPage);
+    const filteredReservations = titleReservations.filter(reservation =>
+        reservation.student.studentCode.toLowerCase().includes(normalizedSearchTerm) ||
+        `${reservation.student.firstNames} ${reservation.student.lastName}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(normalizedSearchTerm) ||
+        (reservation.studentTwo && (
+            reservation.studentTwo.studentCode.toLowerCase().includes(normalizedSearchTerm) ||
+            `${reservation.studentTwo.firstNames} ${reservation.studentTwo.lastName}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(normalizedSearchTerm)
+        ))
+    );
+    console.log(titleReservations);
 
-    const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
-    const anio = obtenerAnioActual();
+    const totalPages = Math.ceil(filteredReservations.length / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentReservations = titleReservations.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
-
+    const currentReservations = filteredReservations.slice(indexOfFirstItem, indexOfLastItem);
     // Manejo de éxito en la carga de PDF
     const handlePDFUploadSuccess = (reservationId, base64Data) => {
         setPdfDataMap((prev) => ({
@@ -91,23 +99,20 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete }) => 
                                     <td className="flex gap-4 items-center justify-center">
                                         {/* Mostrar los botones de Editar y Eliminar solo si meetsRequirements es false */}
 
-
                                         {reservation.meetsRequirements ? (
                                             reservation.studentTwo ? (
-
-                                            <PDFDownloadLink document={<ConstancyVoucherTwo reservation={reservation} />} fileName={`constancia-${reservation.id}-${obtenerAnioActual()}.pdf`}>
-                                                {({ blob, url, loading, error }) =>
-                                                    loading ? 'Cargando documento...' : <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
-                                                }
-                                            </PDFDownloadLink>
-                                            ):(
+                                                <PDFDownloadLink document={<ConstancyVoucherTwo reservation={reservation} />} fileName={`constancia-${reservation.id}-${obtenerAnioActual()}.pdf`}>
+                                                    {({ blob, url, loading, error }) =>
+                                                        loading ? 'Cargando documento...' : <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
+                                                    }
+                                                </PDFDownloadLink>
+                                            ) : (
                                                 <PDFDownloadLink document={<ConstancyVoucherOne reservation={reservation} />} fileName={`constancia-${reservation.id}-${obtenerAnioActual()}.pdf`}>
-                                                {({ blob, url, loading, error }) =>
-                                                    loading ? 'Cargando documento...' : <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
-                                                }
-                                            </PDFDownloadLink>
+                                                    {({ blob, url, loading, error }) =>
+                                                        loading ? 'Cargando documento...' : <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
+                                                    }
+                                                </PDFDownloadLink>
                                             )
-                                            
                                         ) : (
                                             <>
                                                 {/* Botón de editar sin disabled */}

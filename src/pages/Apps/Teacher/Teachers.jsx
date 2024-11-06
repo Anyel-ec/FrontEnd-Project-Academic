@@ -4,7 +4,7 @@ import { setPageTitle } from '../../../store/themeConfigSlice';
 import Swal from 'sweetalert2';
 import teacherService from '../../../api/teacherService';
 import careerService from '../../../api/careerService';
-import Header from './Header';
+import Header from './TeacherHeader';
 import TeacherTable from './TeacherTable';
 import TeacherModal from './TeacherModal';
 import { showMessage } from '../showMessage';
@@ -51,19 +51,29 @@ const Teachers = () => {
     useEffect(() => {
         fetchTeachers();
     }, [fetchTeachers]);
+
     const normalizeText = (text) => {
         return text
-            .normalize('NFD') // Descompone caracteres acentuados
+            .normalize('NFD') // Descompone caracteres acentuados en su forma básica
             .replace(/[\u0300-\u036f]/g, '') // Elimina los signos diacríticos
             .toLowerCase(); // Convierte a minúsculas
     };
+
     const filteredItems = useMemo(() => {
+        const normalizedSearch = normalizeText(search);
         return contactList.filter((teacher) => {
-            const careerMatch = selectedCareer === "" || teacher.career.id === selectedCareer;
-            return careerMatch;
+            // Concatena el nombre completo antes de normalizar y comparar
+            const fullName = `${teacher.firstNames} ${teacher.lastName}${teacher.middleName ? ' ' + teacher.middleName : ''}`;
+            const normalizedFullName = normalizeText(fullName);
+
+            // Normaliza y compara el DNI y el nombre completo
+            const dniMatch = normalizeText(teacher.dni.toString()).includes(normalizedSearch);
+            const fullNameMatch = normalizedFullName.includes(normalizedSearch);
+
+            return dniMatch || fullNameMatch;
         });
-    }, [contactList, selectedCareer]);
-    
+    }, [contactList, selectedCareer, search]); // Asegúrate de incluir 'search' como dependencia
+
     const saveTeacher = async (values, { resetForm }) => {
         const payload = {
             ...values,

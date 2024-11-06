@@ -9,11 +9,12 @@ import IconX from '../../../components/Icon/IconX';
 import { HandleMode } from '../styles/selectStyles';
 import { useSelector } from 'react-redux'; // O useContext si usas contexto
 
-
-
 const validationSchema = Yup.object().shape({
     studentCode: Yup.string().length(6, 'Debe tener exactamente 6 caracteres').required('Campo requerido'),
-    dni: Yup.string().length(8, 'Debe tener exactamente 8 caracteres').required('Campo requerido'),
+    dni: Yup.string()
+        .required('DNI es requerido')
+        .matches(/^\d{8}$/, 'DNI debe tener exactamente 8 números') // Solo acepta 8 dígitos
+        .length(8, 'DNI debe tener 8 caracteres'),
     firstNames: Yup.string()
         .matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/, 'Solo letras latinoamericanas y espacios')
         .max(150, 'Debe tener máximo 150 caracteres')
@@ -28,18 +29,38 @@ const validationSchema = Yup.object().shape({
         .required('Campo requerido'),
     birthDate: Yup.string().required('Campo requerido'),
     email: Yup.string().email('Correo electrónico no válido').max(100, 'Debe tener máximo 100 caracteres').required('Campo requerido'),
-    phone: Yup.string()
-        .matches(/^[0-9]+$/, 'Solo números')
-        .length(9, 'Debe tener exactamente 9 caracteres')
-        .required('Campo requerido'),
+    phone: Yup.string().matches(/\d+/, 'Solo números').length(9, 'Debe tener exactamente 9 caracteres').required('Campo requerido'),
     address: Yup.string().max(255, 'Debe tener máximo 255 caracteres').required('Campo requerido'),
     gender: Yup.string().required('Campo requerido'),
-    career: Yup.object().required('Campo requerido').nullable(),
+    career: Yup.object().required('Campo requerido').nullable(false),
 });
+const today = new Date();
+const maxDateAllowed = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+
+const validateDate = (date) => {
+    const selectedDate = new Date(date[0]);
+    const today = new Date();
+
+    if (selectedDate > today) {
+        setBirthDateError('La fecha de nacimiento no puede ser una fecha futura');
+        return false;
+    }
+    
+    const age = today.getFullYear() - selectedDate.getFullYear();
+    const isBirthdayPassed = today.getMonth() > selectedDate.getMonth() || (today.getMonth() === selectedDate.getMonth() && today.getDate() >= selectedDate.getDate());
+
+    if (age < 18 || (age === 18 && !isBirthdayPassed)) {
+        setBirthDateError('Debe tener al menos 18 años');
+        return false;
+    }
+    
+    setBirthDateError('');
+    return true;
+};
 
 const StudentModal = ({ isOpen, onClose, onSave, student, careerOptions }) => {
-    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');  // Obtener el tema desde Redux
-    const styles = HandleMode(isDarkMode);  // Aplicar los estilos según el modo
+    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark'); // Obtener el tema desde Redux
+    const styles = HandleMode(isDarkMode); // Aplicar los estilos según el modo
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" open={isOpen} onClose={onClose} className="relative z-[51]">
@@ -82,7 +103,20 @@ const StudentModal = ({ isOpen, onClose, onSave, student, careerOptions }) => {
                                             </div>
                                             <div className={submitCount && errors.dni ? 'has-error' : ''}>
                                                 <label htmlFor="dni">DNI</label>
-                                                <Field name="dni" type="text" id="dni" placeholder="Ingrese el DNI" maxLength={8} className="form-input" />
+                                                <Field
+                                                    name="dni"
+                                                    type="text"
+                                                    id="dni"
+                                                    placeholder="Ingrese el DNI"
+                                                    maxLength={8}
+                                                    className="form-input"
+                                                    onKeyDown={(e) => {
+                                                        // Permite solo números y teclas especiales como borrar y flechas
+                                                        if (!/\d/.test(e.key) && e.key !== 'Backspace' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                />
                                                 <ErrorMessage name="dni" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className={submitCount && errors.firstNames ? 'has-error' : ''}>
@@ -124,16 +158,13 @@ const StudentModal = ({ isOpen, onClose, onSave, student, careerOptions }) => {
                                                                 dateFormat: 'Y-m-d',
                                                                 position: 'auto left',
                                                                 locale: Spanish,
+                                                                maxDate: maxDateAllowed.toISOString().split('T')[0], // Fecha mínima permitida
                                                             }}
                                                             className="form-input"
-                                                            onChange={(date) =>
-                                                                field.onChange({
-                                                                    target: {
-                                                                        name: field.name,
-                                                                        value: date[0].toISOString().split('T')[0],
-                                                                    },
-                                                                })
-                                                            }
+                                                            onChange={(date) => {
+                                                                setFieldValue('birthDate', date[0].toISOString().split('T')[0]);
+                                                                validateDate(date);
+                                                            }}
                                                         />
                                                     )}
                                                 </Field>
@@ -146,7 +177,20 @@ const StudentModal = ({ isOpen, onClose, onSave, student, careerOptions }) => {
                                             </div>
                                             <div className={submitCount && errors.phone ? 'has-error' : ''}>
                                                 <label htmlFor="phone">Celular</label>
-                                                <Field name="phone" type="text" id="phone" placeholder="Ingrese el número de celular" maxLength={9} className="form-input" />
+                                                <Field
+                                                    name="phone"
+                                                    type="text"
+                                                    id="phone"
+                                                    placeholder="Ingrese el número de celular"
+                                                    maxLength={9}
+                                                    className="form-input"
+                                                    onKeyDown={(e) => {
+                                                        // Permite solo números y teclas especiales como borrar y flechas
+                                                        if (!/\d/.test(e.key) && e.key !== 'Backspace' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                />
                                                 <ErrorMessage name="phone" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className={submitCount && errors.gender ? 'has-error' : ''}>

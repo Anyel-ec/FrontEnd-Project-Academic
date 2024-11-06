@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const ApprovalTable = ({ projects, onEdit, onDelete, disabledProjects }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
-    const itemsPerPage = 1;
+    const itemsPerPage = 10;
     const totalPages = Math.ceil(projects.length / itemsPerPage);
     const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -79,8 +79,8 @@ const ApprovalTable = ({ projects, onEdit, onDelete, disabledProjects }) => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="7" className="px-4 py-2 text-center">
-                                    No hay projectes disponibles
+                                <td colSpan="11" className="px-4 py-2 text-center">
+                                    No hay campos disponibles
                                 </td>
                             </tr>
                         )}

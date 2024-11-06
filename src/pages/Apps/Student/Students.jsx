@@ -50,18 +50,28 @@ const Students = () => {
         fetchStudents();
     }, [fetchStudents]);
 
+    const normalizeText = (text) => {
+        return text
+            .normalize('NFD') // Descompone caracteres acentuados en su forma básica
+            .replace(/[\u0300-\u036f]/g, '') // Elimina los signos diacríticos
+            .toLowerCase(); // Convierte a minúsculas
+    };
+
     const filteredItems = useMemo(() => {
+        const normalizedSearch = normalizeText(search);
         return contactList.filter((student) => {
-            const fullName = `${student.firstNames} ${student.lastName}`.toLowerCase();
-            return (
-                fullName.includes(search.toLowerCase()) ||
-                student.studentCode.toString().includes(search) || // Convertimos dni a string para asegurar la comparación
-                student.dni.toString().includes(search) || // Convertimos dni a string para asegurar la comparación
-                student.firstNames.toLowerCase().includes(search.toLowerCase()) ||
-                student.lastName.toLowerCase().includes(search.toLowerCase())
-            );
+            // Concatenación y normalización del nombre completo
+            const fullName = `${student.firstNames} ${student.lastName}`;
+            const normalizedFullName = normalizeText(fullName);
+
+            // Normalización y comparación del código del estudiante y el DNI
+            const studentCodeMatch = normalizeText(student.studentCode.toString()).includes(normalizedSearch);
+            const dniMatch = normalizeText(student.dni.toString()).includes(normalizedSearch);
+
+            // Chequea si el término de búsqueda coincide con el nombre completo, código del estudiante, o DNI
+            return normalizedFullName.includes(normalizedSearch) || studentCodeMatch || dniMatch;
         });
-    }, [contactList, search]);
+    }, [contactList, search]); // Incluye 'search' como dependencia para recalcular cuando cambie
 
     const saveStudent = async (values, { resetForm }) => {
         const payload = {

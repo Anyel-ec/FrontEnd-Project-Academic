@@ -25,7 +25,6 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
         [project, adviserOptions]
     );
     console.log('repsonse', project?.approvedProject);
-
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" open={isOpen} onClose={onClose} className="relative z-[51]">
@@ -76,7 +75,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                 </div>
                                             )}
 
-                                            {/* Seleccionar Asesor */}
+                                            
                                             <div className="col-span-1">
                                                 <label htmlFor="adviser">Seleccionar Asesor</label>
                                                 <Select
@@ -94,7 +93,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                 />
                                             </div>
 
-                                            {/* Seleccionar Coasesor */}
+                                           
                                             <div className="col-span-1">
                                                 <label htmlFor="coadviser">Seleccionar Coasesor</label>
                                                 <Select
@@ -111,7 +110,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                     placeholder="Seleccione un coasesor..."
                                                     isDisabled={!values.adviser}
                                                 />
-                                            </div>
+                                            </div> 
                                             <div>
                                                 <label htmlFor="approvedProject">Cumple Requisitos</label>
                                                 <div className="flex gap-4">

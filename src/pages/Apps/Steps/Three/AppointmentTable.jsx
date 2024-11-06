@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 const AppointmentTable = ({ currentProject, onEdit, onDelete }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
-    const itemsPerPage = 1;
+    const itemsPerPage = 4;
     const totalPages = Math.ceil(currentProject.length / itemsPerPage);
     const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
     const indexOfLastItem = currentPage * itemsPerPage;
