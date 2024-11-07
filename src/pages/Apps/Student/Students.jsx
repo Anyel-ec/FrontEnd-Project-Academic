@@ -17,6 +17,7 @@ const Students = () => {
     const [contactList, setContactList] = useState([]);
     const [search, setSearch] = useState('');
     const [editingStudent, setEditingStudent] = useState(null);
+    const [selectedCareer, setSelectedCareer] = useState(null); // Estado para la carrera seleccionada
 
     useEffect(() => {
         dispatch(setPageTitle('Estudiantes'));
@@ -63,16 +64,22 @@ const Students = () => {
             // Concatenación y normalización del nombre completo
             const fullName = `${student.firstNames} ${student.lastName}`;
             const normalizedFullName = normalizeText(fullName);
-
+    
             // Normalización y comparación del código del estudiante y el DNI
             const studentCodeMatch = normalizeText(student.studentCode.toString()).includes(normalizedSearch);
             const dniMatch = normalizeText(student.dni.toString()).includes(normalizedSearch);
-
+    
             // Chequea si el término de búsqueda coincide con el nombre completo, código del estudiante, o DNI
-            return normalizedFullName.includes(normalizedSearch) || studentCodeMatch || dniMatch;
+            const matchesSearch = normalizedFullName.includes(normalizedSearch) || studentCodeMatch || dniMatch;
+    
+            // Verifica si la carrera seleccionada coincide con la carrera del estudiante
+            const matchesCareer = selectedCareer ? student.career?.id === selectedCareer.value : true;
+    
+            // Retorna verdadero si ambos criterios coinciden
+            return matchesSearch && matchesCareer;
         });
-    }, [contactList, search]); // Incluye 'search' como dependencia para recalcular cuando cambie
-
+    }, [contactList, search, selectedCareer]); // Agrega 'selectedCareer' como dependencia
+    
     const saveStudent = async (values, { resetForm }) => {
         const payload = {
             ...values,
@@ -138,7 +145,15 @@ const Students = () => {
 
     return (
         <div>
-            <Header search={search} setSearch={setSearch} onAddStudent={() => editUser()} />
+            <Header
+                search={search}
+                setSearch={setSearch}
+                onAddStudent={() => setAddContactModal(true)}
+                careerOptions={careerOptions}
+                selectedCareer={selectedCareer}
+                setSelectedCareer={setSelectedCareer}
+            />
+            {/* <Header search={search} setSearch={setSearch} onAddStudent={() => editUser()} /> */}
             <StudentTable students={filteredItems} onEdit={editUser} onDelete={deleteUser} />
             <StudentModal isOpen={addContactModal} onClose={closeModal} onSave={saveStudent} student={editingStudent} careerOptions={careerOptions} />
         </div>
