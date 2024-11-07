@@ -1,14 +1,18 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
 import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
-import IconX from '../../../../components/Icon/IconX';
+import Fuse from 'fuse.js';
 
 const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions }) => {
+    const [searchResults, setSearchResults] = useState([]);
+    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
+    const styles = HandleMode(isDarkMode);
+
     const validationSchema = Yup.object({
         studentCode: Yup.string().max(6, 'Máximo 6 caracteres').required('Requerido'),
         title: Yup.string().required('El título es obligatorio'),
@@ -16,8 +20,6 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
         observation: Yup.string(),
     });
 
-    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
-    const styles = HandleMode(isDarkMode);
     const initialValues = {
         studentCode: reservation?.student?.studentCode || 'N/A',
         studentTwoCode: reservation?.studentTwo?.studentCode || '',
@@ -26,6 +28,32 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
         title: reservation?.title || '',
         lineOfResearch: lineOptions.find((option) => option.value === reservation?.lineOfResearch?.id) || null,
         projectSimilarity: reservation?.projectSimilarity || 0,
+    };
+
+    const handleTitleSearch = async (searchQuery) => {
+        if (searchQuery) {
+            try {
+                const token = localStorage.getItem('token'); // O el método que uses para almacenar el token
+                const response = await fetch(`http://localhost:8080/api/v1/reservas_titulo/buscar?title=${searchQuery}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error en la solicitud');
+                }
+
+                const data = await response.json();
+                const fuse = new Fuse(data, { keys: ['title'], threshold: 0.3 });
+                const results = fuse.search(searchQuery).map((result) => result.item);
+                setSearchResults(results);
+            } catch (error) {
+                console.error('Error al buscar títulos:', error);
+            }
+        } else {
+            setSearchResults([]);
+        }
     };
 
     const handleSubmit = async (values, { setSubmitting }) => {
@@ -44,15 +72,11 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                 <div className="fixed inset-0 overflow-y-auto">
                     <div className="flex min-h-full items-center justify-center px-4 py-8">
                         <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg text-black dark:text-white-dark">
-                            <button type="button" onClick={onClose} className="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none">
-                                <IconX />
-                            </button>
-                            <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">Aceptar Reservación</div>
+                            <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3">Aceptar Reservación</div>
                             <div className="p-5">
                                 <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} enableReinitialize>
-                                    {({ errors, submitCount, setFieldValue, values }) => (
-                                        <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                            {console.log('Valor de projectSimilarity en Formik:', values.projectSimilarity)}
+                                    {({ setFieldValue, values, submitCount, errors }) => (
+                                        <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2 relative">
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
                                                 <Field
@@ -68,7 +92,6 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                 />
                                                 <ErrorMessage name="studentCode" component="div" className="text-danger mt-1" />
                                             </div>
-
                                             {reservation?.studentTwo && (
                                                 <div className={submitCount && errors.studentTwoCode ? 'has-error' : ''}>
                                                     <label htmlFor="studentTwoCode">Segundo Estudiante</label>
@@ -84,9 +107,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                     <ErrorMessage name="studentTwoCode" component="div" className="text-danger mt-1" />
                                                 </div>
                                             )}
-
-                                            {/* Campo para el título */}
-                                            <div className={submitCount && errors.title ? 'has-error' : ''}>
+                                            <div className="relative">
                                                 <label htmlFor="title">Título del Proyecto</label>
                                                 <Field
                                                     name="title"
@@ -95,12 +116,32 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                     placeholder="Ingrese el título del proyecto"
                                                     className="form-input"
                                                     onChange={(e) => {
-                                                        setFieldValue('title', e.target.value);
+                                                        const query = e.target.value;
+                                                        setFieldValue('title', query);
+                                                        handleTitleSearch(query); // Ejecuta la búsqueda difusa
                                                     }}
                                                 />
                                                 <ErrorMessage name="title" component="div" className="text-danger mt-1" />
-                                            </div>
 
+                                                {/* Mostrar resultados de búsqueda */}
+                                                {searchResults.length > 0 && (
+                                                    <ul className="absolute z-[100] bg-white dark:bg-[#1a1f2b] mt-2 max-h-48 overflow-y-auto shadow-lg border border-gray-300 dark:border-gray-600 w-full rounded-md">
+                                                        {searchResults.map((result) => (
+                                                            <button
+                                                                key={result.id}
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    setFieldValue('title', result.title);
+                                                                    setSearchResults([]);
+                                                                }}
+                                                                className="w-full text-left cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                                            >
+                                                                {result.title}
+                                                            </button>
+                                                        ))}
+                                                    </ul>
+                                                )}
+                                            </div>
                                             {/* Select para la línea de investigación */}
                                             <div className="col-span-1">
                                                 <label htmlFor="lineOfResearch">Línea de Investigación</label>
@@ -115,7 +156,6 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                     placeholder="Seleccione una línea..."
                                                 />
                                             </div>
-
                                             {/* Campo para la similitud del proyecto */}
                                             <div className="col-span-1">
                                                 <label htmlFor="projectSimilarity">Similitud del proyecto</label>
@@ -129,10 +169,8 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                     className="form-input"
                                                     onChange={(e) => setFieldValue('projectSimilarity', parseFloat(e.target.value) || '')}
                                                 />
-
                                                 <ErrorMessage name="projectSimilarity" component="div" className="text-danger mt-1" />
                                             </div>
-
                                             <div className={submitCount && errors.meetRequirements ? 'has-error' : ''}>
                                                 <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
@@ -147,13 +185,11 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                 </div>
                                                 <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" />
                                             </div>
-
                                             <div className="col-span-2">
                                                 <label htmlFor="observation">Observaciones</label>
                                                 <Field name="observation" as="textarea" id="observation" placeholder="Ingrese observaciones" className="form-input" />
                                                 <ErrorMessage name="observation" component="div" className="text-danger mt-1" />
                                             </div>
-
                                             <div className="flex justify-end items-center mt-8 col-span-2">
                                                 <button type="button" className="btn btn-outline-danger" onClick={onClose}>
                                                     Cancelar
