@@ -2,17 +2,27 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../store/themeConfigSlice';
 import titleReservationsService from '../api/titleReservationsService';
+import projectApprovalService from '../api/projectApprovalService'; // Importar el servicio
 
 const Progress = () => {
     const dispatch = useDispatch();
     const [studentReservations, setStudentReservations] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [projectApprovals, setProjectApprovals] = useState([]);
 
-    const totalSteps = 5;
+    const totalSteps = 8;
 
+    // Mueve la declaración de la función aquí
     const fetchTitleReservations = useCallback(async () => {
         try {
             const reservations = await titleReservationsService.getTitleReservations();
+            const approvals = await projectApprovalService.getProjectApproval(); // Llamar al servicio para obtener las aprobaciones
+
+            console.log('Reservas de títulos:', reservations);
+            console.log('Aprobaciones de proyectos:', approvals);
+
+            setProjectApprovals(approvals || []); // Asegurarse de que sea un array
+
             const expandedReservations = reservations.flatMap((reservation) => {
                 const baseEntry = {
                     ...reservation,
@@ -24,7 +34,6 @@ const Progress = () => {
                 return baseEntry;
             });
 
-            // Filter students based on the search query
             const filteredReservations = expandedReservations.filter((reservation) =>
                 reservation.students.some(
                     (student) =>
@@ -41,7 +50,7 @@ const Progress = () => {
 
     useEffect(() => {
         dispatch(setPageTitle('Progreso de Estudiantes'));
-        fetchTitleReservations();
+        fetchTitleReservations(); // Aquí la función ya está definida antes de ser llamada
     }, [dispatch, fetchTitleReservations]);
 
     const formatDate = (dateString) => {
@@ -54,19 +63,41 @@ const Progress = () => {
         setSearchQuery(event.target.value);
     };
 
-    const getFullStepList = (reservation) => {
+    const getFullStepList = (reservation, projectApprovals = []) => {
         const steps = [];
-
+    
         for (let i = 1; i <= totalSteps; i++) {
+            let progress = 0;
+    
+            if (i === 1) {
+                progress = reservation.meetsRequirements ? 100 : 50;
+            } else if (i === 2) {
+                const projectApproval = projectApprovals.length > 0
+                    ? projectApprovals.find(
+                        (approval) => approval.titleReservationStepOne.id === reservation.id // Usar reservation.id para la comparación
+                    )
+                    : null;
+    
+                console.log('Comprobando projectApproval para la reserva:', reservation.id, 'Resultado:', projectApproval);
+    
+                if (projectApproval && projectApproval.approvedProject) {
+                    progress = 100; // Establecer progreso en 100% si approvedProject es true
+                } else if (reservation.meetsRequirements) {
+                    progress = 50; // Establecer progreso en 50% si solo cumple meetsRequirements
+                }
+            }
+    
             steps.push({
                 stepNumber: i,
-                progress: reservation.meetsRequirements ? 100 : 50,
+                progress: progress,
                 lastUpdated: reservation.updatedAt,
             });
         }
-
+    
         return steps;
     };
+         
+    
 
     return (
         <div className="pt-5">
@@ -74,7 +105,13 @@ const Progress = () => {
                 <div className="panel lg:col-span-2 xl:col-span-3">
                     <div className="mb-5">
                         <h5 className="font-semibold text-lg dark:text-white-light">Progreso de Estudiantes</h5>
-                        <input type="text" className="form-input p-2 w-full mt-3" placeholder="Buscar por nombre, apellido o código" value={searchQuery} onChange={handleSearchChange} />
+                        <input
+                            type="text"
+                            className="form-input p-2 w-full mt-3"
+                            placeholder="Buscar por nombre, apellido o código"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                        />
                     </div>
                     <div className="mb-5">
                         <div className="table-responsive text-[#515365] dark:text-white-light font-semibold">
@@ -92,17 +129,36 @@ const Progress = () => {
                                         reservation.students.map((student, index) => (
                                             <React.Fragment key={`${reservation.id}-${index}`}>
                                                 <tr>
-                                                    <td colSpan="4"className='font-bold text-white' >{`${student.firstNames} ${student.lastName}`}</td>
+                                                    <td colSpan="4" className="font-bold text-white">{`${student.firstNames} ${student.lastName}`}</td>
                                                 </tr>
-                                                {getFullStepList(reservation).map((step) => (
+                                                {getFullStepList(reservation, projectApprovals).map((step) => (
                                                     <tr key={step.stepNumber}>
                                                         <td>{`Paso ${step.stepNumber}`}</td>
                                                         <td>
                                                             <div className="h-1.5 bg-[#ebedf2] dark:bg-dark/40 rounded-full flex w-full">
-                                                                <div className={`bg-${step.progress === 100 ? 'success' : 'warning'} rounded-full`} style={{ width: `${step.progress}%` }}></div>
+                                                                <div
+                                                                    className={`bg-${
+                                                                        step.progress === 100
+                                                                            ? 'success'
+                                                                            : step.progress === 50
+                                                                            ? 'warning'
+                                                                            : 'gray'
+                                                                    } rounded-full`}
+                                                                    style={{ width: `${step.progress}%` }}
+                                                                ></div>
                                                             </div>
                                                         </td>
-                                                        <td className={`${step.progress === 100 ? 'text-success' : 'text-warning'}`}>{`${step.progress}%`}</td>
+                                                        <td
+                                                            className={`${
+                                                                step.progress === 100
+                                                                    ? 'text-success'
+                                                                    : step.progress === 50
+                                                                    ? 'text-warning'
+                                                                    : 'text-gray'
+                                                            }`}
+                                                        >
+                                                            {`${step.progress}%`}
+                                                        </td>
                                                         <td className="text-center">{formatDate(step.lastUpdated)}</td>
                                                     </tr>
                                                 ))}
