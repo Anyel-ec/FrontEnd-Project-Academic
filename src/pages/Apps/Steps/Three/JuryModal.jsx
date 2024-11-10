@@ -57,15 +57,17 @@ const ApprovalModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOption
         }),
         [juryAppointment, adviserOptions]
     );
-
     const filterOptions = (selectedValues, currentFieldValue) => {
-        const selectedIds = selectedValues.map((val) => val?.value).filter(Boolean);
-        return adviserOptions.filter(
-            (adviser) => !selectedIds.includes(adviser.id) || adviser.id === currentFieldValue?.value
-        ).map((adviser) => ({
-            value: adviser.id,
-            label: `${adviser.firstNames} ${adviser.lastName}`,
-        }));
+        // Obtener los IDs de todos los valores seleccionados excepto el del campo actual
+        const selectedIds = selectedValues.filter((val) => val && val.value !== currentFieldValue?.value).map((val) => val.value);
+
+        // Filtrar las opciones para excluir a los ya seleccionados en cualquier otro Select
+        return adviserOptions
+            .filter((adviser) => !selectedIds.includes(adviser.id))
+            .map((adviser) => ({
+                value: adviser.id,
+                label: `${adviser.firstNames} ${adviser.lastName}`,
+            }));
     };
 
     return (
@@ -97,12 +99,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOption
                                     enableReinitialize
                                 >
                                     {({ setFieldValue, values }) => {
-                                        const selectedValues = [
-                                            values.president,
-                                            values.firstMember,
-                                            values.secondMember,
-                                            values.accessory,
-                                        ];
+                                        const selectedValues = [values.president, values.firstMember, values.secondMember, values.accessory, values.adviser, values.coadviser];
 
                                         return (
                                             <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -156,24 +153,12 @@ const ApprovalModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOption
 
                                                 <div className="col-span-1">
                                                     <label htmlFor="adviser">Asesor</label>
-                                                    <Select
-                                                        id="adviser"
-                                                        styles={styles}
-                                                        value={values.adviser}
-                                                        isDisabled
-                                                        placeholder="Asesor seleccionado"
-                                                    />
+                                                    <Select id="adviser" styles={styles} value={values.adviser} isDisabled placeholder="Asesor seleccionado" />
                                                 </div>
 
                                                 <div className="col-span-1">
                                                     <label htmlFor="coadviser">Coasesor</label>
-                                                    <Select
-                                                        id="coadviser"
-                                                        styles={styles}
-                                                        value={values.coadviser}
-                                                        isDisabled
-                                                        placeholder="Coasesor seleccionado"
-                                                    />
+                                                    <Select id="coadviser" styles={styles} value={values.coadviser} isDisabled placeholder="Coasesor seleccionado" />
                                                 </div>
 
                                                 <div className="col-span-2">

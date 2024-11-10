@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import teacherService from '../../../../api/teacherService';
 
-const JuryTable = ({ currentJury, onEdit, adviserOptions }) => {
+const JuryTable = ({ currentJury, onEdit, adviserOptions,onSave }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const itemsPerPage = 4;
@@ -15,22 +16,69 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions }) => {
         return new Date(dateString).toLocaleString('es-ES', options);
     };
 
-    const elegirJurados = (jury) => {
-        // Filtrar las opciones que no están en adviser ni coadviser
-        const juradosDisponibles = adviserOptions.filter((adviser) => adviser.id !== jury.adviser?.id && adviser.id !== jury.coadviser?.id);
+    const elegirJurados = async (jury) => {
+        const careerId = jury.projectApprovalStepTwo.adviser.career.id;
 
-        // Elegir el primer jurado disponible o asignar null si no hay más
-        const nuevoJurado = juradosDisponibles.length > 0 ? juradosDisponibles[0] : null;
+        try {
+            const allAdvisers = await teacherService.getTeachersByCareer(careerId);
+            console.log('Todos los docentes obtenidos:', allAdvisers);
 
-        // Actualizar la asignación del jurado (puedes ajustar cómo se maneja esta asignación)
-        if (nuevoJurado) {
-            console.log(`Asignando jurado: ${nuevoJurado.firstNames} ${nuevoJurado.lastName}`);
-        } else {
-            console.log('No hay más jurados disponibles para asignar');
+            // Extraer los nombres de los asesores seleccionados de la interfaz
+            const selectedAdvisers = [
+                jury.projectApprovalStepTwo.adviser?.firstNames + ' ' + jury.projectApprovalStepTwo.adviser?.lastName,
+                jury.projectApprovalStepTwo.coadviser?.firstNames + ' ' + jury.projectApprovalStepTwo.coadviser?.lastName,
+            ].filter((name) => name); // Filtrar undefined o nombres vacíos
+
+            // Normalizar y filtrar los docentes que no están seleccionados
+            const normalize = (str) => str.toLowerCase().trim();
+            const availableAdvisers = allAdvisers.filter((adviser) => !selectedAdvisers.map(normalize).includes(normalize(adviser.firstNames + ' ' + adviser.lastName)));
+
+            console.log('Docentes disponibles:', availableAdvisers);
+
+            // Seleccionar aleatoriamente los jurados
+            const randomSelection = {};
+            const roles = ['president', 'firstMember', 'secondMember', 'accessory']; // Los roles a asignar
+
+            roles.forEach((role) => {
+                if (availableAdvisers.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * availableAdvisers.length); // Índice aleatorio
+                    randomSelection[role] = { id: availableAdvisers[randomIndex].id };
+                    availableAdvisers.splice(randomIndex, 1); // Remover para evitar duplicados
+                } else {
+                    randomSelection[role] = null; // Si no hay suficientes docentes
+                }
+            });
+
+            // Imprimir en consola los jurados seleccionados
+            console.log('Jurados seleccionados:', {
+                president: randomSelection['president'],
+                firstMember: randomSelection['firstMember'],
+                secondMember: randomSelection['secondMember'],
+                accessory: randomSelection['accessory'],
+            });
+
+            // Devolver el objeto con los jurados seleccionados
+            return {
+                president: randomSelection['president'],
+                firstMember: randomSelection['firstMember'],
+                secondMember: randomSelection['secondMember'],
+                accessory: randomSelection['accessory'],
+            };
+        } catch (error) {
+            console.error('Error al obtener los docentes:', error);
+            return {
+                president: null,
+                firstMember: null,
+                secondMember: null,
+                accessory: null,
+            };
         }
-
-        // Aquí podrías implementar una función `onAssign` o similar para actualizar la asignación
-        // onAssign(jury.id, nuevoJurado);
+    };
+    const handleRandomJurySelection = async (jury) => {
+        const selectedJurors = await elegirJurados(jury);
+        if (onSave) {
+            onSave(selectedJurors, jury.id); // Asumiendo que `jury.id` es el ID del proyecto
+        }
     };
 
     return (
@@ -94,7 +142,7 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions }) => {
                                         <button onClick={() => onEdit(jury)} className="btn btn-sm btn-outline-primary">
                                             Editar
                                         </button>
-                                        <button onClick={() => elegirJurados(jury)} className="btn btn-sm btn-outline-danger">
+                                        <button onClick={() => handleRandomJurySelection(jury)} className="btn btn-sm btn-outline-danger">
                                             Elegir Jurados
                                         </button>
                                     </td>

@@ -67,7 +67,7 @@ const JuryAppoiment = () => {
     return (
         <div className="pt-5">
             <h1 className="text-2xl font-bold mb-5">Asignación de Jurados</h1>
-            <JuryTable currentJury={juryAppointment} onEdit={handleEdit} adviserOptions={advisers} />
+            <JuryTable currentJury={juryAppointment} onEdit={handleEdit} onSave={handleSave} adviserOptions={advisers} />
             <JuryModal juryAppointment={selectedJury} isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} adviserOptions={advisers} />
         </div>
     );
