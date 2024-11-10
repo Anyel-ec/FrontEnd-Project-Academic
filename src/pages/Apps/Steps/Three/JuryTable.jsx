@@ -1,19 +1,36 @@
-// AppointmentTable.jsx
 import React, { useState } from 'react';
 
-const AppointmentTable = ({ currentProject, onEdit, onDelete }) => {
+const JuryTable = ({ currentJury, onEdit, adviserOptions }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const itemsPerPage = 4;
-    const totalPages = Math.ceil(currentProject.length / itemsPerPage);
+    const totalPages = Math.ceil(currentJury.length / itemsPerPage);
     const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const projects = currentProject.slice(indexOfFirstItem, indexOfLastItem);
+    const jurys = currentJury.slice(indexOfFirstItem, indexOfLastItem);
     const formatearFecha = (dateString) => {
         if (!dateString) return 'N/A';
         const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
         return new Date(dateString).toLocaleString('es-ES', options);
+    };
+
+    const elegirJurados = (jury) => {
+        // Filtrar las opciones que no están en adviser ni coadviser
+        const juradosDisponibles = adviserOptions.filter((adviser) => adviser.id !== jury.adviser?.id && adviser.id !== jury.coadviser?.id);
+
+        // Elegir el primer jurado disponible o asignar null si no hay más
+        const nuevoJurado = juradosDisponibles.length > 0 ? juradosDisponibles[0] : null;
+
+        // Actualizar la asignación del jurado (puedes ajustar cómo se maneja esta asignación)
+        if (nuevoJurado) {
+            console.log(`Asignando jurado: ${nuevoJurado.firstNames} ${nuevoJurado.lastName}`);
+        } else {
+            console.log('No hay más jurados disponibles para asignar');
+        }
+
+        // Aquí podrías implementar una función `onAssign` o similar para actualizar la asignación
+        // onAssign(jury.id, nuevoJurado);
     };
 
     return (
@@ -25,7 +42,10 @@ const AppointmentTable = ({ currentProject, onEdit, onDelete }) => {
                             <th>Estudiantes</th>
                             <th>Código(s)</th>
                             <th>Carrera</th>
-                            <th>Proyecto de Tesis</th>
+                            <th>Presidente</th>
+                            <th>Primer Miembro</th>
+                            <th>Segundo Miembro</th>
+                            <th>Accesitario</th>
                             <th>Asesor</th>
                             <th>Coasesor</th>
                             <th>Última Actualización</th>
@@ -33,38 +53,49 @@ const AppointmentTable = ({ currentProject, onEdit, onDelete }) => {
                         </tr>
                     </thead>
                     <tbody className="dark:text-white-dark">
-                        {projects.length > 0 ? (
-                            projects.map((project) => (
-                                <tr key={project.id}>
+                        {jurys.length > 0 ? (
+                            jurys.map((jury) => (
+                                <tr key={jury.id}>
                                     <td>
-                                        {project.titleReservationStepOne.student.firstNames} {project.titleReservationStepOne.student.lastName}
-                                        {project.titleReservationStepOne.studentTwo && (
+                                        {jury.projectApprovalStepTwo.titleReservationStepOne.student.firstNames} {jury.projectApprovalStepTwo.titleReservationStepOne.student.lastName}
+                                        {jury.projectApprovalStepTwo.titleReservationStepOne.studentTwo && (
                                             <>
                                                 <br />
-                                                {project.titleReservationStepOne.studentTwo.firstNames} {project.titleReservationStepOne.studentTwo.lastName}
+                                                {jury.projectApprovalStepTwo.titleReservationStepOne.studentTwo.firstNames} {jury.projectApprovalStepTwo.titleReservationStepOne.studentTwo.lastName}
                                             </>
                                         )}
                                     </td>
                                     <td>
-                                        {project.titleReservationStepOne.student.studentCode || 'N/A'}
-                                        {project.titleReservationStepOne.studentTwo && (
+                                        {jury.projectApprovalStepTwo.titleReservationStepOne.student.studentCode || 'N/A'}
+                                        {jury.projectApprovalStepTwo.titleReservationStepOne.studentTwo && (
                                             <>
                                                 <br />
-                                                {project.titleReservationStepOne.studentTwo.studentCode || 'N/A'}
+                                                {jury.projectApprovalStepTwo.titleReservationStepOne.studentTwo.studentCode || 'N/A'}
                                             </>
                                         )}
                                     </td>
-                                    <td>{project.titleReservationStepOne.student.career?.name || 'N/A'}</td>
-                                    <td>{project.titleReservationStepOne.title || 'Sin título'}</td>
-                                    <td>{project.adviser ? `${project.adviser.firstNames || ' '} ${project.adviser.lastName || ' '}` : 'N/A'}</td>
-                                    <td>{project.coadviser ? `${project.coadviser.firstNames || ' '} ${project.coadviser.lastName || ' '}` : 'N/A'}</td>
-                                    <td>{formatearFecha(project.updatedAt)}</td>
+                                    <td>{jury.projectApprovalStepTwo.titleReservationStepOne.student.career?.name || 'N/A'}</td>
+                                    <td>{jury.president ? `${jury.president.firstNames || ' '} ${jury.president.lastName || ' '}` : 'N/A'}</td>
+                                    <td>{jury.firstMember ? `${jury.firstMember.firstNames || ' '} ${jury.firstMember.lastName || ' '}` : 'N/A'}</td>
+                                    <td>{jury.secondMember ? `${jury.secondMember.firstNames || ' '} ${jury.secondMember.lastName || ' '}` : 'N/A'}</td>
+                                    <td>{jury.accessory ? `${jury.accessory.firstNames || ' '} ${jury.accessory.lastName || ' '}` : 'N/A'}</td>
+                                    <td>
+                                        {jury.projectApprovalStepTwo.adviser
+                                            ? `${jury.projectApprovalStepTwo.adviser.firstNames || ' '} ${jury.projectApprovalStepTwo.adviser.lastName || ' '}`
+                                            : 'N/A'}
+                                    </td>
+                                    <td>
+                                        {jury.projectApprovalStepTwo.coadviser
+                                            ? `${jury.projectApprovalStepTwo.coadviser.firstNames || ' '} ${jury.projectApprovalStepTwo.coadviser.lastName || ' '}`
+                                            : 'N/A'}
+                                    </td>
+                                    <td>{formatearFecha(jury.updatedAt)}</td>
                                     <td className="flex gap-4 items-center justify-center">
-                                        <button onClick={() => onEdit(project)} className="btn btn-sm btn-outline-primary">
+                                        <button onClick={() => onEdit(jury)} className="btn btn-sm btn-outline-primary">
                                             Editar
                                         </button>
-                                        <button onClick={() => onDelete(project.id)} className="btn btn-sm btn-outline-danger">
-                                            Eliminar
+                                        <button onClick={() => elegirJurados(jury)} className="btn btn-sm btn-outline-danger">
+                                            Elegir Jurados
                                         </button>
                                     </td>
                                 </tr>
@@ -123,4 +154,4 @@ const AppointmentTable = ({ currentProject, onEdit, onDelete }) => {
     );
 };
 
-export default AppointmentTable;
+export default JuryTable;

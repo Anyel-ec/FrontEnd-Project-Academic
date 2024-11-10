@@ -7,7 +7,14 @@ import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
+import AppEnvironments from '../../../../config/AppEnvironments';
 
+const TITLERESERVATION_API_URL = `${AppEnvironments.baseUrl}api/v1/reservas_titulo/`;
+
+// Obtener el token almacenado en localStorage
+const getAuthToken = () => {
+    return localStorage.getItem('token');
+};
 const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions }) => {
     const [searchResults, setSearchResults] = useState([]);
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
@@ -34,7 +41,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
         if (searchQuery) {
             try {
                 const token = localStorage.getItem('token'); // O el método que uses para almacenar el token
-                const response = await fetch(`http://localhost:8080/api/v1/reservas_titulo/buscar?title=${searchQuery}`, {
+                const response = await fetch(`${TITLERESERVATION_API_URL}buscar?title=${searchQuery}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

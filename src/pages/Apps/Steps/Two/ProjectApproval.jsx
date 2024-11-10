@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
 import Swal from 'sweetalert2';
-
 import ApprovalTable from './ApprovalTable';
 import ApprovalModal from './ApprovalModal';
 import teacherService from '../../../../api/teacherService';
@@ -42,21 +41,12 @@ const ProjectApproval = () => {
         }
     };
 
-    // const handleDelete = async (projectId) => {
-    //     try {
-    //         await projectApprovalService.deleteProjectApproval(projectId);
-    //         fetchProjects(); // Refrescar la lista después de eliminar
-    //     } catch (error) {
-    //         console.error('Error al eliminar el proyecto:', error);
-    //     }
-    // };
-
     const handleSave = async (updatedProjectData, projectId) => {
         try {
             // Llamada al servicio con el ID en la URL y los datos en el cuerpo
             await projectApprovalService.editProjectApproval(projectId, updatedProjectData);
             Swal.fire('Éxito', 'Proyecto actualizado correctamente.', 'success');
-    
+
             await fetchProjects(); // Actualizamos la lista de proyectos
             closeModal(); // Cerramos el modal después de guardar
         } catch (error) {
@@ -64,7 +54,7 @@ const ProjectApproval = () => {
             Swal.fire('Error', 'Hubo un problema al guardar el proyecto.', 'error');
         }
     };
-    
+
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedProject(null);
@@ -73,13 +63,7 @@ const ProjectApproval = () => {
     return (
         <div className="pt-5">
             <h1 className="text-2xl font-bold mb-5">Comprobación de Proyecto</h1>
-
-            <ApprovalTable
-                projects={currentProjects}
-                onEdit={handleEdit}
-                // Pasamos los proyectos guardados
-            />
-
+            <ApprovalTable projects={currentProjects} onEdit={handleEdit} />
             <ApprovalModal isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} project={selectedProject} adviserOptions={advisers} />
         </div>
     );
