@@ -2,14 +2,14 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
 import Swal from 'sweetalert2';
-import ApprovalTable from './ApprovalTable';
-import ApprovalModal from './ApprovalModal';
-import ApprovalSearch from './ApprovalSearch';
+import ReportTable from './ReportTable';
+import ReportModal from './ReportModal';
+import ReportSearch from './ReportSearch';
 import teacherService from '../../../../api/teacherService';
 import careerService from '../../../../api/careerService';
 import projectApprovalService from '../../../../api/projectApprovalService';
 
-const ProjectApproval = () => {
+const ReportReview = () => {
     const dispatch = useDispatch();
     const [currentProjects, setCurrentProjects] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -103,13 +103,13 @@ const ProjectApproval = () => {
 
     return (
         <div className="pt-5">
-            <ApprovalSearch search={search} setSearch={setSearch} careerOptions={careerOptions} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} />
+            <ReportSearch search={search} setSearch={setSearch} careerOptions={careerOptions} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} />
 
             {/* <h1 className="text-2xl font-bold mb-5">Comprobación de Proyecto</h1> */}
-            <ApprovalTable projects={filteredProjects} onEdit={handleEdit} />
-            <ApprovalModal isOpen={isModalOpen} onClose={closeModal} onSave={handleSave}adviserOptions={advisers} />
+            <ReportTable projects={filteredProjects} onEdit={handleEdit} />
+            <ReportModal isOpen={isModalOpen} onClose={closeModal} onSave={handleSave}adviserOptions={advisers} />
         </div>
     );
 };
 
-export default ProjectApproval;
+export default ReportReview;

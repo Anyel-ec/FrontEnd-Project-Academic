@@ -4,14 +4,18 @@ import ConstancyVoucherOne from './ConstancyVoucherOne';
 import { obtenerAnioActual } from './Dates';
 import ConstancyVoucherTwo from './ConstancyVoucherTwo';
 import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importación es correcto
-const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete, searchTerm }) => {
-    const [currentPage, setCurrentPage] = useState(1);
+const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit, onDelete, searchTerm }) => {
+    // Aplica el filtro de carrera primero
     const itemsPerPage = 8;
-    
-    // Filter reservations based on the search term
-    const normalizedSearchTerm = searchTerm.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const currentPage = 1;
 
-    const filteredReservations = titleReservations.filter(reservation =>
+    const filteredByCareer = selectedCareer && selectedCareer.value
+        ? titleReservations.filter(reservation => reservation.student.career.id === selectedCareer.value)
+        : titleReservations;
+    // Luego aplica el filtro de búsqueda en los resultados ya filtrados por carrera
+    // Luego aplica el filtro de búsqueda en los resultados ya filtrados por carrera o todos si no hay carrera seleccionada
+    const normalizedSearchTerm = searchTerm.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const filteredReservations = filteredByCareer.filter(reservation =>
         reservation.student.studentCode.toLowerCase().includes(normalizedSearchTerm) ||
         `${reservation.student.firstNames} ${reservation.student.lastName}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(normalizedSearchTerm) ||
         (reservation.studentTwo && (
@@ -19,6 +23,7 @@ const ReservationTable = ({ titleReservations, apiError, onEdit, onDelete, searc
             `${reservation.studentTwo.firstNames} ${reservation.studentTwo.lastName}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(normalizedSearchTerm)
         ))
     );
+
     console.log(titleReservations);
 
     const totalPages = Math.ceil(filteredReservations.length / itemsPerPage);

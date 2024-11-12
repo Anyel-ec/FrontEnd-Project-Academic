@@ -18,6 +18,7 @@ const TitleReservation = () => {
     const dispatch = useDispatch();
     const [titleReservations, setTitleReservations] = useState([]);
     const [careerOptions, setCareerOptions] = useState([]);
+    const [selectedCareer, setSelectedCareer] = useState(null); // If it's supposed to hold a single object or initial value.
     const [lineOptions, setLineOptions] = useState([]); // Opciones de líneas de investigación (agregar si es necesario)
     const [studentOptions, setStudentOptions] = useState([]);
     const [filteredStudentOptions, setFilteredStudentOptions] = useState([]);
@@ -335,6 +336,7 @@ const TitleReservation = () => {
                             options={careerOptions}
                             value={values.career}
                             setFieldValue={setFieldValue}
+                            onChange={setSelectedCareer} // Asegúrate de implementar este prop en SelectCareer
                             filterStudentsByCareer={filterStudentsByCareer}
                             errors={errors}
                             submitCount={submitCount}
@@ -357,7 +359,7 @@ const TitleReservation = () => {
 
             <ReservationModal isOpen={addContactModal} onClose={closeModal} reservation={editingReservation} onSave={handleSaveReservation} lineOptions={lineOptions} enableReinitialize />
 
-            <ReservationTable titleReservations={titleReservations} apiError={apiError} onEdit={editReservation} onDelete={deleteTitleReservation} searchTerm={searchTerm} />
+            <ReservationTable selectedCareer={selectedCareer} titleReservations={titleReservations} apiError={apiError} onEdit={editReservation} onDelete={deleteTitleReservation} searchTerm={searchTerm} />
         </div>
     );
 };

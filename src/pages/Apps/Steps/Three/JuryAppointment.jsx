@@ -14,7 +14,6 @@ const JuryAppoiment = () => {
     const [advisers, setAdvisers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedJury, setSelectedJury] = useState(null);
-    const [apiError, setApiError] = useState(null);
 
     useEffect(() => {
         dispatch(setPageTitle('Asignación de Jurados'));

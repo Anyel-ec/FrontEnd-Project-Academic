@@ -2,9 +2,10 @@ import { lazy } from 'react';
 import Students from '../pages/Apps/Student/Students';
 import Teachers from '../pages/Apps/Teacher/Teachers';
 import Constancy from '../pages/Apps/Steps/One/TitleReservation';
+import ConstancyStudents from '../pages/Apps/StepsStudents/One/TitleReservation';
 import ProjectAproval from '../pages/Apps/Steps/Two/ProjectApproval';
 import JuryAppointment from '../pages/Apps/Steps/Three/JuryAppointment';
-import ConstancyStudents from '../pages/Apps/StepsStudents/One/TitleReservation';
+import ReportReview from '../pages/Apps/Steps/Four/ReportReview';
 import ThesisAdvisory from '../pages/Apps/ThesisAdvisory';
 import { ProtectedRoute, StudentRoute } from '../security/ProtectedRoute';
 
@@ -172,10 +173,18 @@ const routes = [
         ),
     },
     {
-        path: 'apps/paso/asignacion-de-jurados',
+        path: 'apps/paso/designacion-de-jurados',
         element: (
             <ProtectedRoute>
                 <JuryAppointment />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: 'apps/paso/revision-de-reporte',
+        element: (
+            <ProtectedRoute>
+                <ReportReview />
             </ProtectedRoute>
         ),
     },

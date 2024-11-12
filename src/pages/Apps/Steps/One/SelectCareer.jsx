@@ -5,10 +5,11 @@ import '../../styles/toggleSwitch.css';
 import { HandleMode } from '../../styles/selectStyles';
 
 // Asumiendo que tienes un componente SelectCareer, aquí debería ser cómo manejas el cambio de opción.
-const SelectCareer = ({ options, value, setFieldValue, filterStudentsByCareer, errors, submitCount }) => {
+const SelectCareer = ({ options, value, setFieldValue, filterStudentsByCareer, errors, submitCount, onChange }) => {
     const handleOnChange = (option) => {
         setFieldValue('career', option); // Ajusta el valor de carrera en Formik
         filterStudentsByCareer(option ? option.value : null); // Llama al filtrado de estudiantes
+        onChange(option); // Notificar al componente padre
     };
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark'); // Obtener el tema desde Redux
     const styles = HandleMode(isDarkMode); // Aplicar los estilos según el modo

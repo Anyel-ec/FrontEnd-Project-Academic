@@ -150,7 +150,7 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions,onSave }) => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="8" className="px-4 py-2 text-center">
+                                <td colSpan="11" className="px-4 py-2 text-center">
                                     No hay proyectos disponibles
                                 </td>
                             </tr>

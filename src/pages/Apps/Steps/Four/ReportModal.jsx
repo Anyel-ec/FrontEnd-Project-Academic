@@ -6,7 +6,7 @@ import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
 
-const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => {
+const ReportModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => {
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
 
@@ -35,7 +35,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                 <IconX />
                             </button>
                             <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
-                                {project ? 'Editar Proyecto' : 'Crear Proyecto'}
+                                {project ? 'Editar Reporte' : 'Crear Reporte'}
                             </div>
                             <div className="p-5">
                                 <Formik
@@ -74,42 +74,9 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                 </div>
                                             )}
 
-                                            <div className="col-span-1">
-                                                <label htmlFor="adviser">Seleccionar Asesor</label>
-                                                <Select
-                                                    id="adviser"
-                                                    styles={styles}
-                                                    options={adviserOptions
-                                                        .filter((adviser) => adviser.id !== values.coadviser?.value)
-                                                        .map((adviser) => ({
-                                                            value: adviser.id,
-                                                            label: `${adviser.firstNames} ${adviser.lastName}`,
-                                                        }))}
-                                                    value={values.adviser}
-                                                    onChange={(option) => setFieldValue('adviser', option)}
-                                                    placeholder="Seleccione un asesor..."
-                                                />
-                                            </div>
-
-                                            <div className="col-span-1">
-                                                <label htmlFor="coadviser">Proyecto Aprobado</label>
-                                                <Select
-                                                    id="coadviser"
-                                                    styles={styles}
-                                                    options={adviserOptions
-                                                        .filter((adviser) => adviser.id !== values.adviser?.value)
-                                                        .map((adviser) => ({
-                                                            value: adviser.id,
-                                                            label: `${adviser.firstNames} ${adviser.lastName}`,
-                                                        }))}
-                                                    value={values.coadviser}
-                                                    onChange={(option) => setFieldValue('coadviser', option)}
-                                                    placeholder="Seleccione un coasesor..."
-                                                    isDisabled={!values.adviser}
-                                                />
-                                            </div>
+                                            
                                             <div>
-                                                <label htmlFor="approvedProject">Cumple Requisitos</label>
+                                                <label htmlFor="approvedProject">Proyecto Aprobado</label>
                                                 <div className="flex gap-4">
                                                     <label>
                                                         <Field type="radio" name="approvedProject" value="yes" className="form-radio" />
@@ -148,4 +115,4 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
     );
 };
 
-export default ApprovalModal;
+export default ReportModal;
