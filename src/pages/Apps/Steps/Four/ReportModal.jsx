@@ -1,7 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
@@ -20,7 +19,7 @@ const ReportModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => {
             observation: project?.titleReservationStepOne?.observations || '',
             adviser: project?.adviser ? { value: project.adviser.id, label: `${project.adviser.firstNames} ${project.adviser.lastName}` } : null,
             coadviser: project?.coadviser ? { value: project.coadviser.id, label: `${project.coadviser.firstNames} ${project.coadviser.lastName}` } : null,
-            approvedProject: project?.approvedProject ? 'yes' : 'no',
+            meetRequirements: project?.meetRequirements ? 'yes' : 'no',
         }),
         [project, adviserOptions]
     );
@@ -50,7 +49,7 @@ const ReportModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => {
                                             },
                                             coadviser: values.coadviser ? { id: values.coadviser.value } : null,
                                             observations: values.observation || '',
-                                            approvedProject: values.approvedProject === 'yes', // Conversión a booleano
+                                            meetRequirements: values.meetRequirements === 'yes', // Conversión a booleano
                                         };
 
                                         console.log('Llamando a onSave con:', transformedValues);
@@ -76,18 +75,18 @@ const ReportModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => {
 
                                             
                                             <div>
-                                                <label htmlFor="approvedProject">Proyecto Aprobado</label>
+                                                <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
                                                     <label>
-                                                        <Field type="radio" name="approvedProject" value="yes" className="form-radio" />
+                                                        <Field type="radio" name="meetRequirements" value="yes" className="form-radio" />
                                                         Sí
                                                     </label>
                                                     <label>
-                                                        <Field type="radio" name="approvedProject" value="no" className="form-radio" />
+                                                        <Field type="radio" name="meetRequirements" value="no" className="form-radio" />
                                                         No
                                                     </label>
                                                 </div>
-                                                <ErrorMessage name="approvedProject" component="div" className="text-danger mt-1" />
+                                                <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className="col-span-2">
                                                 <label htmlFor="observation">Observaciones</label>

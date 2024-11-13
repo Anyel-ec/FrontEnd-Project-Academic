@@ -13,7 +13,6 @@ const ReportReview = () => {
     const dispatch = useDispatch();
     const [currentProjects, setCurrentProjects] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedProject, setSelectedProject] = useState(null);
     const [advisers, setAdvisers] = useState([]);
     const [selectedCareer, setSelectedCareer] = useState(null);
     const [search, setSearch] = useState('');

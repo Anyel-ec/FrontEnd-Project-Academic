@@ -58,7 +58,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                     }}
                                     enableReinitialize
                                 >
-                                    {({ errors, submitCount, setFieldValue, values, isSubmitting }) => (
+                                    {({ errors, submitCount, setFieldValue, values }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
@@ -132,7 +132,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                 <button type="button" className="btn btn-outline-danger" onClick={onClose}>
                                                     Cancelar
                                                 </button>
-                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4" disabled={isSubmitting}>
+                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4" >
                                                     Guardar
                                                 </button>
                                             </div>

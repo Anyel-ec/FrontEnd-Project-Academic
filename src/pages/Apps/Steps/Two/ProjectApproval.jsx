@@ -107,7 +107,7 @@ const ProjectApproval = () => {
 
             {/* <h1 className="text-2xl font-bold mb-5">Comprobación de Proyecto</h1> */}
             <ApprovalTable projects={filteredProjects} onEdit={handleEdit} />
-            <ApprovalModal isOpen={isModalOpen} onClose={closeModal} onSave={handleSave}adviserOptions={advisers} />
+            <ApprovalModal isOpen={isModalOpen} onClose={closeModal} project={selectedProject} onSave={handleSave}adviserOptions={advisers} />
         </div>
     );
 };
