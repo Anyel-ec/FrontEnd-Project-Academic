@@ -9,22 +9,28 @@ const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit,
     const itemsPerPage = 8;
     const currentPage = 1;
 
-    const filteredByCareer = selectedCareer && selectedCareer.value
-        ? titleReservations.filter(reservation => reservation.student.career.id === selectedCareer.value)
-        : titleReservations;
-    // Luego aplica el filtro de búsqueda en los resultados ya filtrados por carrera
+    const filteredByCareer = selectedCareer && selectedCareer.value ? titleReservations.filter((reservation) => reservation.student.career.id === selectedCareer.value) : titleReservations;
     // Luego aplica el filtro de búsqueda en los resultados ya filtrados por carrera o todos si no hay carrera seleccionada
-    const normalizedSearchTerm = searchTerm.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    const filteredReservations = filteredByCareer.filter(reservation =>
-        reservation.student.studentCode.toLowerCase().includes(normalizedSearchTerm) ||
-        `${reservation.student.firstNames} ${reservation.student.lastName}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(normalizedSearchTerm) ||
-        (reservation.studentTwo && (
-            reservation.studentTwo.studentCode.toLowerCase().includes(normalizedSearchTerm) ||
-            `${reservation.studentTwo.firstNames} ${reservation.studentTwo.lastName}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(normalizedSearchTerm)
-        ))
+    const normalizedSearchTerm = searchTerm
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
+    const filteredReservations = filteredByCareer.filter(
+        (reservation) =>
+            reservation.student.studentCode.toLowerCase().includes(normalizedSearchTerm) ||
+            `${reservation.student.firstNames} ${reservation.student.lastName}`
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .includes(normalizedSearchTerm) ||
+            (reservation.studentTwo &&
+                (reservation.studentTwo.studentCode.toLowerCase().includes(normalizedSearchTerm) ||
+                    `${reservation.studentTwo.firstNames} ${reservation.studentTwo.lastName}`
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')
+                        .toLowerCase()
+                        .includes(normalizedSearchTerm)))
     );
-
-    console.log(titleReservations);
 
     const totalPages = Math.ceil(filteredReservations.length / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;

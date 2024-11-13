@@ -6,15 +6,8 @@ import Swal from 'sweetalert2';
 import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
-import Fuse from 'fuse.js';
-import AppEnvironments from '../../../../config/AppEnvironments';
+import titleReservationsService from '../../../../api/titleReservationsService';
 
-const TITLERESERVATION_API_URL = `${AppEnvironments.baseUrl}api/v1/reservas_titulo/`;
-
-// Obtener el token almacenado en localStorage
-const getAuthToken = () => {
-    return localStorage.getItem('token');
-};
 const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions }) => {
     const [searchResults, setSearchResults] = useState([]);
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
@@ -40,20 +33,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
     const handleTitleSearch = async (searchQuery) => {
         if (searchQuery) {
             try {
-                const token = localStorage.getItem('token'); // O el método que uses para almacenar el token
-                const response = await fetch(`${TITLERESERVATION_API_URL}buscar?title=${searchQuery}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error('Error en la solicitud');
-                }
-
-                const data = await response.json();
-                const fuse = new Fuse(data, { keys: ['title'], threshold: 0.3 });
-                const results = fuse.search(searchQuery).map((result) => result.item);
+                const results = await titleReservationsService.searchTitleReservations(searchQuery);
                 setSearchResults(results);
             } catch (error) {
                 console.error('Error al buscar títulos:', error);
@@ -178,7 +158,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                 />
                                                 <ErrorMessage name="projectSimilarity" component="div" className="text-danger mt-1" />
                                             </div>
-                                            <div className={submitCount && errors.meetRequirements ? 'has-error' : ''}>
+                                            <div className="col-span-1">
                                                 <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
                                                     <label>
@@ -201,7 +181,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                 <button type="button" className="btn btn-outline-danger" onClick={onClose}>
                                                     Cancelar
                                                 </button>
-                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
+                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4 "  >
                                                     Actualizar
                                                 </button>
                                             </div>

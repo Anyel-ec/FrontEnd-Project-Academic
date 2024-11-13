@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import teacherService from '../../../../api/teacherService';
+import Swal from 'sweetalert2';
 
-const JuryTable = ({ currentJury, onEdit, adviserOptions,onSave }) => {
+const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const itemsPerPage = 4;
@@ -16,6 +17,7 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions,onSave }) => {
         return new Date(dateString).toLocaleString('es-ES', options);
     };
 
+    console.log(currentJury);
     const elegirJurados = async (jury) => {
         const careerId = jury.projectApprovalStepTwo.adviser.career.id;
 
@@ -89,7 +91,9 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions,onSave }) => {
                         <tr>
                             <th>Estudiantes</th>
                             <th>Código(s)</th>
+                            <th>Cumple Requisitos</th>
                             <th>Carrera</th>
+
                             <th>Presidente</th>
                             <th>Primer Miembro</th>
                             <th>Segundo Miembro</th>
@@ -122,6 +126,7 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions,onSave }) => {
                                             </>
                                         )}
                                     </td>
+                                    <td>{jury.meetRequirements ? 'Sí' : 'No'}</td>
                                     <td>{jury.projectApprovalStepTwo.titleReservationStepOne.student.career?.name || 'N/A'}</td>
                                     <td>{jury.president ? `${jury.president.firstNames || ' '} ${jury.president.lastName || ' '}` : 'N/A'}</td>
                                     <td>{jury.firstMember ? `${jury.firstMember.firstNames || ' '} ${jury.firstMember.lastName || ' '}` : 'N/A'}</td>
@@ -139,12 +144,20 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions,onSave }) => {
                                     </td>
                                     <td>{formatearFecha(jury.updatedAt)}</td>
                                     <td className="flex gap-4 items-center justify-center">
-                                        <button onClick={() => onEdit(jury)} className="btn btn-sm btn-outline-primary">
-                                            Editar
-                                        </button>
-                                        <button onClick={() => handleRandomJurySelection(jury)} className="btn btn-sm btn-outline-danger">
-                                            Elegir Jurados
-                                        </button>
+                                        {jury.meetRequirements ? (
+                                            <button onClick={() => Swal.fire('Paso Completado', 'Jurados designado exitosamente.', 'success')} className="btn btn-sm btn-outline-info">
+                                                Completado
+                                            </button>
+                                        ) : (
+                                            <>
+                                                <button onClick={() => onEdit(jury)} className="btn btn-sm btn-outline-primary">
+                                                    Editar
+                                                </button>
+                                                <button onClick={() => handleRandomJurySelection(jury)} className="btn btn-sm btn-outline-danger">
+                                                    Elegir Jurados
+                                                </button>
+                                            </>
+                                        )}
                                     </td>
                                 </tr>
                             ))

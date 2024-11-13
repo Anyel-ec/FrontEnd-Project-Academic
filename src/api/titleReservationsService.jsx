@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Fuse from 'fuse.js';
 import AppEnvironments from '../config/AppEnvironments';
 
 const TITLERESERVATION_API_URL = `${AppEnvironments.baseUrl}api/v1/reservas_titulo/`;
@@ -6,6 +7,27 @@ const TITLERESERVATION_API_URL = `${AppEnvironments.baseUrl}api/v1/reservas_titu
 // Obtener el token almacenado en localStorage
 const getAuthToken = () => {
     return localStorage.getItem('token');
+};
+
+const searchTitleReservations = async (searchQuery) => {
+    try {
+        const response = await axios.get(`${TITLERESERVATION_API_URL}buscar?title=${searchQuery}`, {
+            headers: {
+                Authorization: `Bearer ${getAuthToken()}`,
+            },
+        });
+
+        const data = response.data;
+
+        // Use Fuse.js for fuzzy search
+        const fuse = new Fuse(data, { keys: ['title'], threshold: 0.3 });
+        const results = fuse.search(searchQuery).map((result) => result.item);
+        
+        return results;
+    } catch (error) {
+        console.error('Error al buscar títulos:', error);
+        throw error;
+    }
 };
 
 // Obtener todas las reservas de título
@@ -81,4 +103,5 @@ export default {
     addTitleReservation,
     editTitleReservation,
     deleteTitleReservation,
+    searchTitleReservations,
 };

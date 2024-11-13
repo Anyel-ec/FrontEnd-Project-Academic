@@ -18,6 +18,8 @@ const ApprovalModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOption
             studentFirstNames: juryAppointment?.projectApprovalStepTwo?.titleReservationStepOne?.student?.firstNames || 'N/A',
             studentTwoFirstNames: juryAppointment?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.firstNames || '',
             observations: juryAppointment?.projectApprovalStepTwo?.titleReservationStepOne?.observations || '',
+            meetRequirements: juryAppointment?.meetRequirements ? 'yes' : 'no',
+
             president: juryAppointment?.president
                 ? {
                       value: juryAppointment.president.id,
@@ -90,6 +92,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOption
                                             firstMember: values.firstMember ? { id: values.firstMember.value } : null,
                                             secondMember: values.secondMember ? { id: values.secondMember.value } : null,
                                             accessory: values.accessory ? { id: values.accessory.value } : null,
+                                            meetRequirements: values.meetRequirements ? true : false,
                                             observations: values.observations || '',
                                         };
 
@@ -159,6 +162,19 @@ const ApprovalModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOption
                                                 <div className="col-span-1">
                                                     <label htmlFor="coadviser">Coasesor</label>
                                                     <Select id="coadviser" styles={styles} value={values.coadviser} isDisabled placeholder="Coasesor seleccionado" />
+                                                </div>
+                                                <div>
+                                                    <label htmlFor="meetRequirements">Cumple Requisitos</label>
+                                                    <div className="flex gap-4">
+                                                        <label>
+                                                            <Field type="radio" name="meetRequirements" value="yes" className="form-radio" />
+                                                            Sí
+                                                        </label>
+                                                        <label>
+                                                            <Field type="radio" name="meetRequirements" value="no" className="form-radio" />
+                                                            No
+                                                        </label>
+                                                    </div>
                                                 </div>
 
                                                 <div className="col-span-2">
