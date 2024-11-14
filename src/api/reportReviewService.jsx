@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AppEnvironments from '../config/AppEnvironments';
 
-const PROJECTAPPROVAL_API_URL = `${AppEnvironments.baseUrl}api/v1/aprobacion_proyecto`;
+const REPORTREVIEW_API_URL = `${AppEnvironments.baseUrl}api/v1/revision_reporte`;
 
 // Obtener el token almacenado en localStorage
 const getAuthToken = () => {
@@ -9,23 +9,23 @@ const getAuthToken = () => {
 };
 
 // Obtener todas las reservas de título
-const getProjectApproval = async () => {
+const getReportReview = async () => {
     try {
-        const response = await axios.get(PROJECTAPPROVAL_API_URL, {
+        const response = await axios.get(REPORTREVIEW_API_URL, {
             headers: {
                 Authorization: `Bearer ${getAuthToken()}`,
             },
         });
         return response.data;
     } catch (error) {
-        console.error('Error fetching projectApproval', error);
+        console.error('Error fetching reportReview', error);
         throw error;
     }
 };
 
-const addProjectApproval = async (projectApproval) => {
+const addReportReview = async (reportReview) => {
     try {
-        const response = await axios.post(PROJECTAPPROVAL_API_URL, projectApproval, {
+        const response = await axios.post(REPORTREVIEW_API_URL, reportReview, {
             headers: {
                 Authorization: `Bearer ${getAuthToken()}`,
             },
@@ -37,15 +37,15 @@ const addProjectApproval = async (projectApproval) => {
             throw new Error('El servidor no devolvió datos en la respuesta.');
         }
     } catch (error) {
-        console.error('Error en addProjectApproval:', error.response ? error.response.data : error.message);
+        console.error('Error en agregar la revisión de reporte :', error.response ? error.response.data : error.message);
 
         throw new Error('Error inesperado: ' + error.message);
     }
 };
 
-const editProjectApproval = async (id, projectApproval) => {
+const editReportReview = async (id, reportReview) => {
     try {
-        const response = await axios.put(`${PROJECTAPPROVAL_API_URL}/${id}`, projectApproval, {
+        const response = await axios.put(`${REPORTREVIEW_API_URL}/${id}`, reportReview, {
             headers: {
                 Authorization: `Bearer ${getAuthToken()}`,
             },
@@ -58,29 +58,29 @@ const editProjectApproval = async (id, projectApproval) => {
             return;
         }
 
-        console.error('Error en editProjectApproval:', error);
+        console.error('Error en editReportReview:', error);
         throw error;
     }
 };
 
 // Eliminar una reserva de título
-const deleteProjectApproval = async (id) => {
+const deleteReportReview = async (id) => {
     try {
-        const response = await axios.delete(`${PROJECTAPPROVAL_API_URL}/${id}`, {
+        const response = await axios.delete(`${REPORTREVIEW_API_URL}/${id}`, {
             headers: {
                 Authorization: `Bearer ${getAuthToken()}`,
             },
         });
         return response.data;
     } catch (error) {
-        console.error('Error deleting projectApproval', error);
+        console.error('Error deleting reportReview', error);
         throw error;
     }
 };
 
 export default {
-    getProjectApproval,
-    addProjectApproval,
-    editProjectApproval,
-    deleteProjectApproval,
+    getReportReview,
+    addReportReview,
+    editReportReview,
+    deleteReportReview,
 };

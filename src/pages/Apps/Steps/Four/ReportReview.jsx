@@ -8,6 +8,7 @@ import ReportSearch from './ReportSearch';
 import teacherService from '../../../../api/teacherService';
 import careerService from '../../../../api/careerService';
 import projectApprovalService from '../../../../api/projectApprovalService';
+import reportReviewService from '../../../../api/reportReviewService';
 
 const ReportReview = () => {
     const dispatch = useDispatch();
@@ -37,7 +38,7 @@ const ReportReview = () => {
     }, []);
     const fetchProjects = useCallback(async () => {
         try {
-            const projects = await projectApprovalService.getProjectApproval();
+            const projects = await reportReviewService.getReportReview();
             setCurrentProjects(projects);
         } catch (error) {
             console.error('Error al obtener las reservaciones de títulos:', error);

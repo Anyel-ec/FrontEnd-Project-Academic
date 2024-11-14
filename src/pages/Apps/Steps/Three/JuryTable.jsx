@@ -11,20 +11,23 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const jurys = currentJury.slice(indexOfFirstItem, indexOfLastItem);
+    const [isLoading, setIsLoading] = useState(false);
+
+    
     const formatearFecha = (dateString) => {
         if (!dateString) return 'N/A';
         const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
         return new Date(dateString).toLocaleString('es-ES', options);
     };
-
+    
     console.log(currentJury);
     const elegirJurados = async (jury) => {
         const careerId = jury.projectApprovalStepTwo.adviser.career.id;
-
+        
         try {
             const allAdvisers = await teacherService.getTeachersByCareer(careerId);
             console.log('Todos los docentes obtenidos:', allAdvisers);
-
+            
             // Extraer los nombres de los asesores seleccionados de la interfaz
             const selectedAdvisers = [
                 jury.projectApprovalStepTwo.adviser?.firstNames + ' ' + jury.projectApprovalStepTwo.adviser?.lastName,
@@ -34,13 +37,13 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
             // Normalizar y filtrar los docentes que no están seleccionados
             const normalize = (str) => str.toLowerCase().trim();
             const availableAdvisers = allAdvisers.filter((adviser) => !selectedAdvisers.map(normalize).includes(normalize(adviser.firstNames + ' ' + adviser.lastName)));
-
+            
             console.log('Docentes disponibles:', availableAdvisers);
-
+            
             // Seleccionar aleatoriamente los jurados
             const randomSelection = {};
             const roles = ['president', 'firstMember', 'secondMember', 'accessory']; // Los roles a asignar
-
+            
             roles.forEach((role) => {
                 if (availableAdvisers.length > 0) {
                     const randomIndex = Math.floor(Math.random() * availableAdvisers.length); // Índice aleatorio
@@ -50,7 +53,7 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
                     randomSelection[role] = null; // Si no hay suficientes docentes
                 }
             });
-
+            
             // Imprimir en consola los jurados seleccionados
             console.log('Jurados seleccionados:', {
                 president: randomSelection['president'],
@@ -58,7 +61,7 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
                 secondMember: randomSelection['secondMember'],
                 accessory: randomSelection['accessory'],
             });
-
+            
             // Devolver el objeto con los jurados seleccionados
             return {
                 president: randomSelection['president'],
@@ -77,11 +80,14 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
         }
     };
     const handleRandomJurySelection = async (jury) => {
+        setIsLoading(true);
         const selectedJurors = await elegirJurados(jury);
+        setIsLoading(false);
         if (onSave) {
             onSave(selectedJurors, jury.id); // Asumiendo que `jury.id` es el ID del proyecto
         }
     };
+
 
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
@@ -153,8 +159,8 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
                                                 <button onClick={() => onEdit(jury)} className="btn btn-sm btn-outline-primary">
                                                     Editar
                                                 </button>
-                                                <button onClick={() => handleRandomJurySelection(jury)} className="btn btn-sm btn-outline-danger">
-                                                    Elegir Jurados
+                                                <button onClick={() => handleRandomJurySelection(jury)} className="btn btn-sm btn-outline-danger" disabled={isLoading}>
+                                                    {isLoading ? 'Cargando...' : 'Elegir Jurados'}
                                                 </button>
                                             </>
                                         )}
