@@ -9,6 +9,7 @@ const getAuthToken = () => {
     return localStorage.getItem('token');
 };
 
+
 const searchTitleReservations = async (searchQuery) => {
     try {
         const response = await axios.get(`${TITLERESERVATION_API_URL}buscar?title=${searchQuery}`, {

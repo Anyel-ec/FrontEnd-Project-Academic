@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Pagination from '../Steps/Pagination';
 
 const StudentTable = ({ students, onEdit, onDelete }) => {
     const [expandedRow, setExpandedRow] = useState(null);
@@ -94,55 +95,7 @@ const StudentTable = ({ students, onEdit, onDelete }) => {
                 </table>
             </div>
 
-            {/* Paginación */}
-            <div className="flex justify-center items-center mt-4">
-                <ul className="inline-flex items-center space-x-1 rtl:space-x-reverse m-auto mb-4">
-                    {/* Botón Anterior */}
-                    <li>
-                        <button
-                            type="button"
-                            className="flex justify-center font-semibold px-3.5 py-2 rounded transition bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary"
-                            onClick={handlePreviousPage}
-                            disabled={currentPage === 1}
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                            </svg>
-                        </button>
-                    </li>
-
-                    {/* Números de página */}
-                    {Array.from({ length: totalPages }, (_, index) => (
-                        <li key={index + 1}>
-                            <button
-                                type="button"
-                                className={`flex justify-center font-semibold px-3.5 py-2 rounded transition ${
-                                    currentPage === index + 1
-                                        ? 'bg-primary text-white'
-                                        : 'bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary'
-                                }`}
-                                onClick={() => handlePageChange(index + 1)}
-                            >
-                                {index + 1}
-                            </button>
-                        </li>
-                    ))}
-
-                    {/* Botón Siguiente */}
-                    <li>
-                        <button
-                            type="button"
-                            className="flex justify-center font-semibold px-3.5 py-2 rounded transition bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary"
-                            onClick={handleNextPage}
-                            disabled={currentPage === totalPages}
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </button>
-                    </li>
-                </ul>
-            </div>
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
         </div>
     );
 };

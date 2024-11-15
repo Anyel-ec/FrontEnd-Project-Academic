@@ -5,23 +5,23 @@ import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
 
-const ReportModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => {
+const ReportModal = ({ isOpen, onClose, onSave, report, adviserOptions }) => {
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
 
     const initialValues = React.useMemo(
         () => ({
-            titleReservationStepOne: project?.titleReservationStepOne?.id || '',
-            studentCode: project?.titleReservationStepOne?.student?.studentCode || 'N/A',
-            studentTwoCode: project?.titleReservationStepOne?.studentTwo?.studentCode || '',
-            studentFirstNames: project?.titleReservationStepOne?.student?.firstNames || 'N/A',
-            studentTwoFirstNames: project?.titleReservationStepOne?.studentTwo?.firstNames || '',
-            observation: project?.titleReservationStepOne?.observations || '',
-            adviser: project?.adviser ? { value: project.adviser.id, label: `${project.adviser.firstNames} ${project.adviser.lastName}` } : null,
-            coadviser: project?.coadviser ? { value: project.coadviser.id, label: `${project.coadviser.firstNames} ${project.coadviser.lastName}` } : null,
-            meetRequirements: project?.meetRequirements ? 'yes' : 'no',
+            titleReservationStepOne: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.id || '',
+            studentCode: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.studentCode || 'N/A',
+            studentTwoCode: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.studentCode || '',
+            studentFirstNames: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.firstNames || 'N/A',
+            studentTwoFirstNames: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.firstNames || '',
+            observation: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.observations || '',
+            // adviser: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.adviser ? { value: report?.juryAppointmentStepThree?.projectApprovalStepTwo.adviser.id, label: `${report?.juryAppointmentStepThree?.projectApprovalStepTwo.adviser.firstNames} ${report?.juryAppointmentStepThree?.projectApprovalStepTwo.adviser.lastName}` } : null,
+            // coadviser: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.coadviser ? { value: report?.juryAppointmentStepThree?.projectApprovalStepTwo.coadviser.id, label: `${report.juryAppointmentStepThree.projectApprovalStepTwo.coadviser.firstNames} ${report.juryAppointmentStepThree.projectApprovalStepTwo.coadviser.lastName}` } : null,
+            meetRequirements: report?.meetRequirements ? 'yes' : 'no',
         }),
-        [project, adviserOptions]
+        [report, adviserOptions]
     );
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -34,30 +34,22 @@ const ReportModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => {
                                 <IconX />
                             </button>
                             <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
-                                {project ? 'Editar Reporte' : 'Crear Reporte'}
+                                {report ? 'Editar Reporte' : 'Crear Reporte'}
                             </div>
                             <div className="p-5">
                                 <Formik
                                     initialValues={initialValues}
                                     onSubmit={(values) => {
                                         const transformedValues = {
-                                            titleReservationStepOne: {
-                                                id: values.titleReservationStepOne,
-                                            },
-                                            adviser: {
-                                                id: values.adviser ? values.adviser.value : null,
-                                            },
-                                            coadviser: values.coadviser ? { id: values.coadviser.value } : null,
-                                            observations: values.observation || '',
                                             meetRequirements: values.meetRequirements === 'yes', // Conversión a booleano
                                         };
 
                                         console.log('Llamando a onSave con:', transformedValues);
-                                        onSave(transformedValues, project.id);
+                                        onSave(transformedValues, report.id);
                                     }}
                                     enableReinitialize
                                 >
-                                    {({ errors, submitCount, setFieldValue, values, isSubmitting }) => (
+                                    {({ errors, submitCount, isSubmitting }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
@@ -65,7 +57,7 @@ const ReportModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => {
                                                 <ErrorMessage name="studentCode" component="div" className="text-danger mt-1" />
                                             </div>
 
-                                            {project?.titleReservationStepOne?.studentTwo && (
+                                            {report?.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne?.studentTwo && (
                                                 <div className={submitCount && errors.studentTwoCode ? 'has-error' : ''}>
                                                     <label htmlFor="studentTwoCode">Segundo Estudiante</label>
                                                     <Field name="studentTwoCode" type="text" id="studentTwoCode" readOnly className="form-input" />
@@ -98,7 +90,7 @@ const ReportModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => {
                                                 <button type="button" className="btn btn-outline-danger" onClick={onClose}>
                                                     Cancelar
                                                 </button>
-                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4" disabled={isSubmitting}>
+                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4" >
                                                     Guardar
                                                 </button>
                                             </div>

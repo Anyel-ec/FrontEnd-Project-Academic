@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import Pagination from '../Pagination';
+import { useState } from 'react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import ConstancyVoucherOne from './ConstancyVoucherOne';
 import { obtenerAnioActual } from './Dates';
@@ -7,7 +8,7 @@ import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importa
 const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit, onDelete, searchTerm }) => {
     // Aplica el filtro de carrera primero
     const itemsPerPage = 8;
-    const currentPage = 1;
+    const [currentPage, setCurrentPage] = useState(1);
 
     const filteredByCareer = selectedCareer && selectedCareer.value ? titleReservations.filter((reservation) => reservation.student.career.id === selectedCareer.value) : titleReservations;
     // Luego aplica el filtro de búsqueda en los resultados ya filtrados por carrera o todos si no hay carrera seleccionada
@@ -33,6 +34,8 @@ const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit,
     );
 
     const totalPages = Math.ceil(filteredReservations.length / itemsPerPage);
+    const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentReservations = filteredReservations.slice(indexOfFirstItem, indexOfLastItem);
@@ -150,49 +153,7 @@ const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit,
                     </tbody>
                 </table>
             </div>
-            <div className="flex justify-center items-center mt-4">
-                <ul className="inline-flex items-center space-x-1 rtl:space-x-reverse m-auto mb-4">
-                    <li>
-                        <button
-                            type="button"
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className="flex justify-center font-semibold px-3.5 py-2 rounded transition bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                            </svg>
-                        </button>
-                    </li>
-                    {Array.from({ length: totalPages }, (_, index) => (
-                        <li key={index + 1}>
-                            <button
-                                type="button"
-                                onClick={() => handlePageChange(index + 1)}
-                                className={`flex justify-center font-semibold px-3.5 py-2 rounded transition ${
-                                    currentPage === index + 1
-                                        ? 'bg-primary text-white dark:bg-primary dark:text-white-light'
-                                        : 'bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary'
-                                }`}
-                            >
-                                {index + 1}
-                            </button>
-                        </li>
-                    ))}
-                    <li>
-                        <button
-                            type="button"
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            className="flex justify-center font-semibold px-3.5 py-2 rounded transition bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                        </button>
-                    </li>
-                </ul>
-            </div>
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
         </div>
     );
 };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import teacherService from '../../../../api/teacherService';
+import Pagination from '../Pagination';
 import Swal from 'sweetalert2';
 
 const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
@@ -13,21 +14,19 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
     const jurys = currentJury.slice(indexOfFirstItem, indexOfLastItem);
     const [isLoading, setIsLoading] = useState(false);
 
-    
     const formatearFecha = (dateString) => {
         if (!dateString) return 'N/A';
         const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
         return new Date(dateString).toLocaleString('es-ES', options);
     };
-    
-    console.log(currentJury);
+
     const elegirJurados = async (jury) => {
         const careerId = jury.projectApprovalStepTwo.adviser.career.id;
-        
+
         try {
             const allAdvisers = await teacherService.getTeachersByCareer(careerId);
             console.log('Todos los docentes obtenidos:', allAdvisers);
-            
+
             // Extraer los nombres de los asesores seleccionados de la interfaz
             const selectedAdvisers = [
                 jury.projectApprovalStepTwo.adviser?.firstNames + ' ' + jury.projectApprovalStepTwo.adviser?.lastName,
@@ -37,13 +36,13 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
             // Normalizar y filtrar los docentes que no están seleccionados
             const normalize = (str) => str.toLowerCase().trim();
             const availableAdvisers = allAdvisers.filter((adviser) => !selectedAdvisers.map(normalize).includes(normalize(adviser.firstNames + ' ' + adviser.lastName)));
-            
+
             console.log('Docentes disponibles:', availableAdvisers);
-            
+
             // Seleccionar aleatoriamente los jurados
             const randomSelection = {};
             const roles = ['president', 'firstMember', 'secondMember', 'accessory']; // Los roles a asignar
-            
+
             roles.forEach((role) => {
                 if (availableAdvisers.length > 0) {
                     const randomIndex = Math.floor(Math.random() * availableAdvisers.length); // Índice aleatorio
@@ -53,7 +52,7 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
                     randomSelection[role] = null; // Si no hay suficientes docentes
                 }
             });
-            
+
             // Imprimir en consola los jurados seleccionados
             console.log('Jurados seleccionados:', {
                 president: randomSelection['president'],
@@ -61,7 +60,7 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
                 secondMember: randomSelection['secondMember'],
                 accessory: randomSelection['accessory'],
             });
-            
+
             // Devolver el objeto con los jurados seleccionados
             return {
                 president: randomSelection['president'],
@@ -87,7 +86,6 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
             onSave(selectedJurors, jury.id); // Asumiendo que `jury.id` es el ID del proyecto
         }
     };
-
 
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
@@ -177,46 +175,7 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
                     </tbody>
                 </table>
             </div>
-            {/* Pagination */}
-            <div className="flex justify-center items-center mt-4">
-                <ul className="inline-flex items-center space-x-1 rtl:space-x-reverse m-auto mb-4">
-                    <li>
-                        <button
-                            type="button"
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className="flex justify-center font-semibold px-3.5 py-2 rounded transition bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary"
-                        >
-                            &lt;
-                        </button>
-                    </li>
-                    {Array.from({ length: totalPages }, (_, index) => (
-                        <li key={index + 1}>
-                            <button
-                                type="button"
-                                onClick={() => handlePageChange(index + 1)}
-                                className={`flex justify-center font-semibold px-3.5 py-2 rounded transition ${
-                                    currentPage === index + 1
-                                        ? 'bg-primary text-white dark:bg-primary dark:text-white-light'
-                                        : 'bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary'
-                                }`}
-                            >
-                                {index + 1}
-                            </button>
-                        </li>
-                    ))}
-                    <li>
-                        <button
-                            type="button"
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            className="flex justify-center font-semibold px-3.5 py-2 rounded transition bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary"
-                        >
-                            &gt;
-                        </button>
-                    </li>
-                </ul>
-            </div>
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
         </div>
     );
 };

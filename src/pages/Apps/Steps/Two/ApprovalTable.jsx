@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Pagination from '../Pagination';
 
 const ApprovalTable = ({ projects, onEdit, onDelete, disabledProjects }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -87,46 +88,8 @@ const ApprovalTable = ({ projects, onEdit, onDelete, disabledProjects }) => {
                     </tbody>
                 </table>
             </div>
-            {/* Pagination */}
-            <div className="flex justify-center items-center mt-4">
-                <ul className="inline-flex items-center space-x-1 rtl:space-x-reverse m-auto mb-4">
-                    <li>
-                        <button
-                            type="button"
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className="flex justify-center font-semibold px-3.5 py-2 rounded transition bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary"
-                        >
-                            &lt;
-                        </button>
-                    </li>
-                    {Array.from({ length: totalPages }, (_, index) => (
-                        <li key={index + 1}>
-                            <button
-                                type="button"
-                                onClick={() => handlePageChange(index + 1)}
-                                className={`flex justify-center font-semibold px-3.5 py-2 rounded transition ${
-                                    currentPage === index + 1
-                                        ? 'bg-primary text-white dark:bg-primary dark:text-white-light'
-                                        : 'bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary'
-                                }`}
-                            >
-                                {index + 1}
-                            </button>
-                        </li>
-                    ))}
-                    <li>
-                        <button
-                            type="button"
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            className="flex justify-center font-semibold px-3.5 py-2 rounded transition bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary"
-                        >
-                            &gt;
-                        </button>
-                    </li>
-                </ul>
-            </div>
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+
         </div>
     );
 };
