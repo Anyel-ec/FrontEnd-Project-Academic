@@ -57,8 +57,6 @@ const TitleReservation = () => {
             setApiError('Error al cargar las reservaciones de títulos.');
         }
     }, [user.username]);
-    console.log(titleReservations);
-
     return (
         <div className="p-5">
             <h1 className="text-2xl font-bold mb-5">Paso 1 - Subir Proyecto de Tesis</h1>

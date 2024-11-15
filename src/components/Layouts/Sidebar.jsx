@@ -252,10 +252,10 @@ const Sidebar = () => {
                                                     </li>
                                                     {/* Paso 5 */}
                                                     <li className="nav-item">
-                                                        <NavLink to="/apps/docentes" className="group">
+                                                        <NavLink to="/apps/paso/constancia-tesis" className="group">
                                                             <div className="flex items-center">
                                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                                    {t('5: Recomposición Jurados')}
+                                                                    {t('5: Constancia de Tesis')}
                                                                 </span>
                                                             </div>
                                                         </NavLink>
@@ -320,41 +320,17 @@ const Sidebar = () => {
                                             <ul className="sub-menu text-gray-500">
                                                 {/* Paso 1 */}
                                                 <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                    <NavLink to="/apps/paso-estudiante/constancia-filtro" className="group">
                                                         <div className="flex items-center">
                                                             <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('1: Reserva de Titulos')}</span>
                                                         </div>
                                                     </NavLink>
                                                 </li>
-                                                {/* Paso 2 */}
-                                                <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                        <div className="flex items-center">
-                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('2: Constancia de Filtro')}</span>
-                                                        </div>
-                                                    </NavLink>
-                                                </li>
-                                                {/* Paso 3 */}
-                                                <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                        <div className="flex items-center">
-                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('3: Designación de Jurados')}</span>
-                                                        </div>
-                                                    </NavLink>
-                                                </li>
-                                                {/* Paso 4 */}
-                                                <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
-                                                        <div className="flex items-center">
-                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('4: Revision de Reporte')}</span>
-                                                        </div>
-                                                    </NavLink>
-                                                </li>
                                                 {/* Paso 5 */}
                                                 <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                    <NavLink to="/apps/paso-estudiante/constancia-tesis" className="group">
                                                         <div className="flex items-center">
-                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('5: Recomposición Jurados')}</span>
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('5: Constancia de Tesis')}</span>
                                                         </div>
                                                     </NavLink>
                                                 </li>

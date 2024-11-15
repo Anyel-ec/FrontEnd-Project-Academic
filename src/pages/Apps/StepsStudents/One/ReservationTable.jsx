@@ -3,6 +3,7 @@ import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importa
 
 const ReservationTable = ({ titleReservations, apiError }) => {
     const reservations = titleReservations;
+    console.log(reservations);
     const handlePDFUploadSuccess = (reservationId, base64Data) => {
         // Actualiza el estado para que React re-renderice la tabla
         setPdfDataMap((prev) => ({
