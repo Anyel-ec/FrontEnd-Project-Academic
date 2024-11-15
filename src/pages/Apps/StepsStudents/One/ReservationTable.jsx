@@ -3,7 +3,6 @@ import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importa
 
 const ReservationTable = ({ titleReservations, apiError }) => {
     const reservations = titleReservations;
-    console.log(reservations);
     const handlePDFUploadSuccess = (reservationId, base64Data) => {
         // Actualiza el estado para que React re-renderice la tabla
         setPdfDataMap((prev) => ({
@@ -33,7 +32,8 @@ const ReservationTable = ({ titleReservations, apiError }) => {
                             {/* <th>Fecha Creación</th> */}
                             {/* <th>Fecha Actualización</th> */}
                             {/* {reservations.meetsRequirements ? <th className="!text-center">PDF</th> : <></>} */}
-                            {<th className="!text-center">PDF</th>}
+                            {/* {<th className="!text-center">PDF</th>} */}
+                            {<th>PDF</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -61,7 +61,7 @@ const ReservationTable = ({ titleReservations, apiError }) => {
                                     </td>
 
                                     <td>{reservation.student.career.name}</td>
-                                     <td>{reservation.project ? 'Sí' : 'No'}</td>
+                                    <td>{reservation.project ? 'Sí' : 'No'}</td>
                                     {/*<td>{reservation.observations || 'Ninguna'}</td>
                                     <td>{new Date(reservation.createdAt).toLocaleString()}</td>
                                     <td>{new Date(reservation.updatedAt).toLocaleString()}</td> */}

@@ -2,29 +2,28 @@ import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import AppEnvironments from '../../../../config/AppEnvironments';
 import '../../../../assets/css/file-upload-preview.css';
-// Función para obtener el token de autenticación del localStorage
+
 const getAuthToken = () => {
     return localStorage.getItem('token');
 };
+
 const PDFONE_API_URL = `${AppEnvironments.baseUrl}api/v1/pdfDocument/OneStep/`;
+const TITLERESERVATION_API_URL = `${AppEnvironments.baseUrl}api/v1/reservas_titulo/`;
 
 const TitleUpload = ({ reservaId }) => {
-    const [file, setFile] = useState(null); // Almacena el archivo seleccionado
-    const [base64String, setBase64String] = useState(''); // Almacena el PDF en Base64
-    const [pdfDocumentId, setPdfDocumentId] = useState(null); // Almacena el id del documento PDF desde la base de datos
+    const [pdfDocumentId, setPdfDocumentId] = useState(null);
 
-    // Verifica que reservaId no sea undefined antes de usarlo
     useEffect(() => {
         if (!reservaId) {
             console.error('El ID de la reserva es undefined.');
             return;
         }
 
-        // Llamada al backend para obtener el PDF asociado si existe
+        // Llamada al backend para verificar si hay un PDF asociado
         fetch(`${PDFONE_API_URL}${reservaId}/view`, {
             method: 'GET',
             headers: {
-                Authorization: `Bearer ${getAuthToken()}`, // Asegúrate de enviar el token correcto
+                Authorization: `Bearer ${getAuthToken()}`,
                 'Content-Type': 'application/json',
             },
         })
@@ -35,10 +34,10 @@ const TitleUpload = ({ reservaId }) => {
                 return response.json();
             })
             .then((data) => {
-                if (!data.pdfDocumentId) {
-                    setPdfDocumentId(null); // Si no hay PDF, lo marcamos como null
+                if (data && data.pdfDocumentId) {
+                    setPdfDocumentId(data.pdfDocumentId);
                 } else {
-                    setPdfDocumentId(data.pdfDocumentId); // Actualiza el ID del PDF si existe
+                    setPdfDocumentId(null);
                 }
             })
             .catch((error) => {
@@ -47,135 +46,76 @@ const TitleUpload = ({ reservaId }) => {
     }, [reservaId]);
 
     const uploadFile = () => {
-        // Si no hay PDF, permitir al usuario subir uno
-        if (pdfDocumentId) {
-            // Si ya hay un PDF cargado, mostramos la vista previa
-            fetch(`${PDFONE_API_URL}${reservaId}/view`, {
-                method: 'GET',
-                headers: {
-                    Authorization: `Bearer ${getAuthToken()}`, // Asegúrate de enviar el token correcto
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    const base64PDF = `data:application/pdf;base64,${data.pdfData}`;
-                    setBase64String(base64PDF);
+        Swal.fire({
+            title: 'Seleccionar un archivo PDF',
+            html: `
+                <div class="custom-file-wrapper">
+                    <button type="button" class="custom-file-button">Seleccionar archivo</button>
+                    <input id="fileInput" type="file" class="custom-file-input" accept="application/pdf" />
+                    <span id="fileName" class="custom-file-text">Ningún archivo seleccionado</span>
+                </div>
+            `,
+            confirmButtonText: 'Cargar',
+            showCancelButton: true,
+            didOpen: () => {
+                const fileInput = document.getElementById('fileInput');
+                const fileName = document.getElementById('fileName');
+                const customFileButton = document.querySelector('.custom-file-button');
 
-                    // Verificar el contenido de la cadena Base64
-
-                    Swal.fire({
-                        title: 'Vista Previa del PDF',
-                        // Usa un iframe en lugar de embed para mejor compatibilidad
-                        html: `<iframe src="${base64PDF}" width="100%" height="500px" style="border:none;"></iframe>`,
-                        confirmButtonText: 'Cerrar',
-                    });
-                })
-                .catch((error) => {
-                    console.error('Error al obtener el PDF:', error);
+                customFileButton.addEventListener('click', () => {
+                    fileInput.click();
                 });
-        } else {
-            Swal.fire({
-                title: 'Seleccionar un archivo PDF',
-                html: `
-                    <div class="custom-file-wrapper">
-                        <button type="button" class="custom-file-button">Seleccionar archivo</button>
-                        <input id="fileInput" type="file" class="custom-file-input" accept="application/pdf" />
-                        <span id="fileName" class="custom-file-text">Ningún archivo seleccionado</span>
-                    </div>
-                `,
-                confirmButtonText: 'Cargar',
-                showCancelButton: true,
-                didOpen: () => {
-                    const fileInput = document.getElementById('fileInput');
-                    const fileName = document.getElementById('fileName');
-                    const customFileButton = document.querySelector('.custom-file-button');
-            
-                    // Evento que abre manualmente el explorador de archivos
-                    customFileButton.addEventListener('click', () => {
-                        fileInput.click();
-                    });
-            
-                    // Manejar el evento de selección de archivo
-                    fileInput.addEventListener('change', (event) => {
-                        const file = event.target.files[0];
-                        if (file) {
-                            fileName.textContent = file.name; // Actualiza el texto con el nombre del archivo
-                        } else {
-                            fileName.textContent = 'Ningún archivo seleccionado'; // Texto predeterminado
-                        }
-                    });
-                },
-                preConfirm: () => {
-                    const fileInput = document.getElementById('fileInput');
-                    const file = fileInput.files[0];
-                    if (!file) {
-                        Swal.showValidationMessage('Debes seleccionar un archivo');
-                    } else if (file.type !== 'application/pdf') {
-                        Swal.showValidationMessage('El archivo debe ser un PDF');
-                    } else if (file.size > 1048576) {
-                        Swal.showValidationMessage('El archivo no debe superar los 1 MB');
-                    } else {
-                        return file;
-                    }
+
+                fileInput.addEventListener('change', (event) => {
+                    const file = event.target.files[0];
+                    fileName.textContent = file ? file.name : 'Ningún archivo seleccionado';
+                });
+            },
+            preConfirm: () => {
+                const fileInput = document.getElementById('fileInput');
+                const file = fileInput.files[0];
+                if (!file) {
+                    Swal.showValidationMessage('Debes seleccionar un archivo');
+                } else if (file.type !== 'application/pdf') {
+                    Swal.showValidationMessage('El archivo debe ser un PDF');
+                } else if (file.size > 1048576) { // 1MB
+                    Swal.showValidationMessage('El archivo no debe superar los 1 MB');
+                } else {
+                    return file;
                 }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const selectedFile = result.value;
-                    setFile(selectedFile); // Guarda el archivo seleccionado
-            
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const base64PDF = e.target.result;
-            
-                        if (!base64PDF.startsWith('data:application/pdf;base64,')) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'El archivo no es un PDF válido.',
-                            });
-                            return;
-                        }
-            
-                        setBase64String(base64PDF); // Guarda el PDF en formato Base64
-            
-                        Swal.fire({
-                            title: 'Vista Previa del PDF',
-                            html: `<embed src="${base64PDF}" type="application/pdf" width="100%" height="500px" />`,
-                            confirmButtonText: 'Enviar',
-                            showCancelButton: true,
-                        }).then((previewResult) => {
-                            if (previewResult.isConfirmed) {
-                                sendFileToBackend(base64PDF); // Envía el archivo al backend
-                            }
-                        });
-                    };
-                    reader.onerror = () => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Hubo un problema al leer el archivo PDF.',
-                        });
-                    };
-                    reader.readAsDataURL(selectedFile); // Lee el archivo como base64
-                }
-            });
-        }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const selectedFile = result.value;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const base64PDF = e.target.result.split(',')[1]; // Remueve el prefijo `data:application/pdf;base64,`
+
+                    sendFileToBackend(base64PDF);
+                };
+                reader.onerror = () => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Hubo un problema al leer el archivo PDF.',
+                    });
+                };
+                reader.readAsDataURL(selectedFile);
+            }
+        });
     };
 
-    // Función para enviar el archivo en base64 al servidor
     const sendFileToBackend = (base64Data) => {
         const documentData = {
-            pdfData: base64Data.split(',')[1], // Quita el prefijo "data:application/pdf;base64,"
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            pdfData: base64Data
         };
 
-        fetch(`${PDFONE_API_URL}${reservaId}/upload`, {
+        fetch(`${TITLERESERVATION_API_URL}${reservaId}/uploadPdf`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${getAuthToken()}`, // Envía el token de autenticación
+                Authorization: `Bearer ${getAuthToken()}`,
             },
             body: JSON.stringify(documentData),
         })
@@ -185,15 +125,13 @@ const TitleUpload = ({ reservaId }) => {
                 }
                 return response.json();
             })
-            .then((data) => {
-                setPdfDocumentId(data.pdfDocumentId);
+            .then(() => {
                 Swal.fire({
                     icon: 'success',
                     title: 'Archivo cargado con éxito',
                     text: 'El archivo ha sido guardado correctamente.',
                 });
-                // Actualizar el id del PDF document sin necesidad de recargar la página
-                window.location.reload();
+                setPdfDocumentId(true); // Marca el PDF como cargado
             })
             .catch((error) => {
                 console.error('Error al subir el archivo:', error);
@@ -205,12 +143,41 @@ const TitleUpload = ({ reservaId }) => {
             });
     };
 
-    // Función para eliminar el archivo PDF del servidor
+    const viewPDF = () => {
+        // Llama al backend para obtener el PDF en base64 y mostrarlo en una vista previa
+        fetch(`${PDFONE_API_URL}${reservaId}/view`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${getAuthToken()}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                const base64PDF = `data:application/pdf;base64,${data.pdfData}`;
+
+                Swal.fire({
+                    title: 'Vista Previa del PDF',
+                    html: `<iframe src="${base64PDF}" width="100%" height="500px" style="border:none;"></iframe>`,
+                    width: '600px',
+                    confirmButtonText: 'Cerrar',
+                });
+            })
+            .catch((error) => {
+                console.error('Error al obtener el PDF:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudo cargar el archivo para la vista previa.',
+                });
+            });
+    };
+
     const deletePDF = () => {
         fetch(`${PDFONE_API_URL}${reservaId}/delete`, {
             method: 'DELETE',
             headers: {
-                Authorization: `Bearer ${getAuthToken()}`, // Asegúrate de enviar el token correcto
+                Authorization: `Bearer ${getAuthToken()}`,
                 'Content-Type': 'application/json',
             },
         })
@@ -223,7 +190,7 @@ const TitleUpload = ({ reservaId }) => {
                     title: 'PDF eliminado',
                     text: 'El archivo PDF ha sido eliminado con éxito.',
                 });
-                setPdfDocumentId(null); // Limpiar el ID del documento PDF sin recargar la página
+                setPdfDocumentId(null);
             })
             .catch((error) => {
                 console.error('Error al eliminar el PDF:', error);
@@ -236,14 +203,19 @@ const TitleUpload = ({ reservaId }) => {
     };
 
     return (
-        <div className="flex gap-3 ">
+        <div className="flex gap-3">
             <button onClick={uploadFile} className="btn btn-sm btn-outline-secondary m-0">
-                {pdfDocumentId ? 'Ver' : 'Subir'}
+                {pdfDocumentId ? 'Actualizar' : 'Subir'}
             </button>
             {pdfDocumentId && (
-                <button onClick={deletePDF} className="btn btn-sm btn-outline-danger m-0 ">
-                    Eliminar
-                </button>
+                <>
+                    <button onClick={viewPDF} className="btn btn-sm btn-outline-primary m-0">
+                        Ver
+                    </button>
+                    <button onClick={deletePDF} className="btn btn-sm btn-outline-danger m-0">
+                        Eliminar
+                    </button>
+                </>
             )}
         </div>
     );
