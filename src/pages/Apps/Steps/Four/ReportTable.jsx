@@ -32,7 +32,7 @@ const ReportTable = ({ reports, onEdit, onDelete, disabledReports }) => {
                     <tbody className="dark:text-white-dark">
                         {currentReports.length > 0 ? (
                             currentReports.map((report) => {
-                                const { student, studentTwo, adviser, coadviser, approvedProject, updatedAt } = getReportDetails(report);
+                                const { student, studentTwo, adviser, coadviser, meetRequirements , updatedAt } = getReportDetails(report);
 
                                 return (
                                     <tr key={report.id}>
@@ -56,7 +56,7 @@ const ReportTable = ({ reports, onEdit, onDelete, disabledReports }) => {
                                             )}
                                         </td>
                                         <td>{student?.career?.name || 'N/A'}</td>
-                                        <td>{approvedProject ? 'Sí' : 'No'}</td>
+                                        <td>{meetRequirements ? 'Sí' : 'No'}</td>
                                         <td>{adviser ? `${adviser.firstNames || ' '} ${adviser.lastName || ' '}` : 'N/A'}</td>
                                         <td>{coadviser ? `${coadviser.firstNames || ' '} ${coadviser.lastName || ' '}` : 'N/A'}</td>
                                         <td>{formatDate(updatedAt)}</td>

@@ -62,6 +62,7 @@ const ReportReview = () => {
 
     const handleSave = async (updatedReportData, reportId) => {
         try {
+            console.log(updatedReportData)
             // Llamada al servicio con el ID en la URL y los datos en el cuerpo
             await reportReviewService.editReportReview(reportId, updatedReportData);
             Swal.fire('Éxito', 'Proyecto actualizado correctamente.', 'success');

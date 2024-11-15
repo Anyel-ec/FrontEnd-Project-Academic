@@ -33,9 +33,7 @@ const ReportModal = ({ isOpen, onClose, onSave, report, adviserOptions }) => {
                             <button type="button" onClick={onClose} className="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none">
                                 <IconX />
                             </button>
-                            <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
-                                {report ? 'Editar Reporte' : 'Crear Reporte'}
-                            </div>
+                            <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">{report ? 'Editar Reporte' : 'Crear Reporte'}</div>
                             <div className="p-5">
                                 <Formik
                                     initialValues={initialValues}
@@ -65,7 +63,6 @@ const ReportModal = ({ isOpen, onClose, onSave, report, adviserOptions }) => {
                                                 </div>
                                             )}
 
-                                            
                                             <div>
                                                 <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
@@ -90,7 +87,7 @@ const ReportModal = ({ isOpen, onClose, onSave, report, adviserOptions }) => {
                                                 <button type="button" className="btn btn-outline-danger" onClick={onClose}>
                                                     Cancelar
                                                 </button>
-                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4" >
+                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
                                                     Guardar
                                                 </button>
                                             </div>

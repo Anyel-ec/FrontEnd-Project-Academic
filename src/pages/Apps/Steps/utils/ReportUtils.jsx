@@ -6,9 +6,9 @@ export const getReportDetails = (report) => {
                 titleReservationStepOne: { student, studentTwo } = {},
                 adviser,
                 coadviser,
-                approvedProject,
             } = {},
         } = {},
+        meetRequirements,
         updatedAt,
     } = report;
 
@@ -17,7 +17,7 @@ export const getReportDetails = (report) => {
         studentTwo,
         adviser,
         coadviser,
-        approvedProject,
+        meetRequirements,
         updatedAt,
     };
 };
