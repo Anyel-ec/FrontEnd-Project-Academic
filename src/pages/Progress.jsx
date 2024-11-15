@@ -18,9 +18,6 @@ const Progress = () => {
             const reservations = await titleReservationsService.getTitleReservations();
             const approvals = await projectApprovalService.getProjectApproval(); // Llamar al servicio para obtener las aprobaciones
 
-            console.log('Reservas de títulos:', reservations);
-            console.log('Aprobaciones de proyectos:', approvals);
-
             setProjectApprovals(approvals || []); // Asegurarse de que sea un array
 
             const expandedReservations = reservations.flatMap((reservation) => {
@@ -65,38 +62,37 @@ const Progress = () => {
 
     const getFullStepList = (reservation, projectApprovals = []) => {
         const steps = [];
-
+    
         for (let i = 1; i <= totalSteps; i++) {
             let progress = 0;
-
+    
             if (i === 1) {
                 progress = reservation.meetsRequirements ? 100 : 50;
             } else if (i === 2) {
-                const projectApproval =
-                    projectApprovals.length > 0
-                        ? projectApprovals.find(
-                              (approval) => approval.titleReservationStepOne.id === reservation.id // Usar reservation.id para la comparación
-                          )
-                        : null;
-
-                console.log('Comprobando projectApproval para la reserva:', reservation.id, 'Resultado:', projectApproval);
-
+                const projectApproval = projectApprovals.find(
+                    (approval) => approval.titleReservationStepOne.id === reservation.id
+                );
+    
                 if (projectApproval && projectApproval.approvedProject) {
-                    progress = 100; // Establecer progreso en 100% si approvedProject es true
+                    progress = 100;
                 } else if (reservation.meetsRequirements) {
-                    progress = 50; // Establecer progreso en 50% si solo cumple meetsRequirements
+                    progress = 50;
                 }
             }
-
-            steps.push({
-                stepNumber: i,
-                progress: progress,
-                lastUpdated: reservation.updatedAt,
-            });
+    
+            // Solo añadir el paso si hay progreso
+            if (progress > 0) {
+                steps.push({
+                    stepNumber: i,
+                    progress: progress,
+                    lastUpdated: reservation.updatedAt,
+                });
+            }
         }
-
+    
         return steps;
     };
+    
 
     return (
         <div className="pt-5">

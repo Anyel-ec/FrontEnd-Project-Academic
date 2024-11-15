@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import ReservationService from '../../../../api/titleReservationsService';
+import ThesisService from '../../../../api/constancyThesisService';
     
-const TitleUpload = ({ reservaId }) => {
+const ThesisUpload = ({ thesisId }) => {
     const [pdfExists, setPdfExists] = useState(null);
 
     useEffect(() => {
         const checkPDFExists = async () => {
-            if (!reservaId) {
+            if (!thesisId) {
                 console.error('El ID de la reserva es indefinido.');
                 return;
             }
             try {
                 // Usar el método del módulo para verificar la existencia del PDF
-                const exists = await ReservationService.viewPdf(reservaId);
+                const exists = await ThesisService.viewPdfDocument(thesisId);
                 setPdfExists(Boolean(exists));
             } catch (error) {
                 console.error('Error al verificar la existencia del PDF:', error);
@@ -22,10 +22,10 @@ const TitleUpload = ({ reservaId }) => {
         };
 
         checkPDFExists();
-    }, [reservaId]);
+    }, [thesisId]);
 
     const viewPDF = async () => {
-        if (!reservaId) {
+        if (!thesisId) {
             Swal.fire({
                 icon: 'error',
                 title: 'ID de reserva inválido',
@@ -36,7 +36,7 @@ const TitleUpload = ({ reservaId }) => {
 
         try {
             // Usar el método del módulo para obtener el PDF en base64
-            const pdfData = await ReservationService.viewPdf(reservaId);
+            const pdfData = await ThesisService.viewPdf(thesisId);
 
             if (pdfData) {
                 const base64PDF = `data:application/pdf;base64,${pdfData}`;
@@ -73,4 +73,4 @@ const TitleUpload = ({ reservaId }) => {
     );
 };
 
-export default TitleUpload;
+export default ThesisUpload;

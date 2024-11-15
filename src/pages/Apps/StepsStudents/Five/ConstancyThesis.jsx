@@ -9,7 +9,6 @@ import { getThesisDetails } from '../utils/ThesisUtils';
 import teacherService from '../../../../api/teacherService';
 import careerService from '../../../../api/careerService';
 import constancyThesisService from '../../../../api/constancyThesisService';
-import { current } from '@reduxjs/toolkit';
 
 const ConstancyThesis = () => {
     const dispatch = useDispatch();
@@ -45,7 +44,6 @@ const ConstancyThesis = () => {
         try {
             const thesis = await constancyThesisService.getAllConstancyThesis();
             setCurrentThesis(thesis);
-            console.log(thesis)
         } catch (error) {
             console.error('Error al obtener los thesies:', error);
         }
@@ -85,20 +83,23 @@ const ConstancyThesis = () => {
     };
 
     const filteredReports = useMemo(() => {
-        const normalizedSearch = search ? search.normalize('NFD').toLowerCase() : '';
-    
+        const normalizedSearch = normalizeText(search);
+
         return currentThesis.filter((thesis) => {
-            const fullName = `${thesis.reportReviewStepFour?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.firstNames || ''} ${thesis.reportReviewStepFour?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.lastName || ''}`;
-            const normalizedFullName = fullName.normalize('NFD').toLowerCase();
-            
-            const studentCodeMatch = thesis.reportReviewStepFour?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.studentCode?.normalize('NFD').toLowerCase().includes(normalizedSearch) || false;
-    
-            const matchesSearch = normalizedFullName.includes(normalizedSearch) || studentCodeMatch;
-    
-            return matchesSearch;
+            const { student, studentTwo } = getThesisDetails(thesis);
+
+            const fullName = `${student?.firstNames} ${student?.lastName}`;
+            const studentCodeMatch = normalizeText(student?.studentCode).includes(normalizedSearch);
+            const matchesSearch =
+                normalizeText(fullName).includes(normalizedSearch) || studentCodeMatch; 
+
+            const matchesCareer = selectedCareer
+                ? student?.career?.id === selectedCareer.value
+                : true;
+
+            return matchesSearch && matchesCareer;
         });
-    }, [currentThesis, search]);
-console.log(currentThesis)    
+    }, [currentThesis, search, selectedCareer]);
 
     const closeModal = () => {
         setIsModalOpen(false);

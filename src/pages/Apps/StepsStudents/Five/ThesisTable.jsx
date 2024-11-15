@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Pagination from '../Pagination';
 import { getThesisDetails } from '../utils/ThesisUtils';
 import { formatDate } from '../utils/Dates';
-import ThesisUpload from './ThesisUpload';
 const ThesisTable = ({ thesis, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -24,17 +23,17 @@ const ThesisTable = ({ thesis, onEdit }) => {
                             <th>Código(s)</th>
                             <th>Carrera</th>
                             <th>Cumple Requisitos</th>
-                            {/* <th>Asesor</th>
-                            <th>Co-Asesor</th> */}
+                            <th>Asesor</th>
+                            <th>Co-Asesor</th>
                             <th>Última Actualización</th>
-                            <th className="text-center">PDF</th>
+                            <th className="!text-center">PDF</th>
                             <th className="!text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody className="dark:text-white-dark">
                         {currentThesis.length > 0 ? (
                             currentThesis.map((thesis) => {
-                                const { student, studentTwo, meetsRequirements, updatedAt } = getThesisDetails(thesis);
+                                const { student, studentTwo, meetRequirements, updatedAt } = getThesisDetails(thesis);
 
                                 return (
                                     <tr key={thesis.id}>
@@ -58,13 +57,10 @@ const ThesisTable = ({ thesis, onEdit }) => {
                                             )}
                                         </td>
                                         <td>{student?.career?.name || 'N/A'}</td>
-                                        <td>{meetsRequirements ? 'Sí' : 'No'}</td>
-                                        {/* <td>{adviser ? `${adviser.firstNames || ' '} ${adviser.lastName || ' '}` : 'N/A'}</td>
-                                        <td>{coadviser ? `${coadviser.firstNames || ' '} ${coadviser.lastName || ' '}` : 'N/A'}</td> */}
+                                        <td>{meetRequirements ? 'Sí' : 'No'}</td>
+                                            {/* <td>{adviser ? `${adviser.firstNames || ' '} ${adviser.lastName || ' '}` : 'N/A'}</td>
+                                            <td>{coadviser ? `${coadviser.firstNames || ' '} ${coadviser.lastName || ' '}` : 'N/A'}</td> */}
                                         <td>{formatDate(updatedAt)}</td>
-                                        <td>
-                                            <ThesisUpload thesisId={thesis.id} />
-                                        </td>
                                         <td className="flex gap-4 items-center justify-center">
                                             <button onClick={() => onEdit(thesis)} className="btn btn-sm btn-outline-primary">
                                                 Editar

@@ -11,8 +11,8 @@ const ThesisModal = ({ isOpen, onClose, onSave, thesis, adviserOptions }) => {
         () => ({
             studentCode: thesis?.student?.studentCode || 'N/A', // Accede directamente al código del estudiante
             studentTwoCode: thesis?.studentTwo?.studentCode || '', // Maneja el caso donde studentTwo puede ser null
-            meetRequirements: thesis?.meetRequirements ? 'yes' : 'no', // Booleano a texto
-            observation: thesis?.observations || '', // Observaciones o vacío
+            meetsRequirements: thesis?.meetsRequirements ? 'yes' : 'no', // Booleano a texto
+            observations: thesis?.observations || '', // Observaciones o vacío
         }),
         [thesis]
     );
@@ -36,8 +36,8 @@ const ThesisModal = ({ isOpen, onClose, onSave, thesis, adviserOptions }) => {
                                     initialValues={initialValues}
                                     onSubmit={(values) => {
                                         const transformedValues = {
-                                            meetRequirements: values.meetRequirements === 'yes',
-                                            observation: values.observation,
+                                            meetsRequirements: values.meetsRequirements === 'yes',
+                                            observations: values.observations,
                                         };
 
                                         onSave(transformedValues, thesis.id);
@@ -61,23 +61,23 @@ const ThesisModal = ({ isOpen, onClose, onSave, thesis, adviserOptions }) => {
                                             )}
 
                                             <div>
-                                                <label htmlFor="meetRequirements">Cumple Requisitos</label>
+                                                <label htmlFor="meetsRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
                                                     <label>
-                                                        <Field type="radio" name="meetRequirements" value="yes" className="form-radio" />
+                                                        <Field type="radio" name="meetsRequirements" value="yes" className="form-radio" />
                                                         Sí
                                                     </label>
                                                     <label>
-                                                        <Field type="radio" name="meetRequirements" value="no" className="form-radio" />
+                                                        <Field type="radio" name="meetsRequirements" value="no" className="form-radio" />
                                                         No
                                                     </label>
                                                 </div>
-                                                <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" />
+                                                <ErrorMessage name="meetsRequirements" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className="col-span-2">
-                                                <label htmlFor="observation">Observaciones</label>
-                                                <Field name="observation" as="textarea" id="observation" placeholder="Ingrese observaciones" className="form-input" />
-                                                <ErrorMessage name="observation" component="div" className="text-danger mt-1" />
+                                                <label htmlFor="observations">Observaciones</label>
+                                                <Field name="observations" as="textarea" id="observations" placeholder="Ingrese observaciones" className="form-input" />
+                                                <ErrorMessage name="observations" component="div" className="text-danger mt-1" />
                                             </div>
 
                                             <div className="flex justify-end items-center mt-8 col-span-2">
