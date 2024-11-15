@@ -12,14 +12,14 @@ const ReportSearch = ({ search, setSearch, careerOptions, selectedCareer, setSel
     return (
         <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex flex-col">
-                <h2 className="text-xl">Revisión de Reporte</h2>
+                <h2 className="text-xl">Constancia de Tesis</h2>
             </div>
             <div className="flex sm:flex-row flex-col sm:items-center sm:gap-3 gap-4 w-full sm:w-auto">
                 <div className="flex gap-3">
                     {careerOptions.length > 0 ? (
                         <Select placeholder="Filtrar por carrera" isClearable options={optionsWithPlaceholder} value={selectedCareer} styles={styles} onChange={setSelectedCareer} className="w-56" />
                     ) : (
-                        <p className="text-gray-500">No hay carreras disponibles</p>
+                        <p className="text-gray-500">No hay constancias de tesis disponibles</p>
                     )}
                 </div>
                 <div className="flex items-center gap-4">

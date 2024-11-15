@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import AppEnvironments from '../../../../config/AppEnvironments';
-import '../../../../assets/css/file-upload-preview.css';
-
-const getAuthToken = () => {
-    return localStorage.getItem('token');
-};
-
-const PDFONE_API_URL = `${AppEnvironments.baseUrl}api/v1/pdfDocument/OneStep/`;
-const TITLERESERVATION_API_URL = `${AppEnvironments.baseUrl}api/v1/reservas_titulo/`;
+import titleReservationsService from '../../../../api/titleReservationsService';
 
 const TitleUpload = ({ reservaId }) => {
     const [pdfDocumentId, setPdfDocumentId] = useState(null);
@@ -18,24 +10,11 @@ const TitleUpload = ({ reservaId }) => {
             console.error('El ID de la reserva es undefined.');
             return;
         }
-
         // Llamada al backend para verificar si hay un PDF asociado
-        fetch(`${PDFONE_API_URL}${reservaId}/view`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${getAuthToken()}`,
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Error al cargar la reservación.');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                if (data && data.pdfDocumentId) {
-                    setPdfDocumentId(data.pdfDocumentId);
+        titleReservationsService.viewPdf(reservaId)
+            .then((pdfData) => {
+                if (pdfData) {
+                    setPdfDocumentId(true); // Indica que el PDF está cargado
                 } else {
                     setPdfDocumentId(null);
                 }
@@ -90,9 +69,24 @@ const TitleUpload = ({ reservaId }) => {
 
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    const base64PDF = e.target.result.split(',')[1]; // Remueve el prefijo `data:application/pdf;base64,`
-
-                    sendFileToBackend(base64PDF);
+                    const base64PDF = e.target.result.split(',')[1];
+                    titleReservationsService.uploadPdf(reservaId, base64PDF)
+                        .then(() => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Archivo cargado con éxito',
+                                text: 'El archivo ha sido guardado correctamente.',
+                            });
+                            setPdfDocumentId(true);
+                        })
+                        .catch((error) => {
+                            console.error('Error al subir el archivo:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: `No se pudo cargar el archivo: ${error.message}`,
+                            });
+                        });
                 };
                 reader.onerror = () => {
                     Swal.fire({
@@ -106,55 +100,10 @@ const TitleUpload = ({ reservaId }) => {
         });
     };
 
-    const sendFileToBackend = (base64Data) => {
-        const documentData = {
-            pdfData: base64Data
-        };
-
-        fetch(`${TITLERESERVATION_API_URL}${reservaId}/uploadPdf`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${getAuthToken()}`,
-            },
-            body: JSON.stringify(documentData),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Error en la respuesta del servidor');
-                }
-                return response.json();
-            })
-            .then(() => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Archivo cargado con éxito',
-                    text: 'El archivo ha sido guardado correctamente.',
-                });
-                setPdfDocumentId(true); // Marca el PDF como cargado
-            })
-            .catch((error) => {
-                console.error('Error al subir el archivo:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: `No se pudo cargar el archivo: ${error.message}`,
-                });
-            });
-    };
-
     const viewPDF = () => {
-        // Llama al backend para obtener el PDF en base64 y mostrarlo en una vista previa
-        fetch(`${PDFONE_API_URL}${reservaId}/view`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${getAuthToken()}`,
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                const base64PDF = `data:application/pdf;base64,${data.pdfData}`;
+        titleReservationsService.viewPdf(reservaId)
+            .then((pdfData) => {
+                const base64PDF = `data:application/pdf;base64,${pdfData}`;
 
                 Swal.fire({
                     title: 'Vista Previa del PDF',
@@ -174,17 +123,8 @@ const TitleUpload = ({ reservaId }) => {
     };
 
     const deletePDF = () => {
-        fetch(`${PDFONE_API_URL}${reservaId}/delete`, {
-            method: 'DELETE',
-            headers: {
-                Authorization: `Bearer ${getAuthToken()}`,
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Error al eliminar el PDF');
-                }
+        titleReservationsService.deletePdf(reservaId)
+            .then(() => {
                 Swal.fire({
                     icon: 'success',
                     title: 'PDF eliminado',

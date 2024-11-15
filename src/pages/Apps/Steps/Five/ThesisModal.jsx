@@ -1,28 +1,23 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
 
-const ReportModal = ({ isOpen, onClose, onSave, report, adviserOptions }) => {
+const ThesisModal = ({ isOpen, onClose, onSave, thesis, adviserOptions }) => {
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
-    const styles = HandleMode(isDarkMode);
 
     const initialValues = React.useMemo(
         () => ({
-            titleReservationStepOne: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.id || '',
-            studentCode: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.studentCode || 'N/A',
-            studentTwoCode: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.studentCode || '',
-            studentFirstNames: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.firstNames || 'N/A',
-            studentTwoFirstNames: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.firstNames || '',
-            observation: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.observations || '',
-            // adviser: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.adviser ? { value: report?.juryAppointmentStepThree?.projectApprovalStepTwo.adviser.id, label: `${report?.juryAppointmentStepThree?.projectApprovalStepTwo.adviser.firstNames} ${report?.juryAppointmentStepThree?.projectApprovalStepTwo.adviser.lastName}` } : null,
-            // coadviser: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.coadviser ? { value: report?.juryAppointmentStepThree?.projectApprovalStepTwo.coadviser.id, label: `${report.juryAppointmentStepThree.projectApprovalStepTwo.coadviser.firstNames} ${report.juryAppointmentStepThree.projectApprovalStepTwo.coadviser.lastName}` } : null,
-            meetRequirements: report?.meetRequirements ? 'yes' : 'no',
+            studentCode: thesis?.student?.studentCode || 'N/A', // Accede directamente al código del estudiante
+            studentTwoCode: thesis?.studentTwo?.studentCode || '', // Maneja el caso donde studentTwo puede ser null
+            meetRequirements: thesis?.meetRequirements ? 'yes' : 'no', // Booleano a texto
+            observation: thesis?.observations || '', // Observaciones o vacío
         }),
-        [report, adviserOptions]
+        [thesis]
     );
+    
+
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" open={isOpen} onClose={onClose} className="relative z-[51]">
@@ -33,21 +28,23 @@ const ReportModal = ({ isOpen, onClose, onSave, report, adviserOptions }) => {
                             <button type="button" onClick={onClose} className="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none">
                                 <IconX />
                             </button>
-                            <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">{report ? 'Editar Reporte' : 'Crear Reporte'}</div>
+                            <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
+                                {thesis ? 'Editar Constancia' : 'Crear Constancia'}
+                            </div>
                             <div className="p-5">
                                 <Formik
                                     initialValues={initialValues}
                                     onSubmit={(values) => {
                                         const transformedValues = {
-                                            meetRequirements: values.meetRequirements === 'yes', // Conversión a booleano
+                                            meetRequirements: values.meetRequirements === 'yes',
+                                            observation: values.observation,
                                         };
 
-                                        console.log('Llamando a onSave con:', transformedValues);
-                                        onSave(transformedValues, report.id);
+                                        onSave(transformedValues, thesis.id);
                                     }}
                                     enableReinitialize
                                 >
-                                    {({ errors, submitCount, isSubmitting }) => (
+                                    {({ errors, submitCount }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
@@ -55,7 +52,7 @@ const ReportModal = ({ isOpen, onClose, onSave, report, adviserOptions }) => {
                                                 <ErrorMessage name="studentCode" component="div" className="text-danger mt-1" />
                                             </div>
 
-                                            {report?.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne?.studentTwo && (
+                                            {thesis?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo && (
                                                 <div className={submitCount && errors.studentTwoCode ? 'has-error' : ''}>
                                                     <label htmlFor="studentTwoCode">Segundo Estudiante</label>
                                                     <Field name="studentTwoCode" type="text" id="studentTwoCode" readOnly className="form-input" />
@@ -103,4 +100,4 @@ const ReportModal = ({ isOpen, onClose, onSave, report, adviserOptions }) => {
     );
 };
 
-export default ReportModal;
+export default ThesisModal;

@@ -2,20 +2,52 @@ import Pagination from '../Pagination';
 import { useState } from 'react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import ConstancyVoucherOne from './ConstancyVoucherOne';
-import { obtenerAnioActual } from './Dates';
 import ConstancyVoucherTwo from './ConstancyVoucherTwo';
 import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importación es correcto
+import { getYear } from '../utils/Dates';
+
 const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit, onDelete, searchTerm }) => {
-    // Aplica el filtro de carrera primero
     const itemsPerPage = 8;
     const [currentPage, setCurrentPage] = useState(1);
 
-    const filteredByCareer = selectedCareer && selectedCareer.value ? titleReservations.filter((reservation) => reservation.student.career.id === selectedCareer.value) : titleReservations;
-    // Luego aplica el filtro de búsqueda en los resultados ya filtrados por carrera o todos si no hay carrera seleccionada
+    const getDownloadButton = (reservation) => {
+        const DocumentComponent = reservation.studentTwo ? ConstancyVoucherTwo : ConstancyVoucherOne;
+        const fileName = `constancia-${reservation.id}-${getYear()}.pdf`;
+
+        return (
+            <PDFDownloadLink document={<DocumentComponent reservation={reservation} />} fileName={fileName}>
+                {({ loading }) =>
+                    loading ? (
+                        'Cargando documento...'
+                    ) : (
+                        <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
+                    )
+                }
+            </PDFDownloadLink>
+        );
+    };
+
+    const getActionButtons = (reservation) => (
+        <>
+            <button onClick={() => onEdit(reservation)} className="btn btn-sm btn-outline-primary">
+                Editar
+            </button>
+            <button onClick={() => onDelete(reservation.id)} className="btn btn-sm btn-outline-danger">
+                Eliminar
+            </button>
+        </>
+    );
+
+    const filteredByCareer =
+        selectedCareer && selectedCareer.value
+            ? titleReservations.filter((reservation) => reservation.student.career.id === selectedCareer.value)
+            : titleReservations;
+
     const normalizedSearchTerm = searchTerm
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase();
+
     const filteredReservations = filteredByCareer.filter(
         (reservation) =>
             reservation.student.studentCode.toLowerCase().includes(normalizedSearchTerm) ||
@@ -34,24 +66,12 @@ const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit,
     );
 
     const totalPages = Math.ceil(filteredReservations.length / itemsPerPage);
+
     const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentReservations = filteredReservations.slice(indexOfFirstItem, indexOfLastItem);
-    // Manejo de éxito en la carga de PDF
-    const handlePDFUploadSuccess = (reservationId, base64Data) => {
-        setPdfDataMap((prev) => ({
-            ...prev,
-            [reservationId]: base64Data, // Mapea el PDF a la reserva correspondiente
-        }));
-        console.log('PDF cargado y convertido a Base64 para la reserva:', reservationId);
-    };
-
-    // Manejo de fallos en la carga de PDF
-    const handlePDFUploadFailure = (error) => {
-        console.error('Error al cargar el PDF:', error);
-    };
 
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
@@ -95,51 +115,19 @@ const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit,
                                             </p>
                                         )}
                                     </td>
-
                                     <td>{reservation.student?.career?.name || 'N/A'}</td>
                                     <td>{reservation.project ? 'Sí' : 'No'}</td>
                                     <td>{reservation.observations || 'Ninguna'}</td>
                                     <td>{reservation.projectSimilarity}%</td>
                                     <td>{new Date(reservation.createdAt).toLocaleString()}</td>
                                     <td>{new Date(reservation.updatedAt).toLocaleString()}</td>
-                                    <td className="gap-4">
-                                        {/* Componente de carga de PDF */}
-                                        <TitleUpload
-                                            reservaId={reservation.id} // Pasa el ID de la reservación al componente de carga
-                                            onUploadSuccess={(base64Data) => handlePDFUploadSuccess(reservation.id, base64Data)} // Mapea el PDF a la reservación correspondiente
-                                            onUploadFailure={handlePDFUploadFailure}
-                                        />
+                                    <td>
+                                        <TitleUpload reservaId={reservation.id} />
                                     </td>
                                     <td className="flex gap-4 items-center justify-center">
-                                        {/* Mostrar los botones de Editar y Eliminar solo si meetsRequirements es false */}
-
-                                        {reservation.meetsRequirements ? (
-                                            reservation.studentTwo ? (
-                                                <PDFDownloadLink document={<ConstancyVoucherTwo reservation={reservation} />} fileName={`constancia-${reservation.id}-${obtenerAnioActual()}.pdf`}>
-                                                    {({ blob, url, loading, error }) =>
-                                                        loading ? 'Cargando documento...' : <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
-                                                    }
-                                                </PDFDownloadLink>
-                                            ) : (
-                                                <PDFDownloadLink document={<ConstancyVoucherOne reservation={reservation} />} fileName={`constancia-${reservation.id}-${obtenerAnioActual()}.pdf`}>
-                                                    {({ blob, url, loading, error }) =>
-                                                        loading ? 'Cargando documento...' : <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
-                                                    }
-                                                </PDFDownloadLink>
-                                            )
-                                        ) : (
-                                            <>
-                                                {/* Botón de editar sin disabled */}
-                                                <button onClick={() => onEdit(reservation)} className="btn btn-sm btn-outline-primary">
-                                                    Editar
-                                                </button>
-
-                                                {/* Botón de eliminar sin disabled */}
-                                                <button onClick={() => onDelete(reservation.id)} className="btn btn-sm btn-outline-danger">
-                                                    Eliminar
-                                                </button>
-                                            </>
-                                        )}
+                                        {reservation.meetsRequirements
+                                            ? getDownloadButton(reservation)
+                                            : getActionButtons(reservation)}
                                     </td>
                                 </tr>
                             ))

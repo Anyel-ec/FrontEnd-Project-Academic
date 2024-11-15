@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Pagination from '../Pagination'; // Asegúrate de ajustar la ruta si es necesario
-import { getReportDetails, formatDate } from '../utils/ReportUtils'; // Ajusta la ruta si es necesario
-
-const ReportTable = ({ reports, onEdit, onDelete, disabledReports }) => {
+import Pagination from '../Pagination';
+import { getThesisDetails } from '../utils/ThesisUtils';
+import { formatDate } from '../utils/Dates';
+const ThesisTable = ({ thesis, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const itemsPerPage = 10;
-    const totalPages = Math.ceil(reports.length / itemsPerPage);
+    const totalPages = Math.ceil(thesis.length / itemsPerPage);
     const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentReports = reports.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
+    const currentThesis = thesis.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
 
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
@@ -26,16 +26,17 @@ const ReportTable = ({ reports, onEdit, onDelete, disabledReports }) => {
                             <th>Asesor</th>
                             <th>Co-Asesor</th>
                             <th>Última Actualización</th>
+                            <th className="!text-center">PDF</th>
                             <th className="!text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody className="dark:text-white-dark">
-                        {currentReports.length > 0 ? (
-                            currentReports.map((report) => {
-                                const { student, studentTwo, adviser, coadviser, meetRequirements , updatedAt } = getReportDetails(report);
+                        {currentThesis.length > 0 ? (
+                            currentThesis.map((thesis) => {
+                                const { student, studentTwo, adviser, coadviser, meetRequirements, updatedAt } = getThesisDetails(thesis);
 
                                 return (
-                                    <tr key={report.id}>
+                                    <tr key={thesis.id}>
                                         <td>
                                             {student?.firstNames} {student?.lastName}
                                             {studentTwo && (
@@ -61,10 +62,9 @@ const ReportTable = ({ reports, onEdit, onDelete, disabledReports }) => {
                                         <td>{coadviser ? `${coadviser.firstNames || ' '} ${coadviser.lastName || ' '}` : 'N/A'}</td>
                                         <td>{formatDate(updatedAt)}</td>
                                         <td className="flex gap-4 items-center justify-center">
-                                            <button onClick={() => onEdit(report)} className="btn btn-sm btn-outline-primary">
+                                            <button onClick={() => onEdit(thesis)} className="btn btn-sm btn-outline-primary">
                                                 Editar
                                             </button>
-                                            
                                         </td>
                                     </tr>
                                 );
@@ -84,9 +84,9 @@ const ReportTable = ({ reports, onEdit, onDelete, disabledReports }) => {
     );
 };
 
-ReportTable.propTypes = {
-    reports: PropTypes.array.isRequired,
+ThesisTable.propTypes = {
+    thesis: PropTypes.array.isRequired,
     onEdit: PropTypes.func.isRequired,
 };
 
-export default ReportTable;
+export default ThesisTable;

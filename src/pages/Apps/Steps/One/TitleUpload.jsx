@@ -42,7 +42,6 @@ const TitleUpload = ({ reservaId }) => {
         checkPDFExists();
     }, [reservaId]);
 
-
     const viewPDF = () => {
         if (!reservaId) {
             Swal.fire({
@@ -97,12 +96,8 @@ const TitleUpload = ({ reservaId }) => {
 
     return (
         <div className="flex gap-3">
-            <button
-                onClick={viewPDF}
-                className="btn btn-sm btn-outline-secondary m-0 w-[5rem]"
-                disabled={pdfExists === false} // El botón se deshabilita cuando no hay PDF disponible
-            >
-               {pdfExists === null ? 'Cargando...' : (pdfExists ? 'Ver PDF' : 'No disponible')}
+            <button onClick={viewPDF} className="btn btn-sm btn-outline-secondary m-0 w-[5rem]" disabled={pdfExists === false}>
+                {pdfExists === null ? 'Cargando...' : pdfExists ? 'Ver PDF' : 'No disponible'}
             </button>
         </div>
     );

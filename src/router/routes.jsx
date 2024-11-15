@@ -3,7 +3,7 @@ import Students from '../pages/Apps/Student/Students';
 import Teachers from '../pages/Apps/Teacher/Teachers';
 import Constancy from '../pages/Apps/Steps/One/TitleReservation';
 import ConstancyStudents from '../pages/Apps/StepsStudents/One/TitleReservation';
-import ConstancyThesis from '../pages/Apps/Steps/Five/ReportReview';
+import ConstancyThesis from '../pages/Apps/Steps/Five/ConstancyThesis';
 import ProjectAproval from '../pages/Apps/Steps/Two/ProjectApproval';
 import JuryAppointment from '../pages/Apps/Steps/Three/JuryAppointment';
 import ReportReview from '../pages/Apps/Steps/Four/ReportReview';

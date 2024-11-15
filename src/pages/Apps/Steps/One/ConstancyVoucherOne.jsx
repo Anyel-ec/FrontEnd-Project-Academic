@@ -1,11 +1,11 @@
 import { Document, Page, View, Text, Image } from '@react-pdf/renderer';
 import PropTypes from 'prop-types';
-import { obtenerFechaEscrita, obtenerAnioActual } from './Dates'
+import { getWrittenDate, getYear } from '../utils/Dates'
 import Logo from './BANNER.png';
 import styles from './ConstancyVoucherStyles';
 
-const actualData = obtenerFechaEscrita();
-const anio = obtenerAnioActual();
+const actualData = getWrittenDate();
+const anio = getYear();
 
 const ConstancyVoucher = ({ reservation }) => (
     <Document>
