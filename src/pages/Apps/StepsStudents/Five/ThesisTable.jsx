@@ -1,18 +1,29 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Pagination from '../Pagination';
-import { getThesisDetails } from '../utils/ThesisUtils';
-import { formatDate } from '../utils/Dates';
-const ThesisTable = ({ thesis, onEdit }) => {
+import Pagination from '../../Steps/Pagination';
+import { getThesisDetails } from '../../Steps/utils/ThesisUtils';
+import { formatDate } from '../../Steps/utils/Dates';
+import ThesisUpload from './ThesisUpload';
+const ThesisTable = ({ thesis }) => {
     const [currentPage, setCurrentPage] = useState(1);
-
     const itemsPerPage = 10;
     const totalPages = Math.ceil(thesis.length / itemsPerPage);
     const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentThesis = thesis.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
+    const handlePDFUploadSuccess = (reservationId, base64Data) => {
+        // Actualiza el estado para que React re-renderice la tabla
+        setPdfDataMap((prev) => ({
+            ...prev,
+            [reservationId]: base64Data, // Mapea el PDF a la reserva correspondiente
+        }));
+        console.log('PDF cargado y convertido a Base64 para la reserva:', reservationId);
+    };
 
+    const handlePDFUploadFailure = (error) => {
+        console.error('Error al cargar el PDF:', error);
+    };
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
             <div className="table-responsive">
@@ -22,18 +33,14 @@ const ThesisTable = ({ thesis, onEdit }) => {
                             <th>Estudiante(s)</th>
                             <th>Código(s)</th>
                             <th>Carrera</th>
-                            <th>Cumple Requisitos</th>
-                            <th>Asesor</th>
-                            <th>Co-Asesor</th>
                             <th>Última Actualización</th>
-                            <th className="!text-center">PDF</th>
-                            <th className="!text-center">Acciones</th>
+                            <th className="text-center">PDF</th>
                         </tr>
                     </thead>
                     <tbody className="dark:text-white-dark">
                         {currentThesis.length > 0 ? (
                             currentThesis.map((thesis) => {
-                                const { student, studentTwo, meetRequirements, updatedAt } = getThesisDetails(thesis);
+                                const { student, studentTwo, meetsRequirements, updatedAt } = getThesisDetails(thesis);
 
                                 return (
                                     <tr key={thesis.id}>
@@ -57,14 +64,21 @@ const ThesisTable = ({ thesis, onEdit }) => {
                                             )}
                                         </td>
                                         <td>{student?.career?.name || 'N/A'}</td>
-                                        <td>{meetRequirements ? 'Sí' : 'No'}</td>
-                                            {/* <td>{adviser ? `${adviser.firstNames || ' '} ${adviser.lastName || ' '}` : 'N/A'}</td>
-                                            <td>{coadviser ? `${coadviser.firstNames || ' '} ${coadviser.lastName || ' '}` : 'N/A'}</td> */}
                                         <td>{formatDate(updatedAt)}</td>
-                                        <td className="flex gap-4 items-center justify-center">
-                                            <button onClick={() => onEdit(thesis)} className="btn btn-sm btn-outline-primary">
-                                                Editar
-                                            </button>
+                                        <td>
+                                            {thesis.meetsRequirements ? (
+                                                <></>
+                                            ) : (
+                                                <td className="gap-4">
+                                                    {
+                                                        <ThesisUpload
+                                                            thesisId={thesis.id} // Pasa el ID de la reservación al componente de carga
+                                                            onUploadSuccess={(base64Data) => handlePDFUploadSuccess(thesis.id, base64Data)} // Mapea el PDF a la reservación correspondiente
+                                                            onUploadFailure={handlePDFUploadFailure}
+                                                        />
+                                                    }
+                                                </td>
+                                            )}
                                         </td>
                                     </tr>
                                 );
@@ -86,7 +100,6 @@ const ThesisTable = ({ thesis, onEdit }) => {
 
 ThesisTable.propTypes = {
     thesis: PropTypes.array.isRequired,
-    onEdit: PropTypes.func.isRequired,
 };
 
 export default ThesisTable;

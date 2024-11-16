@@ -4,6 +4,7 @@ import Teachers from '../pages/Apps/Teacher/Teachers';
 import Constancy from '../pages/Apps/Steps/One/TitleReservation';
 import ConstancyStudents from '../pages/Apps/StepsStudents/One/TitleReservation';
 import ConstancyThesis from '../pages/Apps/Steps/Five/ConstancyThesis';
+import ConstancyThesisStudents from '../pages/Apps/StepsStudents/Five/ConstancyThesis';
 import ProjectAproval from '../pages/Apps/Steps/Two/ProjectApproval';
 import JuryAppointment from '../pages/Apps/Steps/Three/JuryAppointment';
 import ReportReview from '../pages/Apps/Steps/Four/ReportReview';
@@ -206,15 +207,24 @@ const routes = [
             </StudentRoute>
         ),
     },
+    {
+        path: 'apps/paso-estudiante/constancia-tesis',
+        element: (
+            <StudentRoute>
+                <ConstancyThesisStudents />
+            </StudentRoute>
+        ),
+    },
     // Estudiantes Fin
     {
-        path: 'apps/asesoria-tesis',
+        path: 'apps/paso-estudiante/asesoria-tesis',
         element: (
             <ProtectedRoute>
                 <ThesisAdvisory />
             </ProtectedRoute>
         ),
     },
+
 
     ///---FIN----------------------------------------------------------------/////
     {

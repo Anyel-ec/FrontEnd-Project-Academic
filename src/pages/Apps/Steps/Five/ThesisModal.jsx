@@ -1,12 +1,9 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
 
-const ThesisModal = ({ isOpen, onClose, onSave, thesis, adviserOptions }) => {
-    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
-
+const ThesisModal = ({ isOpen, onClose, onSave, thesis }) => {
     const initialValues = React.useMemo(
         () => ({
             studentCode: thesis?.student?.studentCode || 'N/A', // Accede directamente al código del estudiante

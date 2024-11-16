@@ -7,6 +7,7 @@ const PDF_API_URL = `${AppEnvironments.baseUrl}api/v1/pdfDocument/StepFive`;
 const getAuthToken = () => {
     return localStorage.getItem('token');
 };
+console.log(localStorage.getItem('token'));
 const getAuthHeaders = () => ({
     headers: {
         Authorization: `Bearer ${getAuthToken()}`,
@@ -44,10 +45,13 @@ const deleteConstancyThesis = async (id) => {
     }
 };
 
-// Métodos para la gestión de archivos PDF asociados a las constancias de tesis
 const uploadPdfDocument = async (id, pdfData) => {
+    if (!id) {
+        console.error('ID is undefined!');
+        return;
+    }
     try {
-        const response = await axios.post(`${PDF_API_URL}/${id}/upload`, { pdfData }, getAuthHeaders());
+        const response = await axios.post(`${PDF_API_URL}/${id}/upload`, {pdfData}, getAuthHeaders());
         return response.data;
     } catch (error) {
         console.error('Error uploading PDF document', error);

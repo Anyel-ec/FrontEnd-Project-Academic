@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importación es correcto
 
 const ReservationTable = ({ titleReservations, apiError }) => {
@@ -33,7 +33,7 @@ const ReservationTable = ({ titleReservations, apiError }) => {
                             {/* <th>Fecha Actualización</th> */}
                             {/* {reservations.meetsRequirements ? <th className="!text-center">PDF</th> : <></>} */}
                             {/* {<th className="!text-center">PDF</th>} */}
-                            {<th>PDF</th>}
+                            <th>PDF</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import titleReservationsService from '../../../../api/titleReservationsService';
-
-const TitleUpload = ({ reservaId }) => {
+import ThesisService from '../../../../api/constancyThesisService';
+    
+const ThesisUpload = ({ thesisId }) => {
     const [pdfDocumentId, setPdfDocumentId] = useState(null);
 
     useEffect(() => {
-        if (!reservaId) {
+        if (!thesisId) {
             console.error('El ID de la reserva es undefined.');
             return;
         }
         // Llamada al backend para verificar si hay un PDF asociado
-        titleReservationsService.viewPdf(reservaId)
+        ThesisService.viewPdfDocument(thesisId)
             .then((pdfData) => {
                 if (pdfData) {
                     setPdfDocumentId(true); // Indica que el PDF está cargado
@@ -22,7 +22,7 @@ const TitleUpload = ({ reservaId }) => {
             .catch((error) => {
                 console.error('Error al cargar la reservación:', error);
             });
-    }, [reservaId]);
+    }, [thesisId]);
 
     const uploadFile = () => {
         Swal.fire({
@@ -70,7 +70,8 @@ const TitleUpload = ({ reservaId }) => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const base64PDF = e.target.result.split(',')[1];
-                    titleReservationsService.uploadPdf(reservaId, base64PDF)
+                    console.log(thesisId);
+                    ThesisService.uploadPdfDocument(thesisId, base64PDF)
                         .then(() => {
                             Swal.fire({
                                 icon: 'success',
@@ -101,7 +102,7 @@ const TitleUpload = ({ reservaId }) => {
     };
 
     const viewPDF = () => {
-        titleReservationsService.viewPdf(reservaId)
+        ThesisService.viewPdfDocument(thesisId)
             .then((pdfData) => {
                 const base64PDF = `data:application/pdf;base64,${pdfData}`;
 
@@ -123,7 +124,7 @@ const TitleUpload = ({ reservaId }) => {
     };
 
     const deletePDF = () => {
-        titleReservationsService.deletePdf(reservaId)
+        ThesisService.deletePdfDocument(thesisId)
             .then(() => {
                 Swal.fire({
                     icon: 'success',
@@ -161,4 +162,4 @@ const TitleUpload = ({ reservaId }) => {
     );
 };
 
-export default TitleUpload;
+export default ThesisUpload;
