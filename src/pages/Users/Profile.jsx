@@ -115,7 +115,7 @@ const Profile = () => {
                         </ul>
                     </div>
                 </div>
-                {isStudent && (
+                {/* {isStudent && (
                     <div className="panel lg:col-span-2 xl:col-span-3">
                         <div className="mb-5">
                             <h5 className="font-semibold text-lg dark:text-white-light">Tareas</h5>
@@ -149,7 +149,7 @@ const Profile = () => {
                             </div>
                         </div>
                     </div>
-                )}
+                )} */}
             </div>
         </div>
     );

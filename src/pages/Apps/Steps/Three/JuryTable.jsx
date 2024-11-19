@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 
 const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
     const [currentPage, setCurrentPage] = useState(1);
+    console.log(currentJury);
 
     const itemsPerPage = 4;
     const totalPages = Math.ceil(currentJury.length / itemsPerPage);
@@ -113,37 +114,37 @@ const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
                             jurys.map((jury) => (
                                 <tr key={jury.id}>
                                     <td>
-                                        {jury.projectApprovalStepTwo.titleReservationStepOne.student.firstNames} {jury.projectApprovalStepTwo.titleReservationStepOne.student.lastName}
-                                        {jury.projectApprovalStepTwo.titleReservationStepOne.studentTwo && (
+                                        {jury.projectApprovalStepTwo?.titleReservationStepOne.student.firstNames} {jury.projectApprovalStepTwo?.titleReservationStepOne.student.lastName}
+                                        {jury.projectApprovalStepTwo?.titleReservationStepOne.studentTwo && (
                                             <>
                                                 <br />
-                                                {jury.projectApprovalStepTwo.titleReservationStepOne.studentTwo.firstNames} {jury.projectApprovalStepTwo.titleReservationStepOne.studentTwo.lastName}
+                                                {jury.projectApprovalStepTwo?.titleReservationStepOne.studentTwo.firstNames} {jury.projectApprovalStepTwo?.titleReservationStepOne.studentTwo.lastName}
                                             </>
                                         )}
                                     </td>
                                     <td>
-                                        {jury.projectApprovalStepTwo.titleReservationStepOne.student.studentCode || 'N/A'}
-                                        {jury.projectApprovalStepTwo.titleReservationStepOne.studentTwo && (
+                                        {jury.projectApprovalStepTwo?.titleReservationStepOne.student.studentCode || 'N/A'}
+                                        {jury.projectApprovalStepTwo?.titleReservationStepOne.studentTwo && (
                                             <>
                                                 <br />
-                                                {jury.projectApprovalStepTwo.titleReservationStepOne.studentTwo.studentCode || 'N/A'}
+                                                {jury.projectApprovalStepTwo?.titleReservationStepOne.studentTwo.studentCode || 'N/A'}
                                             </>
                                         )}
                                     </td>
                                     <td>{jury.meetRequirements ? 'Sí' : 'No'}</td>
-                                    <td>{jury.projectApprovalStepTwo.titleReservationStepOne.student.career?.name || 'N/A'}</td>
+                                    <td>{jury.projectApprovalStepTwo?.titleReservationStepOne.student.career?.name || 'N/A'}</td>
                                     <td>{jury.president ? `${jury.president.firstNames || ' '} ${jury.president.lastName || ' '}` : 'N/A'}</td>
                                     <td>{jury.firstMember ? `${jury.firstMember.firstNames || ' '} ${jury.firstMember.lastName || ' '}` : 'N/A'}</td>
                                     <td>{jury.secondMember ? `${jury.secondMember.firstNames || ' '} ${jury.secondMember.lastName || ' '}` : 'N/A'}</td>
                                     <td>{jury.accessory ? `${jury.accessory.firstNames || ' '} ${jury.accessory.lastName || ' '}` : 'N/A'}</td>
                                     <td>
-                                        {jury.projectApprovalStepTwo.adviser
-                                            ? `${jury.projectApprovalStepTwo.adviser.firstNames || ' '} ${jury.projectApprovalStepTwo.adviser.lastName || ' '}`
+                                        {jury.projectApprovalStepTwo?.adviser
+                                            ? `${jury.projectApprovalStepTwo?.adviser.firstNames || ' '} ${jury.projectApprovalStepTwo?.adviser.lastName || ' '}`
                                             : 'N/A'}
                                     </td>
                                     <td>
-                                        {jury.projectApprovalStepTwo.coadviser
-                                            ? `${jury.projectApprovalStepTwo.coadviser.firstNames || ' '} ${jury.projectApprovalStepTwo.coadviser.lastName || ' '}`
+                                        {jury.projectApprovalStepTwo?.coadviser
+                                            ? `${jury.projectApprovalStepTwo?.coadviser.firstNames || ' '} ${jury.projectApprovalStepTwo?.coadviser.lastName || ' '}`
                                             : 'N/A'}
                                     </td>
                                     <td>{formatearFecha(jury.updatedAt)}</td>

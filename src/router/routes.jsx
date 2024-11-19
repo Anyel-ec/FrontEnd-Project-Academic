@@ -123,13 +123,11 @@ const routes = [
         element: <RecoverIdCover />,
         layout: 'blank',
     },
-
     // perfil
     {
         path: '/usuario/perfil',
         element: <Profile />,
     },
-
     ///---INICIO----------------------------------------------------------------/////
 
     ////////

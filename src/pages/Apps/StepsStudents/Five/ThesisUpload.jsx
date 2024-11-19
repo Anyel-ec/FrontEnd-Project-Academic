@@ -29,7 +29,7 @@ const ThesisUpload = ({ thesisId }) => {
             title: 'Seleccionar un archivo PDF',
             html: `
                 <div class="custom-file-wrapper">
-                    <button type="button" class="custom-file-button">Seleccionar archivo</button>
+                    <button type="button" class="bg-green-700 custom-file-button">Seleccionar archivo</button>
                     <input id="fileInput" type="file" class="custom-file-input" accept="application/pdf" />
                     <span id="fileName" class="custom-file-text">Ningún archivo seleccionado</span>
                 </div>

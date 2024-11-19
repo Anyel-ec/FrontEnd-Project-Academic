@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AppEnvironments from '../config/AppEnvironments';
 
-const JURYAPPOINTMENT_API_URL = `${AppEnvironments.baseUrl}api/v1/asignacion_jurados`;
+const JURYAPPOINTMENT_API_URL = `${AppEnvironments.baseUrl}api/v1/asignacion_jurados/`;
 
 const getAuthToken = () => {
     return localStorage.getItem('token');
@@ -34,7 +34,8 @@ const addJuryAppointment = async (juryAppointment) => {
 
 const editJuryAppointment = async (id, juryAppointment) => {
     try {
-        const response = await axios.put(`${JURYAPPOINTMENT_API_URL}/${id}`, juryAppointment, getAuthHeaders());
+        console.log('Datos enviados:', juryAppointment); // Validar los datos aquí
+        const response = await axios.put(`${JURYAPPOINTMENT_API_URL}${id}`, juryAppointment, getAuthHeaders());
         return response.data;
     } catch (error) {
         console.error('Error en editJuryAppointment:', error);
@@ -42,9 +43,10 @@ const editJuryAppointment = async (id, juryAppointment) => {
     }
 };
 
+
 const deleteJuryAppointment = async (id) => {
     try {
-        const response = await axios.delete(`${JURYAPPOINTMENT_API_URL}/${id}`, getAuthHeaders());
+        const response = await axios.delete(`${JURYAPPOINTMENT_API_URL}${id}`, getAuthHeaders());
         return response.data;
     } catch (error) {
         console.error('Error en deleteJuryAppointment:', error);

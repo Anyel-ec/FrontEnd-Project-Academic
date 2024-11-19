@@ -11,7 +11,8 @@ const TitleUpload = ({ reservaId }) => {
             return;
         }
         // Llamada al backend para verificar si hay un PDF asociado
-        titleReservationsService.viewPdf(reservaId)
+        titleReservationsService
+            .viewPdf(reservaId)
             .then((pdfData) => {
                 if (pdfData) {
                     setPdfDocumentId(true); // Indica que el PDF está cargado
@@ -29,7 +30,7 @@ const TitleUpload = ({ reservaId }) => {
             title: 'Seleccionar un archivo PDF',
             html: `
                 <div class="custom-file-wrapper">
-                    <button type="button" class="custom-file-button">Seleccionar archivo</button>
+                    <button type="button" class="bg-green-700 custom-file-button">Seleccionar archivo</button>
                     <input id="fileInput" type="file" class="custom-file-input" accept="application/pdf" />
                     <span id="fileName" class="custom-file-text">Ningún archivo seleccionado</span>
                 </div>
@@ -57,12 +58,13 @@ const TitleUpload = ({ reservaId }) => {
                     Swal.showValidationMessage('Debes seleccionar un archivo');
                 } else if (file.type !== 'application/pdf') {
                     Swal.showValidationMessage('El archivo debe ser un PDF');
-                } else if (file.size > 1048576) { // 1MB
+                } else if (file.size > 1048576) {
+                    // 1MB
                     Swal.showValidationMessage('El archivo no debe superar los 1 MB');
                 } else {
                     return file;
                 }
-            }
+            },
         }).then((result) => {
             if (result.isConfirmed) {
                 const selectedFile = result.value;
@@ -70,7 +72,8 @@ const TitleUpload = ({ reservaId }) => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const base64PDF = e.target.result.split(',')[1];
-                    titleReservationsService.uploadPdf(reservaId, base64PDF)
+                    titleReservationsService
+                        .uploadPdf(reservaId, base64PDF)
                         .then(() => {
                             Swal.fire({
                                 icon: 'success',
@@ -101,7 +104,8 @@ const TitleUpload = ({ reservaId }) => {
     };
 
     const viewPDF = () => {
-        titleReservationsService.viewPdf(reservaId)
+        titleReservationsService
+            .viewPdf(reservaId)
             .then((pdfData) => {
                 const base64PDF = `data:application/pdf;base64,${pdfData}`;
 
@@ -123,7 +127,8 @@ const TitleUpload = ({ reservaId }) => {
     };
 
     const deletePDF = () => {
-        titleReservationsService.deletePdf(reservaId)
+        titleReservationsService
+            .deletePdf(reservaId)
             .then(() => {
                 Swal.fire({
                     icon: 'success',

@@ -7,19 +7,17 @@ import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
 
-const ApprovalModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions }) => {
+const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions }) => {
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
-
     const initialValues = React.useMemo(
         () => ({
             studentCode: juryAppointment?.projectApprovalStepTwo?.titleReservationStepOne?.student?.studentCode || 'N/A',
             studentTwoCode: juryAppointment?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.studentCode || '',
             studentFirstNames: juryAppointment?.projectApprovalStepTwo?.titleReservationStepOne?.student?.firstNames || 'N/A',
             studentTwoFirstNames: juryAppointment?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.firstNames || '',
-            observations: juryAppointment?.projectApprovalStepTwo?.titleReservationStepOne?.observations || '',
+            observations: juryAppointment?.observations || '',
             meetRequirements: juryAppointment?.meetRequirements ? 'yes' : 'no',
-
             president: juryAppointment?.president
                 ? {
                       value: juryAppointment.president.id,
@@ -44,21 +42,10 @@ const ApprovalModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOption
                       label: `${juryAppointment.accessory.firstNames} ${juryAppointment.accessory.lastName}`,
                   }
                 : null,
-            adviser: juryAppointment?.projectApprovalStepTwo?.adviser
-                ? {
-                      value: juryAppointment.projectApprovalStepTwo.adviser.id,
-                      label: `${juryAppointment.projectApprovalStepTwo.adviser.firstNames} ${juryAppointment.projectApprovalStepTwo.adviser.lastName}`,
-                  }
-                : null,
-            coadviser: juryAppointment?.projectApprovalStepTwo?.coadviser
-                ? {
-                      value: juryAppointment.projectApprovalStepTwo.coadviser.id,
-                      label: `${juryAppointment.projectApprovalStepTwo.coadviser.firstNames} ${juryAppointment.projectApprovalStepTwo.coadviser.lastName}`,
-                  }
-                : null,
         }),
-        [juryAppointment, adviserOptions]
+        [juryAppointment]
     );
+
     const filterOptions = (selectedValues, currentFieldValue) => {
         // Obtener los IDs de todos los valores seleccionados excepto el del campo actual
         const selectedIds = selectedValues.filter((val) => val && val.value !== currentFieldValue?.value).map((val) => val.value);
@@ -92,10 +79,10 @@ const ApprovalModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOption
                                             firstMember: values.firstMember ? { id: values.firstMember.value } : null,
                                             secondMember: values.secondMember ? { id: values.secondMember.value } : null,
                                             accessory: values.accessory ? { id: values.accessory.value } : null,
-                                            meetRequirements: values.meetRequirements ? true : false,
+                                            meetRequirements: values.meetRequirements === 'yes' ? true : false,
                                             observations: values.observations || '',
                                         };
-
+                                        console.log(values.meetRequirements);
                                         console.log('Llamando a onSave con:', transformedValues);
                                         onSave(transformedValues, juryAppointment?.id);
                                     }}
@@ -204,4 +191,4 @@ const ApprovalModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOption
     );
 };
 
-export default ApprovalModal;
+export default JuryModal;

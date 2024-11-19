@@ -46,17 +46,16 @@ const JuryAppoiment = () => {
 
     const handleSave = async (updatedJuryData, projectId) => {
         try {
-            // Llamada al servicio con el ID en la URL y los datos en el cuerpo
             await juryAppointmentService.editJuryAppointment(projectId, updatedJuryData);
             Swal.fire('Éxito', 'Jurados actualizado correctamente.', 'success');
-
-            await fetchJuryAppointment(); // Actualizamos la lista de proyectos
-            closeModal(); // Cerramos el modal después de guardar
+            await fetchJuryAppointment();
+            closeModal();
         } catch (error) {
-            console.error('Error al guardar el jurado:', error);
-            Swal.fire('Error', 'Hubo un problema al guardar el jurado.', 'error');
+            console.error('Error al guardar el jurado:', error.response?.data || error.message);
+            Swal.fire('Error', 'No se pudo guardar el jurado. Revisa los datos e inténtalo nuevamente.', 'error');
         }
     };
+    
 
     const closeModal = () => {
         setIsModalOpen(false);

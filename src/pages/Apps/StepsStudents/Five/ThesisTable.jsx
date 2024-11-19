@@ -102,4 +102,5 @@ ThesisTable.propTypes = {
     thesis: PropTypes.array.isRequired,
 };
 
+
 export default ThesisTable;

@@ -109,37 +109,37 @@ const Sidebar = () => {
                     <PerfectScrollbar className="h-[calc(100vh-80px)] relative">
                         <ul className="relative font-semibold space-y-0.5 p-4 py-0">
                             <div>
+                                <li className="menu nav-item">
+                                    <button type="button" className={`${currentMenu === 'dashboard' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('dashboard')}>
+                                        <div className="flex items-center">
+                                            <IconMenuDashboard className="group-hover:!text-primary shrink-0" />
+                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('dashboard')}</span>
+                                        </div>
+
+                                        <div className={currentMenu !== 'dashboard' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                            <IconCaretDown />
+                                        </div>
+                                    </button>
+
+                                    <AnimateHeight duration={300} height={currentMenu === 'dashboard' ? 'auto' : 0}>
+                                        <ul className="sub-menu text-gray-500">
+                                            <li>
+                                                <NavLink to="/">{t('sales')}</NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink to="/progress">{t('Progreso')}</NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink to="/finance">{t('finance')}</NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink to="/crypto">{t('crypto')}</NavLink>
+                                            </li>
+                                        </ul>
+                                    </AnimateHeight>
+                                </li>
                                 {isAdmin && (
                                     <>
-                                        <li className="menu nav-item">
-                                            <button type="button" className={`${currentMenu === 'dashboard' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('dashboard')}>
-                                                <div className="flex items-center">
-                                                    <IconMenuDashboard className="group-hover:!text-primary shrink-0" />
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('dashboard')}</span>
-                                                </div>
-
-                                                <div className={currentMenu !== 'dashboard' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                                    <IconCaretDown />
-                                                </div>
-                                            </button>
-
-                                            <AnimateHeight duration={300} height={currentMenu === 'dashboard' ? 'auto' : 0}>
-                                                <ul className="sub-menu text-gray-500">
-                                                    <li>
-                                                        <NavLink to="/">{t('sales')}</NavLink>
-                                                    </li>
-                                                    <li>
-                                                        <NavLink to="/progress">{t('Progreso')}</NavLink>
-                                                    </li>
-                                                    <li>
-                                                        <NavLink to="/finance">{t('finance')}</NavLink>
-                                                    </li>
-                                                    <li>
-                                                        <NavLink to="/crypto">{t('crypto')}</NavLink>
-                                                    </li>
-                                                </ul>
-                                            </AnimateHeight>
-                                        </li>
                                         {/* Modulo de administrador ------------------------------------------ inicio */}
                                         <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                             <IconMinus className="w-4 h-5 flex-none hidden" />
@@ -265,7 +265,7 @@ const Sidebar = () => {
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
                                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                                    {t('6: Primera Revisión Tesis')}
+                                                                    {t('6: Notificación de Jurados')}
                                                                 </span>
                                                             </div>
                                                         </NavLink>
@@ -275,7 +275,7 @@ const Sidebar = () => {
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
                                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                                    {t('7: Última Revisión Tesis')}
+                                                                    {t('7: Aprobación de Tesis')}
                                                                 </span>
                                                             </div>
                                                         </NavLink>
@@ -285,7 +285,7 @@ const Sidebar = () => {
                                                         <NavLink to="/apps/docentes" className="group">
                                                             <div className="flex items-center">
                                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                                    {t('8: Constancia de Filtro')}
+                                                                    {t('8: Aprobación de Empastados')}
                                                                 </span>
                                                             </div>
                                                         </NavLink>
@@ -322,7 +322,32 @@ const Sidebar = () => {
                                                 <li className="nav-item">
                                                     <NavLink to="/apps/paso-estudiante/constancia-filtro" className="group">
                                                         <div className="flex items-center">
-                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('1: Reserva de Titulos')}</span>
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('1: Constancia de Filtro')}</span>
+                                                        </div>
+                                                    </NavLink>
+                                                </li>
+                                                {/* Paso 2 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/constancia-filtro" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('2: Aprobación de Proyecto')}</span>
+                                                        </div>
+                                                    </NavLink>
+                                                </li>
+                                                {/* Paso 3 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/constancia-filtro" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('3: Designación de Jurados')}</span>
+                                                        </div>
+                                                    </NavLink>
+                                                </li>
+                                                
+                                                {/* Paso 4 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/constancia-filtro" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('4: Revision de Reporte')}</span>
                                                         </div>
                                                     </NavLink>
                                                 </li>
@@ -336,13 +361,31 @@ const Sidebar = () => {
                                                 </li>
                                                 {/* Paso 6 */}
                                                 <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/reservacion-titulo" className="group">
+                                                    <NavLink to="/apps/paso-estudiante/constancia-filtro" className="group">
                                                         <div className="flex items-center">
-                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('6: Primera Revisión Tesis')}</span>
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('6: Notificación de Jurados')}</span>
+                                                        </div>
+                                                    </NavLink>
+                                                </li>
+                                                {/* Paso 7 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/constancia-filtro" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('7: Aprobación de Tesis')}</span>
+                                                        </div>
+                                                    </NavLink>
+                                                </li>
+                                                
+                                                {/* Paso 8 */}
+                                                <li className="nav-item">
+                                                    <NavLink to="/apps/paso-estudiante/constancia-tesis" className="group">
+                                                        <div className="flex items-center">
+                                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('8: Aprobación de Empastados')}</span>
                                                         </div>
                                                     </NavLink>
                                                 </li>
                                             </ul>
+
                                         </AnimateHeight>
                                     </li>
                                     {/* modulo de pasos estudiante --------------------------------fin*/}
