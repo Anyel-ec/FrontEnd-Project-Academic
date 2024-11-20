@@ -152,6 +152,9 @@ const TitleUpload = ({ reservaId }) => {
             <button onClick={uploadFile} className="btn btn-sm btn-outline-secondary m-0">
                 {pdfDocumentId ? 'Actualizar' : 'Subir'}
             </button>
+            <button className='btn btn-sm btn-outline-success'>
+                Obervaciones
+            </button>
             {pdfDocumentId && (
                 <>
                     <button onClick={viewPDF} className="btn btn-sm btn-outline-primary m-0">

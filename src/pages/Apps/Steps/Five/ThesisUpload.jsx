@@ -36,7 +36,7 @@ const ThesisUpload = ({ thesisId }) => {
 
         try {
             // Usar el método del módulo para obtener el PDF en base64
-            const pdfData = await ThesisService.viewPdf(thesisId);
+            const pdfData = await ThesisService.viewPdfDocument(thesisId);
 
             if (pdfData) {
                 const base64PDF = `data:application/pdf;base64,${pdfData}`;
