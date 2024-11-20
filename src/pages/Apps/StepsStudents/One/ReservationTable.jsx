@@ -3,19 +3,6 @@ import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importa
 
 const ReservationTable = ({ titleReservations, apiError }) => {
     const reservations = titleReservations;
-    const handlePDFUploadSuccess = (reservationId, base64Data) => {
-        // Actualiza el estado para que React re-renderice la tabla
-        setPdfDataMap((prev) => ({
-            ...prev,
-            [reservationId]: base64Data, // Mapea el PDF a la reserva correspondiente
-        }));
-        console.log('PDF cargado y convertido a Base64 para la reserva:', reservationId);
-    };
-
-    const handlePDFUploadFailure = (error) => {
-        console.error('Error al cargar el PDF:', error);
-    };
-
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
             {apiError && <div className="text-danger">{apiError}</div>}
@@ -33,7 +20,7 @@ const ReservationTable = ({ titleReservations, apiError }) => {
                             {/* <th>Fecha Actualización</th> */}
                             {/* {reservations.meetsRequirements ? <th className="!text-center">PDF</th> : <></>} */}
                             {/* {<th className="!text-center">PDF</th>} */}
-                            <th>PDF</th>
+                            <th className="!text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -65,19 +52,14 @@ const ReservationTable = ({ titleReservations, apiError }) => {
                                     {/*<td>{reservation.observations || 'Ninguna'}</td>
                                     <td>{new Date(reservation.createdAt).toLocaleString()}</td>
                                     <td>{new Date(reservation.updatedAt).toLocaleString()}</td> */}
-                                    {reservation.meetsRequirements ? (
-                                        <></>
-                                    ) : (
-                                        <td className="gap-4">
-                                            {
-                                                <TitleUpload
-                                                    reservaId={reservation.id} // Pasa el ID de la reservación al componente de carga
-                                                    onUploadSuccess={(base64Data) => handlePDFUploadSuccess(reservation.id, base64Data)} // Mapea el PDF a la reservación correspondiente
-                                                    onUploadFailure={handlePDFUploadFailure}
-                                                />
-                                            }
-                                        </td>
-                                    )}
+
+                                    <td className="gap-4">
+                                        <TitleUpload
+                                            reservaId={reservation.id} // Pasa el ID de la reservación al componente de carga
+                                            meetsRequirements={reservation.meetsRequirements} // Pasa el estado meetsRequirements al componente
+                                            observations={reservation.observations} // Pasa el
+                                        />
+                                    </td>
                                 </tr>
                             ))
                         ) : (

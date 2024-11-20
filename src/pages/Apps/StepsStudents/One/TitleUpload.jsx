@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import titleReservationsService from '../../../../api/titleReservationsService';
-
-const TitleUpload = ({ reservaId }) => {
+import { showObservations } from '../utils/ShowObservations';
+const TitleUpload = ({ reservaId, meetsRequirements, observations }) => {
     const [pdfDocumentId, setPdfDocumentId] = useState(null);
 
     useEffect(() => {
@@ -148,23 +148,27 @@ const TitleUpload = ({ reservaId }) => {
     };
 
     return (
-        <div className="flex gap-3">
-            <button onClick={uploadFile} className="btn btn-sm btn-outline-secondary m-0">
-                {pdfDocumentId ? 'Actualizar' : 'Subir'}
-            </button>
-            <button className='btn btn-sm btn-outline-success'>
-                Obervaciones
-            </button>
+        <div className="flex gap-3 justify-center">
             {pdfDocumentId && (
+                <button onClick={viewPDF} className="btn btn-sm btn-outline-primary m-0">
+                    Ver
+                </button>
+            )}
+            {!meetsRequirements && (
                 <>
-                    <button onClick={viewPDF} className="btn btn-sm btn-outline-primary m-0">
-                        Ver
+                    <button onClick={uploadFile} className="btn btn-sm btn-outline-secondary m-0">
+                        {pdfDocumentId ? 'Actualizar' : 'Subir'}
                     </button>
-                    <button onClick={deletePDF} className="btn btn-sm btn-outline-danger m-0">
-                        Eliminar
-                    </button>
+                    {pdfDocumentId && (
+                        <button onClick={deletePDF} className="btn btn-sm btn-outline-danger m-0">
+                            Eliminar
+                        </button>
+                    )}
                 </>
             )}
+            <button className="btn btn-sm btn-outline-success" onClick={() => showObservations(observations)}>
+                Observaciones
+            </button>
         </div>
     );
 };

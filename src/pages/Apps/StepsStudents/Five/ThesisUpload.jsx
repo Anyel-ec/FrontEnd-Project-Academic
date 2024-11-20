@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import ThesisService from '../../../../api/constancyThesisService';
-    
-const ThesisUpload = ({ thesisId }) => {
+import { showObservations } from '../utils/ShowObservations';
+
+const ThesisUpload = ({ thesisId, meetsRequirements, observations }) => {
     const [pdfDocumentId, setPdfDocumentId] = useState(null);
 
     useEffect(() => {
         if (!thesisId) {
-            console.error('El ID de la reserva es undefined.');
+            console.error('El ID de la tesis es undefined.');
             return;
         }
         // Llamada al backend para verificar si hay un PDF asociado
@@ -20,7 +21,7 @@ const ThesisUpload = ({ thesisId }) => {
                 }
             })
             .catch((error) => {
-                console.error('Error al cargar la reservación:', error);
+                console.error('Error al cargar el documento de la tesis:', error);
             });
     }, [thesisId]);
 
@@ -57,12 +58,13 @@ const ThesisUpload = ({ thesisId }) => {
                     Swal.showValidationMessage('Debes seleccionar un archivo');
                 } else if (file.type !== 'application/pdf') {
                     Swal.showValidationMessage('El archivo debe ser un PDF');
-                } else if (file.size > 1048576) { // 1MB
+                } else if (file.size > 1048576) {
+                    // 1MB
                     Swal.showValidationMessage('El archivo no debe superar los 1 MB');
                 } else {
                     return file;
                 }
-            }
+            },
         }).then((result) => {
             if (result.isConfirmed) {
                 const selectedFile = result.value;
@@ -70,7 +72,6 @@ const ThesisUpload = ({ thesisId }) => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const base64PDF = e.target.result.split(',')[1];
-                    console.log(thesisId);
                     ThesisService.uploadPdfDocument(thesisId, base64PDF)
                         .then(() => {
                             Swal.fire({
@@ -144,20 +145,25 @@ const ThesisUpload = ({ thesisId }) => {
     };
 
     return (
-        <div className="flex gap-3">
-            <button onClick={uploadFile} className="btn btn-sm btn-outline-secondary m-0">
-                {pdfDocumentId ? 'Actualizar' : 'Subir'}
-            </button>
+        <div className="flex gap-3 justify-center">
             {pdfDocumentId && (
+                <button onClick={viewPDF} className="btn btn-sm btn-outline-primary m-0">
+                    Ver
+                </button>
+            )}
+            {!meetsRequirements && (
                 <>
-                    <button onClick={viewPDF} className="btn btn-sm btn-outline-primary m-0">
-                        Ver
+                    <button onClick={uploadFile} className="btn btn-sm btn-outline-secondary m-0">
+                        {pdfDocumentId ? 'Actualizar' : 'Subir'}
                     </button>
-                    <button onClick={deletePDF} className="btn btn-sm btn-outline-danger m-0">
-                        Eliminar
-                    </button>
+                    {pdfDocumentId && (
+                        <button onClick={deletePDF} className="btn btn-sm btn-outline-danger m-0">
+                            Eliminar
+                        </button>
+                    )}
                 </>
             )}
+            <button className="btn btn-sm btn-outline-success m-0" onClick={()=>showObservations(observations)}>Observaciones</button>
         </div>
     );
 };
