@@ -9,12 +9,13 @@ const TitleReservation = () => {
     const dispatch = useDispatch();
     const [titleReservations, setTitleReservations] = useState([]);
     const [apiError, setApiError] = useState(null);
+
     const [user, setUser] = useState({
         idUser: '',
         username: '',
     });
 
-    // Obtén el usuario al montar el componente
+    //Obtén el usuario al montar el componente
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -46,17 +47,16 @@ const TitleReservation = () => {
 
     const fetchTitleReservations = useCallback(async () => {
         try {
-            const reservations = await titleReservationsService.getTitleReservations();
-            const filteredReservations = reservations.filter(
-                (reservation) => reservation.student.studentCode === user.username || (reservation.studentTwo && reservation.studentTwo.studentCode === user.username)
-            );
-            setTitleReservations(filteredReservations);
+            const reservations = await titleReservationsService.getProgressOneByStudentCode(user.username);
+            console.log(reservations);
+            setTitleReservations(reservations);
             setApiError(null);
         } catch (error) {
             console.error('Error al obtener las reservaciones de títulos:', error);
             setApiError('Error al cargar las reservaciones de títulos.');
         }
     }, [user.username]);
+
     return (
         <div className="p-5">
             <h1 className="text-2xl font-bold mb-5">Paso 1 - Subir Proyecto de Tesis</h1>

@@ -2,18 +2,24 @@ import { lazy } from 'react';
 import Students from '../pages/Apps/Student/Students';
 import Teachers from '../pages/Apps/Teacher/Teachers';
 import Constancy from '../pages/Apps/Steps/One/TitleReservation';
-import ConstancyStudents from '../pages/Apps/StepsStudents/One/TitleReservation';
-import ConstancyThesis from '../pages/Apps/Steps/Five/ConstancyThesis';
-import ConstancyThesisStudents from '../pages/Apps/StepsStudents/Five/ConstancyThesis';
 import ProjectAproval from '../pages/Apps/Steps/Two/ProjectApproval';
 import JuryAppointment from '../pages/Apps/Steps/Three/JuryAppointment';
 import ReportReview from '../pages/Apps/Steps/Four/ReportReview';
+import ConstancyThesis from '../pages/Apps/Steps/Five/ConstancyThesis';
 import ThesisAdvisory from '../pages/Apps/ThesisAdvisory';
 import { ProtectedRoute, StudentRoute } from '../security/ProtectedRoute';
+// <--Students Imports-->
+import ConstancyStudents from '../pages/Apps/StepsStudents/One/TitleReservation';
+import ProjectApprovalStudents from '../pages/Apps/StepsStudents/Two/ProjectApproval';
+import JuryAppointmentStudents from '../pages/Apps/StepsStudents/Three/ProjectApproval';
+import ReportReviewStudents from '../pages/Apps/StepsStudents/Four/ProjectApproval';
+import ConstancyThesisStudents from '../pages/Apps/StepsStudents/Five/ConstancyThesis';
+// <--End Students Imports-->
 
 import AuthRoute from '../security/AuthRoute ';
 const Index = lazy(() => import('../pages/Index'));
 const Progress = lazy(() => import('../pages/Progress'));
+const ProgressStudents = lazy(() => import('../pages/ProgressStudent'));
 const Finance = lazy(() => import('../pages/Finance'));
 const Crypto = lazy(() => import('../pages/Crypto'));
 const Todolist = lazy(() => import('../pages/Apps/Todolist'));
@@ -156,13 +162,12 @@ const routes = [
         ),
     },
     {
-        path: 'apps/paso/constancia-filtro',
+        path: 'apps/paso/constancia-de-filtro',
         element: (
             <ProtectedRoute>
                 <Constancy />
             </ProtectedRoute>
         ),
-
     },
     {
         path: 'apps/paso/aprobacion-de-proyecto',
@@ -189,7 +194,7 @@ const routes = [
         ),
     },
     {
-        path: 'apps/paso/constancia-tesis',
+        path: 'apps/paso/constancia-de-tesis',
         element: (
             <ProtectedRoute>
                 <ConstancyThesis />
@@ -198,10 +203,50 @@ const routes = [
     },
     // Estudiantes
     {
-        path: 'apps/paso-estudiante/constancia-filtro',
+        path: 'apps/paso-estudiante/constancia-de-filtro',
         element: (
             <StudentRoute>
                 <ConstancyStudents />
+            </StudentRoute>
+        ),
+    },
+    {
+        path: 'apps/paso-estudiante/aprobacion-de-proyecto',
+        element: (
+            <StudentRoute>
+                <ProjectApprovalStudents />
+            </StudentRoute>
+        ),
+    },
+    {
+        path: 'apps/paso-estudiante/designacion-de-jurados',
+        element: (
+            <StudentRoute>
+                <JuryAppointmentStudents />
+            </StudentRoute>
+        ),
+    },
+    {
+        path: 'apps/paso-estudiante/revision-de-reporte',
+        element: (
+            <StudentRoute>
+                <ReportReviewStudents />
+            </StudentRoute>
+        ),
+    },
+    {
+        path: 'apps/paso-estudiante/constancia-tesis',
+        element: (
+            <StudentRoute>
+                <ConstancyThesisStudents />
+            </StudentRoute>
+        ),
+    },
+    {
+        path: 'apps/paso-estudiante/constancia-tesis',
+        element: (
+            <StudentRoute>
+                <ConstancyThesisStudents />
             </StudentRoute>
         ),
     },
@@ -222,11 +267,18 @@ const routes = [
             </ProtectedRoute>
         ),
     },
-
+    {
+        path: '/progreso-estudiante',
+        element: (
+            <StudentRoute>
+                <ProgressStudents />
+            </StudentRoute>
+        )
+    },
 
     ///---FIN----------------------------------------------------------------/////
     {
-        path: '/progress',
+        path: '/progreso',
         element: <Progress />,
     },
     // finance page

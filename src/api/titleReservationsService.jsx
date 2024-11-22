@@ -4,6 +4,7 @@ import AppEnvironments from '../config/AppEnvironments';
 
 const TITLERESERVATION_API_URL = `${AppEnvironments.baseUrl}api/v1/reservas_titulo/`;
 const PDFONE_API_URL = `${AppEnvironments.baseUrl}api/v1/pdfDocument/OneStep/`;
+const PROGRESS_API_URL = `${AppEnvironments.baseUrl}api/v1/progreso_estudiante/`;
 
 // Obtener el token almacenado en localStorage
 const getAuthToken = () => {
@@ -42,6 +43,18 @@ const getTitleReservations = async () => {
         throw error;
     }
 };
+// Obtener todas las reservas de título
+const getProgressOneByStudentCode = async (studentCode) => {
+    try {
+        const response = await axios.get(`${PROGRESS_API_URL}${studentCode}`, getAuthHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching title reservations:', error);
+        throw error;
+    }
+};
+
+
 
 // Agregar una nueva reserva de título
 const addTitleReservation = async (titlereservation) => {
@@ -125,6 +138,7 @@ export default {
     editTitleReservation,
     deleteTitleReservation,
     searchTitleReservations,
+    getProgressOneByStudentCode,
     uploadPdf,
     viewPdf,
     deletePdf,

@@ -9,7 +9,6 @@ import { getThesisDetails } from '../utils/ThesisUtils';
 import teacherService from '../../../../api/teacherService';
 import careerService from '../../../../api/careerService';
 import constancyThesisService from '../../../../api/constancyThesisService';
-import { current } from '@reduxjs/toolkit';
 
 const ConstancyThesis = () => {
     const dispatch = useDispatch();
@@ -77,12 +76,6 @@ const ConstancyThesis = () => {
         }
     };
 
-    const normalizeText = (text) => {
-        return text
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase();
-    };
 
     const filteredReports = useMemo(() => {
         const normalizedSearch = search ? search.normalize('NFD').toLowerCase() : '';
