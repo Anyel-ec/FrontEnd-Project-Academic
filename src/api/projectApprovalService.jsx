@@ -3,7 +3,7 @@ import AppEnvironments from '../config/AppEnvironments';
 
 const PROJECTAPPROVAL_API_URL = `${AppEnvironments.baseUrl}api/v1/aprobacion_proyecto`;
 
-// Obtener el token almacenado en localStorage
+// Obtener el token almacenado en localStorage/student/
 const getAuthToken = () => {
     return localStorage.getItem('token');
 };
@@ -23,6 +23,9 @@ const getProjectApproval = async () => {
     }
 };
 
+// Obtener una reserva de título específica por ID
+
+
 const addProjectApproval = async (projectApproval) => {
     try {
         const response = await axios.post(PROJECTAPPROVAL_API_URL, projectApproval, {
@@ -40,6 +43,34 @@ const addProjectApproval = async (projectApproval) => {
         console.error('Error en addProjectApproval:', error.response ? error.response.data : error.message);
 
         throw new Error('Error inesperado: ' + error.message);
+    }
+};
+const getProjectByStudentCode = async (studentCode) =>{
+    try {
+        const response = await axios.get(`${PROJECTAPPROVAL_API_URL}${studentCode}`, getAuthHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching projects:', error);
+        throw error;
+    }
+}
+const getProjectApprovalById = async (id) => {
+    try {
+        const response = await axios.get(`${PROJECTAPPROVAL_API_URL}/${id}`, {
+            headers: {
+                Authorization: `Bearer ${getAuthToken()}`,
+            },  
+        });
+        return response.data;
+    } catch (error) {
+        // Ignorar el error 409 y continuar
+        if (error.response && error.response.status === 409) {
+            console.warn('Conflicto detectado en la edición, pero continuando...');
+            return;
+        }
+
+        console.error('Error en get:', error);
+        throw error;
     }
 };
 
@@ -82,5 +113,7 @@ export default {
     getProjectApproval,
     addProjectApproval,
     editProjectApproval,
+    getProjectByStudentCode,
+    getProjectApprovalById,
     deleteProjectApproval,
 };

@@ -22,7 +22,6 @@ const searchTitleReservations = async (searchQuery) => {
 
         const data = response.data;
 
-        // Use Fuse.js for fuzzy search
         const fuse = new Fuse(data, { keys: ['title'], threshold: 0.3 });
         const results = fuse.search(searchQuery).map((result) => result.item);
 
@@ -43,6 +42,15 @@ const getTitleReservations = async () => {
         throw error;
     }
 };
+const getReservationByStudentCode = async (studentCode) =>{
+    try {
+        const response = await axios.get(`${TITLERESERVATION_API_URL}student/${studentCode}`, getAuthHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching title reservations:', error);
+        throw error;
+    }
+}
 // Obtener todas las reservas de título
 const getProgressOneByStudentCode = async (studentCode) => {
     try {
@@ -136,6 +144,7 @@ export default {
     getTitleReservations,
     addTitleReservation,
     editTitleReservation,
+    getReservationByStudentCode,
     deleteTitleReservation,
     searchTitleReservations,
     getProgressOneByStudentCode,

@@ -9,7 +9,7 @@ const Header = ({ search, setSearch, onAddTeacher, careerOptions, selectedCareer
     const styles = HandleMode(isDarkMode); // Aplicar los estilos según el modo
     return (
         <div className="flex items-center justify-between flex-wrap gap-4">
-            <h2 className="text-xl">Docentes</h2>
+            <h2 className="text-2xl font-bold mb-5">Docentes</h2>
             <div className="flex sm:flex-row flex-col sm:items-center sm:gap-3 gap-4 w-full sm:w-auto">
                 <div className="flex gap-3">
                     <button

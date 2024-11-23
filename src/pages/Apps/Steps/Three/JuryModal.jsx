@@ -42,6 +42,19 @@ const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions })
                       label: `${juryAppointment.accessory.firstNames} ${juryAppointment.accessory.lastName}`,
                   }
                 : null,
+
+            adviser: juryAppointment?.projectApprovalStepTwo?.adviser
+                ? {
+                      value: juryAppointment?.projectApprovalStepTwo?.adviser.id,
+                      label: `${juryAppointment?.projectApprovalStepTwo?.adviser.firstNames} ${juryAppointment?.projectApprovalStepTwo?.coadviser.lastName}`,
+                  }
+                : null,
+            coadviser: juryAppointment?.projectApprovalStepTwo?.coadviser
+                ? {
+                      value: juryAppointment?.projectApprovalStepTwo?.coadviser.id,
+                      label: `${juryAppointment?.projectApprovalStepTwo?.coadviser.firstNames} ${juryAppointment?.projectApprovalStepTwo?.coadviser.lastName}`,
+                  }
+                : null,
         }),
         [juryAppointment]
     );

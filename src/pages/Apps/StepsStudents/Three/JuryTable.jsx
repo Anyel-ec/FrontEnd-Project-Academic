@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import { getApprovalDetails } from '../../Steps/utils/ApprovalUtils';
+import { getJuryDetails } from '../../Steps/utils/JuryUtils';
 import { formatDate } from '../../Steps/utils/Dates';
 import { showObservations } from '../utils/ShowObservations';
 
-const ApprovalTable = ({ approval }) => {
-    const currentApproval = approval;
+const JuryTable = ({ jury }) => {
+    const currentJury = jury;
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
             <div className="table-responsive">
@@ -19,12 +19,12 @@ const ApprovalTable = ({ approval }) => {
                         </tr>
                     </thead>
                     <tbody className="dark:text-white-dark">
-                        {currentApproval?.length > 0 ? (
-                            currentApproval.map((approval) => {
-                                const { student, studentTwo, updatedAt, observations } = getApprovalDetails(approval);
+                        {currentJury?.length > 0 ? (
+                            currentJury.map((jury) => {
+                                const { student, studentTwo, updatedAt, observations } = getJuryDetails(jury);
 
                                 return (
-                                    <tr key={approval.id}>
+                                    <tr key={jury.id}>
                                         <td>
                                             {student?.firstNames} {student?.lastName}
                                             {studentTwo && (
@@ -68,8 +68,8 @@ const ApprovalTable = ({ approval }) => {
     );
 };
 
-ApprovalTable.propTypes = {
-    approval: PropTypes.array.isRequired,
+JuryTable.propTypes = {
+    jury: PropTypes.array.isRequired,
 };
 
-export default ApprovalTable;
+export default JuryTable;

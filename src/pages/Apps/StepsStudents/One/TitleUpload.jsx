@@ -4,7 +4,7 @@ import titleReservationsService from '../../../../api/titleReservationsService';
 import { showObservations } from '../utils/ShowObservations';
 const TitleUpload = ({ reservaId, meetsRequirements, observations }) => {
     const [pdfDocumentId, setPdfDocumentId] = useState(null);
-
+    console.log(reservaId);
     useEffect(() => {
         if (!reservaId) {
             console.error('El ID de la reserva es undefined.');

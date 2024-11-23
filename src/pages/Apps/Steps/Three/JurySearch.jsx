@@ -1,10 +1,9 @@
-import IconUserPlus from '../../../components/Icon/IconUserPlus';
-import IconSearch from '../../../components/Icon/IconSearch';
+import IconSearch from '../../../../components/Icon/IconSearch';
 import Select from 'react-select';
-import { HandleMode } from '../styles/selectStyles';
+import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
 
-const Header = ({ search, setSearch, onAddStudent, careerOptions, selectedCareer, setSelectedCareer }) => {
+const Header = ({ search, setSearch, careerOptions, selectedCareer, setSelectedCareer }) => {
     // Agrega una opción para cuando no haya carreras disponibles
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark'); // Obtener el tema desde Redux
     const styles = HandleMode(isDarkMode); // Aplicar los estilos según el modo
@@ -13,7 +12,8 @@ const Header = ({ search, setSearch, onAddStudent, careerOptions, selectedCareer
     return (
         <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex flex-col">
-                <h2 className="text-2xl font-bold mb-5">Estudiantes</h2>
+                <h2 className="text-2xl font-bold mb-5">Designación de Jurados</h2>
+                
             </div>
             <div className="flex sm:flex-row flex-col sm:items-center sm:gap-3 gap-4 w-full sm:w-auto">
                 <div className="flex gap-3">
@@ -22,10 +22,6 @@ const Header = ({ search, setSearch, onAddStudent, careerOptions, selectedCareer
                     ) : (
                         <p className="text-gray-500">No hay carreras disponibles</p>
                     )}
-                    <button type="button" className="btn btn-primary" onClick={onAddStudent}>
-                        <IconUserPlus className="ltr:mr-2 rtl:ml-2" />
-                        Agregar estudiantes
-                    </button>
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="relative">

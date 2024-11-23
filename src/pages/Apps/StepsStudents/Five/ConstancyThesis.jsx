@@ -21,7 +21,7 @@ const ConstancyThesis = () => {
             console.error('Error al obtener los thesies:', error);
         }
     }, []);
-
+    console.log("Thesis", currentThesis);
     return (
         <div className="pt-5">
             <ThesisTable thesis={currentThesis} />

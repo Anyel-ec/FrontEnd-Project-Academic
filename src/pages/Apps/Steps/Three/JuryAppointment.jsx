@@ -3,10 +3,13 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
 import juryAppointmentService from '../../../../api/juryAppointmentService';
+import careerService from '../../../../api/careerService';
 import teacherService from '../../../../api/teacherService';
 import JuryTable from './JuryTable';
 import JuryModal from './JuryModal';
+import JurySearch from './JurySearch';
 import Swal from 'sweetalert2';
+import { useMemo } from 'react';
 
 const JuryAppoiment = () => {
     const dispatch = useDispatch();
@@ -14,11 +17,29 @@ const JuryAppoiment = () => {
     const [advisers, setAdvisers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedJury, setSelectedJury] = useState(null);
+    const [selectedCareer, setSelectedCareer] = useState(null);
+    const [search, setSearch] = useState('');
+    const [careerOptions, setCareerOptions] = useState([]);
+
 
     useEffect(() => {
         dispatch(setPageTitle('Designación de Jurados'));
         fetchJuryAppointment();
+        fetchCareers();
     }, [dispatch]);
+    const fetchCareers = useCallback(async () => {
+        try {
+            const careers = await careerService.getCareers();
+            const options = careers.map((career) => ({
+                value: career.id,
+                label: career.name,
+                data: career,
+            }));
+            setCareerOptions(options);
+        } catch (error) {
+            console.error('Error fetching careers:', error);
+        }
+    }, []);
 
     const fetchJuryAppointment = useCallback(async () => {
         try {
@@ -55,7 +76,27 @@ const JuryAppoiment = () => {
             Swal.fire('Error', 'No se pudo guardar el jurado. Revisa los datos e inténtalo nuevamente.', 'error');
         }
     };
-    
+    const normalizeText = (text) => {
+        return text
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase();
+    };
+
+    const filteredJurys = useMemo(() => {
+        const normalizedSearch = normalizeText(search);
+        return juryAppointment.filter((jury) => {
+            const fullName = `${jury.projectApprovalStepTwo.titleReservationStepOne.student.firstNames} ${jury.projectApprovalStepTwo.titleReservationStepOne.student.lastName}`;
+            const normalizedFullName = normalizeText(fullName);
+            const studentCodeMatch = normalizeText(jury.projectApprovalStepTwo.titleReservationStepOne.student.studentCode).includes(normalizedSearch);
+            const matchesSearch = normalizedFullName.includes(normalizedSearch) || studentCodeMatch;
+
+            // Filtrar por carrera si `selectedCareer` está seleccionado
+            const matchesCareer = selectedCareer ? jury.projectApprovalStepTwo.titleReservationStepOne.student.career.id === selectedCareer.value : true;
+
+            return matchesSearch && matchesCareer;
+        });
+    }, [juryAppointment, search, selectedCareer]);
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -64,8 +105,8 @@ const JuryAppoiment = () => {
 
     return (
         <div className="pt-5">
-            <h1 className="text-2xl font-bold mb-5">Designación de Jurados</h1>
-            <JuryTable currentJury={juryAppointment} onEdit={handleEdit} onSave={handleSave} adviserOptions={advisers} />
+            <JurySearch search={search} setSearch={setSearch} careerOptions={careerOptions} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} />
+            <JuryTable currentJury={filteredJurys} onEdit={handleEdit} onSave={handleSave} adviserOptions={advisers} />
             <JuryModal juryAppointment={selectedJury} isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} adviserOptions={advisers} />
         </div>
     );
