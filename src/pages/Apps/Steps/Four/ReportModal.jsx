@@ -1,13 +1,10 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { HandleMode } from '../../styles/selectStyles';
-import { useSelector } from 'react-redux';
+
 import IconX from '../../../../components/Icon/IconX';
 
 const ReportModal = ({ isOpen, onClose, onSave, report, adviserOptions }) => {
-    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
-    const styles = HandleMode(isDarkMode);
 
     const initialValues = React.useMemo(
         () => ({
@@ -17,8 +14,6 @@ const ReportModal = ({ isOpen, onClose, onSave, report, adviserOptions }) => {
             studentFirstNames: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.firstNames || 'N/A',
             studentTwoFirstNames: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.firstNames || '',
             observation: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.observations || '',
-            // adviser: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.adviser ? { value: report?.juryAppointmentStepThree?.projectApprovalStepTwo.adviser.id, label: `${report?.juryAppointmentStepThree?.projectApprovalStepTwo.adviser.firstNames} ${report?.juryAppointmentStepThree?.projectApprovalStepTwo.adviser.lastName}` } : null,
-            // coadviser: report?.juryAppointmentStepThree?.projectApprovalStepTwo?.coadviser ? { value: report?.juryAppointmentStepThree?.projectApprovalStepTwo.coadviser.id, label: `${report.juryAppointmentStepThree.projectApprovalStepTwo.coadviser.firstNames} ${report.juryAppointmentStepThree.projectApprovalStepTwo.coadviser.lastName}` } : null,
             meetRequirements: report?.meetRequirements ? 'yes' : 'no',
         }),
         [report, adviserOptions]

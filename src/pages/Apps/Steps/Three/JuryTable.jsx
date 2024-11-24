@@ -5,7 +5,6 @@ import Swal from 'sweetalert2';
 
 const JuryTable = ({ currentJury, onEdit, onSave }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    console.log(currentJury);
 
     const itemsPerPage = 4;
     const totalPages = Math.ceil(currentJury.length / itemsPerPage);

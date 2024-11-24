@@ -1,7 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import Swal from 'sweetalert2';
 import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
@@ -10,6 +9,7 @@ import IconX from '../../../../components/Icon/IconX';
 const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions }) => {
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
+    console.log(juryAppointment);
     const initialValues = React.useMemo(
         () => ({
             studentCode: juryAppointment?.projectApprovalStepTwo?.titleReservationStepOne?.student?.studentCode || 'N/A',
@@ -46,7 +46,7 @@ const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions })
             adviser: juryAppointment?.projectApprovalStepTwo?.adviser
                 ? {
                       value: juryAppointment?.projectApprovalStepTwo?.adviser.id,
-                      label: `${juryAppointment?.projectApprovalStepTwo?.adviser.firstNames} ${juryAppointment?.projectApprovalStepTwo?.coadviser.lastName}`,
+                      label: `${juryAppointment?.projectApprovalStepTwo?.adviser.firstNames} ${juryAppointment?.projectApprovalStepTwo?.adviser.lastName}`,
                   }
                 : null,
             coadviser: juryAppointment?.projectApprovalStepTwo?.coadviser

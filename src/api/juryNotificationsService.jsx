@@ -6,6 +6,7 @@ const JURYNOTIFICATIONS_API_URL = `${AppEnvironments.baseUrl}api/v1/notificacion
 const getAuthToken = () => {
     return localStorage.getItem('token');
 };
+
 const getAuthHeaders = () => ({
     headers: {
         Authorization: `Bearer ${getAuthToken()}`,
@@ -34,25 +35,24 @@ const addJuryNotification = async (juryNotification) => {
 
 const editJuryNotification = async (id, juryNotification) => {
     try {
-        console.log('Datos enviados:', juryNotification); // Validar los datos aquí
         const response = await axios.put(`${JURYNOTIFICATIONS_API_URL}${id}`, juryNotification, getAuthHeaders());
         return response.data;
     } catch (error) {
-        console.error('Error en editJuryNotification:', error);
-        throw error;
+        console.error('Error editing jury notification:', error.response ? error.response.data : error.message);
+        throw new Error('Error inesperado: ' + (error.response ? error.response.data.message : error.message));
     }
 };
-
 
 const deleteJuryNotification = async (id) => {
     try {
         const response = await axios.delete(`${JURYNOTIFICATIONS_API_URL}${id}`, getAuthHeaders());
         return response.data;
     } catch (error) {
-        console.error('Error en deleteJuryNotification:', error);
+        console.error('Error deleting jury notification:', error);
         throw error;
     }
 };
+
 export default {
     getAllJuryNotifications,
     addJuryNotification,
