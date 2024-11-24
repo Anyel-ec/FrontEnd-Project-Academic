@@ -262,7 +262,7 @@ const Sidebar = () => {
                                                     </li>
                                                     {/* Paso 6 */}
                                                     <li className="nav-item">
-                                                        <NavLink to="/apps/docentes" className="group">
+                                                        <NavLink to="/apps/paso/notificacion-de-jurados" className="group">
                                                             <div className="flex items-center">
                                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
                                                                     {t('6: Notificación de Jurados')}
@@ -272,7 +272,7 @@ const Sidebar = () => {
                                                     </li>
                                                     {/* Paso 7 */}
                                                     <li className="nav-item">
-                                                        <NavLink to="/apps/docentes" className="group">
+                                                        <NavLink to="/apps/paso/aprobacion-de-tesis" className="group">
                                                             <div className="flex items-center">
                                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
                                                                     {t('7: Aprobación de Tesis')}
@@ -282,7 +282,7 @@ const Sidebar = () => {
                                                     </li>
                                                     {/* Paso 8 */}
                                                     <li className="nav-item">
-                                                        <NavLink to="/apps/docentes" className="group">
+                                                        <NavLink to="/apps/paso/aprobacion-de-empastados" className="group">
                                                             <div className="flex items-center">
                                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
                                                                     {t('8: Aprobación de Empastados')}
@@ -382,7 +382,7 @@ const Sidebar = () => {
                                                 </li>
                                                 {/* Paso 5 */}
                                                 <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/constancia-tesis" className="group">
+                                                    <NavLink to="/apps/paso-estudiante/constancia-de-tesis" className="group">
                                                         <div className="flex items-center">
                                                             <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('5: Constancia de Tesis')}</span>
                                                         </div>
@@ -407,7 +407,7 @@ const Sidebar = () => {
                                                 
                                                 {/* Paso 8 */}
                                                 <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/constancia-tesis" className="group">
+                                                    <NavLink to="/apps/paso-estudiante/constancia-de-tesis" className="group">
                                                         <div className="flex items-center">
                                                             <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('8: Aprobación de Empastados')}</span>
                                                         </div>

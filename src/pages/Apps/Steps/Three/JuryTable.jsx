@@ -3,7 +3,7 @@ import teacherService from '../../../../api/teacherService';
 import Pagination from '../Pagination';
 import Swal from 'sweetalert2';
 
-const JuryTable = ({ currentJury, onEdit, adviserOptions, onSave }) => {
+const JuryTable = ({ currentJury, onEdit, onSave }) => {
     const [currentPage, setCurrentPage] = useState(1);
     console.log(currentJury);
 

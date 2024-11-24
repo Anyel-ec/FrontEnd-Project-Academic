@@ -1,17 +1,22 @@
 import { lazy } from 'react';
 import Students from '../pages/Apps/Student/Students';
 import Teachers from '../pages/Apps/Teacher/Teachers';
+import ThesisAdvisory from '../pages/Apps/ThesisAdvisory';
+import { ProtectedRoute, StudentRoute } from '../security/ProtectedRoute';
+
+// <--Admin Imports-->
 import Constancy from '../pages/Apps/Steps/One/TitleReservation';
 import ProjectAproval from '../pages/Apps/Steps/Two/ProjectApproval';
 import JuryAppointment from '../pages/Apps/Steps/Three/JuryAppointment';
 import ReportReview from '../pages/Apps/Steps/Four/ReportReview';
 import ConstancyThesis from '../pages/Apps/Steps/Five/ConstancyThesis';
-import ThesisAdvisory from '../pages/Apps/ThesisAdvisory';
-import { ProtectedRoute, StudentRoute } from '../security/ProtectedRoute';
+import JuryNotifications from '../pages/Apps/Steps/Six/JuryNotifications';
+// <--End Admin Imports-->
+
 // <--Students Imports-->
 import ConstancyStudents from '../pages/Apps/StepsStudents/One/TitleReservation';
 import ProjectApprovalStudents from '../pages/Apps/StepsStudents/Two/ProjectApproval';
-import JuryAppointmentStudents from '../pages/Apps/StepsStudents/Three/ProjectApproval';
+import JuryAppointmentStudents from '../pages/Apps/StepsStudents/Three/JuryAppointment';
 import ReportReviewStudents from '../pages/Apps/StepsStudents/Four/ProjectApproval';
 import ConstancyThesisStudents from '../pages/Apps/StepsStudents/Five/ConstancyThesis';
 // <--End Students Imports-->
@@ -201,6 +206,30 @@ const routes = [
             </ProtectedRoute>
         ),
     },
+    {
+        path: 'apps/paso/notificacion-de-jurados',
+        element: (
+            <ProtectedRoute>
+                <JuryNotifications />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: 'apps/paso/aprobacion-de-tesis',
+        element: (
+            <ProtectedRoute>
+                <ConstancyThesis />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: 'apps/paso/aprobacion-de-empastados',
+        element: (
+            <ProtectedRoute>
+                <ConstancyThesis />
+            </ProtectedRoute>
+        ),
+    },
     // Estudiantes
     {
         path: 'apps/paso-estudiante/constancia-de-filtro',
@@ -235,7 +264,7 @@ const routes = [
         ),
     },
     {
-        path: 'apps/paso-estudiante/constancia-tesis',
+        path: 'apps/paso-estudiante/constancia-de-tesis',
         element: (
             <StudentRoute>
                 <ConstancyThesisStudents />
@@ -243,7 +272,7 @@ const routes = [
         ),
     },
     {
-        path: 'apps/paso-estudiante/constancia-tesis',
+        path: 'apps/paso-estudiante/constancia-de-tesis',
         element: (
             <StudentRoute>
                 <ConstancyThesisStudents />
@@ -251,7 +280,7 @@ const routes = [
         ),
     },
     {
-        path: 'apps/paso-estudiante/constancia-tesis',
+        path: 'apps/paso-estudiante/constancia-de-tesis',
         element: (
             <StudentRoute>
                 <ConstancyThesisStudents />
@@ -273,7 +302,7 @@ const routes = [
             <StudentRoute>
                 <ProgressStudents />
             </StudentRoute>
-        )
+        ),
     },
 
     ///---FIN----------------------------------------------------------------/////

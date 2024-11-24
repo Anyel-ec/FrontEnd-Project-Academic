@@ -2,9 +2,9 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
 import Swal from 'sweetalert2';
-import ThesisTable from './ThesisTable';
-import ThesisModal from './ThesisModal';
-import ThesisSearch from './ThesisSearch';
+import ReportTable from './ThesisTable';
+import ReportModal from './ThesisModal';
+import ReportSearch from './ReportSearch';
 import { getThesisDetails } from '../utils/ThesisUtils';
 import teacherService from '../../../../api/teacherService';
 import careerService from '../../../../api/careerService';
@@ -100,16 +100,15 @@ console.log(currentThesis)
 
     return (
         <div className="pt-5">
-            <ThesisSearch
+            <ReportSearch
                 search={search}
                 setSearch={setSearch}
                 careerOptions={careerOptions}
                 selectedCareer={selectedCareer}
                 setSelectedCareer={setSelectedCareer}
             />
-            <ThesisTable thesis={filteredReports} onEdit={handleEdit} />
-
-            <ThesisModal
+            <ReportTable thesis={filteredReports} onEdit={handleEdit} />
+            <ReportModal
                 isOpen={isModalOpen}
                 thesis={selectedThesis}
                 onClose={closeModal}
