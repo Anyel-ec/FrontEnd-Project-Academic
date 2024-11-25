@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import ReservationService from '../../../../api/titleReservationsService';
 
-const TitleUpload = ({ reservaId, meetsRequirements }) => {
+const TitleUpload = ({ reservaId }) => {
     const [pdfDocumentId, setPdfDocumentId] = useState(null); // Maneja el estado inicial como `null`
 
     useEffect(() => {
@@ -11,8 +11,7 @@ const TitleUpload = ({ reservaId, meetsRequirements }) => {
             return;
         }
         // Llamada al backend para verificar si hay un PDF asociado
-        ReservationService
-            .viewPdf(reservaId)
+        ReservationService.viewPdf(reservaId)
             .then((pdfData) => {
                 if (pdfData) {
                     setPdfDocumentId(true); // Indica que el PDF está disponible
@@ -27,8 +26,7 @@ const TitleUpload = ({ reservaId, meetsRequirements }) => {
     }, [reservaId]);
 
     const viewPDF = () => {
-        ReservationService
-            .viewPdf(reservaId)
+        ReservationService.viewPdf(reservaId)
             .then((pdfData) => {
                 const base64PDF = `data:application/pdf;base64,${pdfData}`;
 
@@ -60,7 +58,8 @@ const TitleUpload = ({ reservaId, meetsRequirements }) => {
                     ? 'Cargando...' // Mientras se verifica el PDF
                     : pdfDocumentId
                     ? 'Ver PDF' // PDF disponible
-                    : 'No disponible'} {/* No hay PDF */}
+                    : 'No disponible'}{' '}
+                {/* No hay PDF */}
             </button>
         </div>
     );

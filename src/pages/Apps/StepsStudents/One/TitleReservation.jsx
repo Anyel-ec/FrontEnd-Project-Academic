@@ -7,7 +7,7 @@ import userService from '../../../../api/userService';
 
 const TitleReservation = () => {
     const dispatch = useDispatch();
-    const [titleReservationStepOne, setTitleReservationStepOne] = useState([]);
+    const [reservation, setReservation] = useState([]);
     const [apiError, setApiError] = useState(null);
 
     const [user, setUser] = useState({
@@ -18,22 +18,14 @@ const TitleReservation = () => {
     // Método para obtener datos del paso 1
     const fetchTitleReservationStepOne = useCallback(async () => {
         try {
-            const reservations = await titleReservationsService.getProgressOneByStudentCode(user.username);
-            console.log('Datos recibidos del backend:', reservations);
-    
-            // Filtrar solo los datos del paso 1
-            const stepOneReservations = reservations.filter((reservation) => reservation.stepName === "1");
-    
-            console.log('Datos procesados (Paso 1):', stepOneReservations);
-    
-            setTitleReservationStepOne(stepOneReservations);
+            const reservationResponse = await titleReservationsService.getReservationByStudentCode(user.username);
+            setReservation(reservationResponse);
             setApiError(null);
         } catch (error) {
             console.error('Error al obtener las reservaciones de títulos:', error);
             setApiError('Error al cargar las reservaciones de títulos.');
         }
     }, [user.username]);
-    
 
     // Obtener datos del usuario al montar el componente
     useEffect(() => {
@@ -68,7 +60,7 @@ const TitleReservation = () => {
     return (
         <div className="p-5">
             <h1 className="text-2xl font-bold mb-5">Paso 1 - Subir Proyecto de Tesis</h1>
-            <ReservationTable titleReservations={titleReservationStepOne} user={user} apiError={apiError} />
+            <ReservationTable reservation={reservation} user={user} apiError={apiError} />
         </div>
     );
 };

@@ -74,7 +74,7 @@ const ProgressStudent = () => {
                                         </tr>
                                     )}
                                     {titleReservations.map((step, index) => (
-                                        <tr key={index}>
+                                        <tr key={step.number}>
                                             <td>{`Step ${step.stepName}`}</td>
                                             <td>
                                                 <div className="h-1.5 bg-[#ebedf2] dark:bg-dark/40 rounded-full flex w-full">

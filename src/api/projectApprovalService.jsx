@@ -25,7 +25,6 @@ const getProjectApproval = async () => {
 
 // Obtener una reserva de título específica por ID
 
-
 const addProjectApproval = async (projectApproval) => {
     try {
         const response = await axios.post(PROJECTAPPROVAL_API_URL, projectApproval, {
@@ -45,21 +44,26 @@ const addProjectApproval = async (projectApproval) => {
         throw new Error('Error inesperado: ' + error.message);
     }
 };
-const getProjectByStudentCode = async (studentCode) =>{
+const getProjectByStudentCode = async (studentCode) => {
     try {
-        const response = await axios.get(`${PROJECTAPPROVAL_API_URL}${studentCode}`, getAuthHeaders());
+        const response = await axios.get(`${PROJECTAPPROVAL_API_URL}/student/${studentCode}`, {
+            headers: {
+                Authorization: `Bearer ${getAuthToken()}`,
+            },
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching projects:', error);
         throw error;
     }
-}
+};
+
 const getProjectApprovalById = async (id) => {
     try {
         const response = await axios.get(`${PROJECTAPPROVAL_API_URL}/${id}`, {
             headers: {
                 Authorization: `Bearer ${getAuthToken()}`,
-            },  
+            },
         });
         return response.data;
     } catch (error) {
