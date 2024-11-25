@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Pagination from '../Pagination'; // Asegúrate de ajustar la ruta si es necesario
 import { getReportDetails, formatDate } from '../utils/ReportUtils'; // Ajusta la ruta si es necesario
 
-const ReportTable = ({ reports, onEdit, onDelete, disabledReports }) => {
+const ReportTable = ({ reports, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const itemsPerPage = 10;
@@ -32,7 +32,7 @@ const ReportTable = ({ reports, onEdit, onDelete, disabledReports }) => {
                     <tbody className="dark:text-white-dark">
                         {currentReports.length > 0 ? (
                             currentReports.map((report) => {
-                                const { student, studentTwo, adviser, coadviser, meetRequirements , updatedAt } = getReportDetails(report);
+                                const { student, studentTwo, adviser, coadviser, meetRequirements, updatedAt } = getReportDetails(report);
 
                                 return (
                                     <tr key={report.id}>
@@ -64,7 +64,6 @@ const ReportTable = ({ reports, onEdit, onDelete, disabledReports }) => {
                                             <button onClick={() => onEdit(report)} className="btn btn-sm btn-outline-primary">
                                                 Editar
                                             </button>
-                                            
                                         </td>
                                     </tr>
                                 );

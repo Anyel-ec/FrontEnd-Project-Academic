@@ -2,7 +2,7 @@ import axios from 'axios';
 import AppEnvironments from '../config/AppEnvironments';
 
 // URL base de la API
-const THESISAPPROVAL_API_URL = `${AppEnvironments.baseUrl}api/v1/aprobacion_tesis/`;
+const PASTINGAPPROVAL_API_URL = `${AppEnvironments.baseUrl}api/v1/aprobacion_empastado/`;
 
 // Obtener token de autenticación almacenado en localStorage
 const getAuthToken = () => localStorage.getItem('token');
@@ -32,9 +32,9 @@ const handleError = (error) => {
 };
 
 // Servicio para obtener todos los registros
-const getAllThesisApprovals = async () => {
+const getAllPastingApprovals = async () => {
     try {
-        const response = await axios.get(THESISAPPROVAL_API_URL, getAuthHeaders());
+        const response = await axios.get(PASTINGAPPROVAL_API_URL, getAuthHeaders());
         return response.data;
     } catch (error) {
         handleError(error);
@@ -42,9 +42,9 @@ const getAllThesisApprovals = async () => {
 };
 
 // Servicio para obtener un registro por ID
-const getThesisApprovalById = async (id) => {
+const getPastingApprovalById = async (id) => {
     try {
-        const response = await axios.get(`${THESISAPPROVAL_API_URL}${id}`, getAuthHeaders());
+        const response = await axios.get(`${PASTINGAPPROVAL_API_URL}${id}`, getAuthHeaders());
         return response.data;
     } catch (error) {
         handleError(error);
@@ -52,9 +52,9 @@ const getThesisApprovalById = async (id) => {
 };
 
 // Servicio para guardar un nuevo registro
-const saveThesisApproval = async (thesisApproval) => {
+const savePastingApproval = async (pastingApproval) => {
     try {
-        const response = await axios.post(THESISAPPROVAL_API_URL, thesisApproval, getAuthHeaders());
+        const response = await axios.post(PASTINGAPPROVAL_API_URL, pastingApproval, getAuthHeaders());
         return response.data;
     } catch (error) {
         handleError(error);
@@ -62,9 +62,9 @@ const saveThesisApproval = async (thesisApproval) => {
 };
 
 // Servicio para actualizar un registro existente
-const updateThesisApproval = async (id, thesisApproval) => {
+const updatePastingApproval = async (id, pastingApproval) => {
     try {
-        const response = await axios.put(`${THESISAPPROVAL_API_URL}${id}`, thesisApproval, getAuthHeaders());
+        const response = await axios.put(`${PASTINGAPPROVAL_API_URL}${id}`, pastingApproval, getAuthHeaders());
         return response.data;
     } catch (error) {
         handleError(error);
@@ -72,9 +72,9 @@ const updateThesisApproval = async (id, thesisApproval) => {
 };
 
 // Servicio para eliminar un registro por ID
-const deleteThesisApproval = async (id) => {
+const deletePastingApprovalById = async (id) => {
     try {
-        const response = await axios.delete(`${THESISAPPROVAL_API_URL}${id}`, getAuthHeaders());
+        const response = await axios.delete(`${PASTINGAPPROVAL_API_URL}${id}`, getAuthHeaders());
         return response.data;
     } catch (error) {
         handleError(error);
@@ -83,9 +83,9 @@ const deleteThesisApproval = async (id) => {
 
 // Exportar servicios
 export default {
-    getAllThesisApprovals,
-    getThesisApprovalById,
-    saveThesisApproval,
-    updateThesisApproval,
-    deleteThesisApproval,
+    getAllPastingApprovals,
+    getPastingApprovalById,
+    savePastingApproval,
+    updatePastingApproval,
+    deletePastingApprovalById,
 };

@@ -3,17 +3,31 @@ import React, { Fragment } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import IconX from '../../../../components/Icon/IconX';
 
-const NotificationModal = ({ isOpen, onClose, onSave, notification }) => {
+const PastingModal = ({ isOpen, onClose, onSave, pasting }) => {
     const initialValues = React.useMemo(
         () => ({
-            studentCode: notification?.constancyThesisStepFive?.reportReviewStepFour.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.studentCode || 'N/A', // Accede directamente al código del estudiante
-            studentTwoCode: notification?.constancyThesisStepFive?.reportReviewStepFour.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.studentCode || '', // Maneja el caso donde studentTwo puede ser null
-            meetsRequirements: notification?.meetsRequirements ? 'yes' : 'no', // Booleano a texto
-            observations: notification?.observations || '', // Observaciones o vacío
+            studentCode:
+                pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student?.studentCode ||
+                'N/A',
+            studentTwoCode:
+                pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.studentCode ||
+                '',
+            studentFirstName:
+                pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student?.firstNames ||
+                'N/A',
+            studentLastName:
+                pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student?.lastName || '',
+            studentTwoFirstName:
+                pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.firstNames ||
+                'N/A',
+            studentTwoLastName:
+                pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.lastName ||
+                '',
+            meetRequirements: pasting?.meetRequirements ? 'yes' : 'no',
+            observations: pasting?.observations || '',
         }),
-        [notification]);
-
-
+        [pasting]
+    );
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" open={isOpen} onClose={onClose} className="relative z-[51]">
@@ -25,18 +39,18 @@ const NotificationModal = ({ isOpen, onClose, onSave, notification }) => {
                                 <IconX />
                             </button>
                             <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
-                                {notification ?  'Editar Notificación' : 'Crear Notificación'}
+                                {pasting ? 'Editar Registro' : 'Crear Registro'}
                             </div>
                             <div className="p-5">
                                 <Formik
                                     initialValues={initialValues}
                                     onSubmit={(values) => {
                                         const transformedValues = {
-                                            meetsRequirements: values.meetsRequirements === 'yes',
+                                            meetRequirements: values.meetRequirements === 'yes',
                                             observations: values.observations,
                                         };
 
-                                        onSave(transformedValues, notification);
+                                        onSave(transformedValues, pasting.id);
                                     }}
                                     enableReinitialize
                                 >
@@ -48,7 +62,7 @@ const NotificationModal = ({ isOpen, onClose, onSave, notification }) => {
                                                 <ErrorMessage name="studentCode" component="div" className="text-danger mt-1" />
                                             </div>
 
-                                            {notification?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo && (
+                                            {pasting?.studentTwo && (
                                                 <div className={submitCount && errors.studentTwoCode ? 'has-error' : ''}>
                                                     <label htmlFor="studentTwoCode">Segundo Estudiante</label>
                                                     <Field name="studentTwoCode" type="text" id="studentTwoCode" readOnly className="form-input" />
@@ -57,18 +71,18 @@ const NotificationModal = ({ isOpen, onClose, onSave, notification }) => {
                                             )}
 
                                             <div>
-                                                <label htmlFor="meetsRequirements">Cumple Requisitos</label>
+                                                <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
                                                     <label>
-                                                        <Field type="radio" name="meetsRequirements" value="yes" className="form-radio" />
+                                                        <Field type="radio" name="meetRequirements" value="yes" className="form-radio" />
                                                         Sí
                                                     </label>
                                                     <label>
-                                                        <Field type="radio" name="meetsRequirements" value="no" className="form-radio" />
+                                                        <Field type="radio" name="meetRequirements" value="no" className="form-radio" />
                                                         No
                                                     </label>
                                                 </div>
-                                                <ErrorMessage name="meetsRequirements" component="div" className="text-danger mt-1" />
+                                                <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className="col-span-2">
                                                 <label htmlFor="observations">Observaciones</label>
@@ -96,4 +110,4 @@ const NotificationModal = ({ isOpen, onClose, onSave, notification }) => {
     );
 };
 
-export default NotificationModal;
+export default PastingModal;

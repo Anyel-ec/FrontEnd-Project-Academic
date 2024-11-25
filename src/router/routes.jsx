@@ -11,6 +11,8 @@ import JuryAppointment from '../pages/Apps/Steps/Three/JuryAppointment';
 import ReportReview from '../pages/Apps/Steps/Four/ReportReview';
 import ConstancyThesis from '../pages/Apps/Steps/Five/ConstancyThesis';
 import JuryNotifications from '../pages/Apps/Steps/Six/JuryNotifications';
+import ThesisApproval from '../pages/Apps/Steps/Seven/ThesisApproval';
+import PastingApproval from '../pages/Apps/Steps/Eight/PastingApproval';
 // <--End Admin Imports-->
 
 // <--Students Imports-->
@@ -218,7 +220,7 @@ const routes = [
         path: 'apps/paso/aprobacion-de-tesis',
         element: (
             <ProtectedRoute>
-                <ConstancyThesis />
+                <ThesisApproval />
             </ProtectedRoute>
         ),
     },
@@ -226,7 +228,7 @@ const routes = [
         path: 'apps/paso/aprobacion-de-empastados',
         element: (
             <ProtectedRoute>
-                <ConstancyThesis />
+                <PastingApproval />
             </ProtectedRoute>
         ),
     },
