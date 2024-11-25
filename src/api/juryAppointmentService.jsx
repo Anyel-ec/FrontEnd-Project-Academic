@@ -31,7 +31,15 @@ const addJuryAppointment = async (juryAppointment) => {
         throw new Error('Error inesperado: ' + (error.response ? error.response.data.message : error.message));
     }
 };
-
+const getJuryByStudentCode = async (studentCode) =>{
+    try {
+        const response = await axios.get(`${JURYAPPOINTMENT_API_URL}student/${studentCode}`, getAuthHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching title reservations:', error);
+        throw error;
+    }
+}
 const editJuryAppointment = async (id, juryAppointment) => {
     try {
         console.log('Datos enviados:', juryAppointment); // Validar los datos aquí
@@ -56,6 +64,7 @@ const deleteJuryAppointment = async (id) => {
 export default {
     getAllJuryAppointments,
     addJuryAppointment,
+    getJuryByStudentCode,
     editJuryAppointment,
     deleteJuryAppointment,
 };

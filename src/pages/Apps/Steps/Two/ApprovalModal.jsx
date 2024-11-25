@@ -17,7 +17,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
             studentTwoCode: project?.titleReservationStepOne?.studentTwo?.studentCode || '',
             studentFirstNames: project?.titleReservationStepOne?.student?.firstNames || 'N/A',
             studentTwoFirstNames: project?.titleReservationStepOne?.studentTwo?.firstNames || '',
-            observation: project?.titleReservationStepOne?.observations || '',
+            observation: project?.observations || '',
             adviser: project?.adviser ? { value: project.adviser.id, label: `${project.adviser.firstNames} ${project.adviser.lastName}` } : null,
             coadviser: project?.coadviser ? { value: project.coadviser.id, label: `${project.coadviser.firstNames} ${project.coadviser.lastName}` } : null,
             approvedProject: project?.approvedProject ? 'yes' : 'no',

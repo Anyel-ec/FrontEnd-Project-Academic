@@ -1,63 +1,53 @@
-import PropTypes from 'prop-types';
-import { getApprovalDetails } from '../../Steps/utils/ApprovalUtils';
-import { formatDate } from '../../Steps/utils/Dates';
-import { showObservations } from '../utils/ShowObservations';
-
-const ApprovalTable = ({ approval }) => {
-    const currentApproval = approval;
+import { showObservations } from "../utils/ShowObservations";
+const ApprovalTable = ({ project }) => {
+    console.log(project);
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
             <div className="table-responsive">
                 <table className="table-striped table-hover">
                     <thead>
                         <tr>
+                            <th>Código</th>
                             <th>Estudiante(s)</th>
-                            <th>Código(s)</th>
                             <th>Carrera</th>
-                            <th>Última Actualización</th>
+                            <th>Fecha Actualización</th>
                             <th className="!text-center">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody className="dark:text-white-dark">
-                        {currentApproval?.length > 0 ? (
-                            currentApproval.map((approval) => {
-                                const { student, studentTwo, updatedAt, observations } = getApprovalDetails(approval);
+                    <tbody>
+                        {project ? (
+                            <tr key={project.id}>
+                                <td>
+                                    {project.titleReservationStepOne?.student?.studentCode || 'N/A'}
+                                    {project.titleReservationStepOne?.studentTwo && (
+                                        <>
+                                            <br />
+                                            {project.titleReservationStepOne?.studentTwo.studentCode || 'N/A'}
+                                        </>
+                                    )}
+                                </td>
 
-                                return (
-                                    <tr key={approval.id}>
-                                        <td>
-                                            {student?.firstNames} {student?.lastName}
-                                            {studentTwo && (
-                                                <>
-                                                    <span className="font-bold"> - </span>
-                                                    <br />
-                                                    {studentTwo.firstNames} {studentTwo.lastName}
-                                                </>
-                                            )}
-                                        </td>
-                                        <td>
-                                            {student?.studentCode || 'N/A'}
-                                            {studentTwo && (
-                                                <>
-                                                    <br />
-                                                    {studentTwo.studentCode || 'N/A'}
-                                                </>
-                                            )}
-                                        </td>
-                                        <td>{student?.career?.name || 'N/A'}</td>
-                                        <td>{formatDate(updatedAt)}</td>
-                                        <td>
-                                            <button className="btn btn-sm btn-outline-success" onClick={() => showObservations(observations)}>
-                                                Observaciones
-                                            </button>
-                                        </td>
-                                    </tr>
-                                );
-                            })
+                                <td>
+                                    {project.titleReservationStepOne?.student?.firstNames ?? ''} {project.titleReservationStepOne?.student?.lastName ?? ''}
+                                    {project.titleReservationStepOne?.studentTwo && (
+                                        <p>
+                                            {project.titleReservationStepOne?.studentTwo?.firstNames ?? ''} {project.titleReservationStepOne?.studentTwo?.lastName ?? ''}
+                                        </p>
+                                    )}
+                                </td>
+                                <td>{project.titleReservationStepOne?.student?.career?.name || 'N/A'}</td>
+
+                                <td>{new Date(project.updatedAt).toLocaleString()}</td>
+                                <td>
+                                    <button className="btn btn-sm btn-outline-success" onClick={() => showObservations(project.observations)}>
+                                        Observaciones
+                                    </button>
+                                </td>
+                            </tr>
                         ) : (
                             <tr>
                                 <td colSpan="11" className="px-4 py-2 text-center">
-                                    No hay campos disponibles
+                                    No hay proyectos disponibles
                                 </td>
                             </tr>
                         )}
@@ -66,10 +56,6 @@ const ApprovalTable = ({ approval }) => {
             </div>
         </div>
     );
-};
-
-ApprovalTable.propTypes = {
-    approval: PropTypes.array.isRequired,
 };
 
 export default ApprovalTable;
