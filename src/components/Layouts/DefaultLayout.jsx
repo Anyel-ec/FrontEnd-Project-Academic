@@ -7,6 +7,7 @@ import Header from './Header';
 import Setting from './Setting';
 import Sidebar from './Sidebar';
 import Portals from '../../components/Portals';
+import { UserProvider } from '../../store/userContext';
 
 const DefaultLayout = ({ children }) => {
     const themeConfig = useSelector((state) => state.themeConfig);
@@ -45,6 +46,8 @@ const DefaultLayout = ({ children }) => {
     }, []);
 
     return (
+        <UserProvider>
+
         <App>
             {/* BEGIN MAIN CONTAINER */}
             <div className="relative">
@@ -101,6 +104,8 @@ const DefaultLayout = ({ children }) => {
                 </div>
             </div>
         </App>
+        </UserProvider>
+    
     );
 };
 

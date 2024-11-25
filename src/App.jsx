@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleRTL, toggleTheme, toggleLocale, toggleMenu, toggleLayout, toggleAnimation, toggleNavbar, toggleSemidark } from './store/themeConfigSlice';
 import store from './store';
+import { UserProvider } from './store/userContext';
 function App({ children }) {
     const themeConfig = useSelector((state) => state.themeConfig);
     const dispatch = useDispatch();
