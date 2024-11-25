@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Pagination from '../Pagination';
-import ThesisUpload from './ThesisUpload';
-const ThesisTable = ({ thesis, onEdit }) => {
+const NotificationTable = ({ notification, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
     const totalPages = Math.ceil(thesis.length / itemsPerPage);
@@ -76,9 +75,9 @@ const ThesisTable = ({ thesis, onEdit }) => {
     );
 };
 
-ThesisTable.propTypes = {
-    thesis: PropTypes.array.isRequired,
+NotificationTable.propTypes = {
+    notification: PropTypes.array.isRequired,
     onEdit: PropTypes.func.isRequired,
 };
 
-export default ThesisTable;
+export default NotificationTable;

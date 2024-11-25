@@ -4,7 +4,7 @@ import { setPageTitle } from '../../../../store/themeConfigSlice';
 import NotificationTable from './NotificationTable';
 import NotificationModal from './NotificationModal';
 import NotificationSearch from './NotificationSearch';
-import juryNotificationsService from '../../../../api/juryNotificationsService';
+import juryNotificationService from '../../../../api/juryNotificationService';
 import careerService from '../../../../api/careerService';
 import { getNotificationsDetails } from '../utils/NotificationUtils';
 import Swal from 'sweetalert2';
@@ -40,7 +40,7 @@ const JuryNotifications = () => {
 
     const fetchNotifications = useCallback(async () => {
         try {
-            const notificationResponse = await juryNotificationsService.getAllJuryNotifications();
+            const notificationResponse = await juryNotificationService.getAllJuryNotifications();
             setNotifications(notificationResponse);
         } catch (error) {
             console.error('Error al obtener las notificaciones:', error);
@@ -56,7 +56,7 @@ const JuryNotifications = () => {
     const handleSave = async (updatedNotificationData, notificationId) => {
         try {
             console.log('Enviando datos al servidor:', updatedNotificationData);
-            await juryNotificationsService.editJuryNotification(notificationId, updatedNotificationData);
+            await juryNotificationService.editJuryNotification(notificationId, updatedNotificationData);
             Swal.fire('Éxito', 'Notificación actualizada correctamente.', 'success');
             await fetchNotifications();
             closeModal();
@@ -76,27 +76,19 @@ const JuryNotifications = () => {
 
     const filteredNotifications = useMemo(() => {
         const normalizedSearch = normalizeText(search);
-
-        return notifications?.filter((notification) => {
-            // Verificar que todas las propiedades necesarias existen
-            const student = notification?.constancyThesisStepFive?.reportReviewStepFour?.projectApprovalStepTwo?.titleReservationStepOne?.student;
-            const firstNames = student?.firstNames || '';
-            const lastName = student?.lastName || '';
-            const studentCode = student?.studentCode || '';
-            const careerId = student?.career?.id;
-
-            const fullName = `${firstNames} ${lastName}`;
-
+        return notifications.filter((notification) => {
+            const fullName = `${notification?.constancyThesisStepFive.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne.student.firstNames} ${notification?.constancyThesisStepFive.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne.student.lastName}`;
             const normalizedFullName = normalizeText(fullName);
-            const studentCodeMatch = normalizeText(studentCode).includes(normalizedSearch);
+            const studentCodeMatch = normalizeText(notification?.constancyThesisStepFive.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne.student.studentCode).includes(normalizedSearch);
             const matchesSearch = normalizedFullName.includes(normalizedSearch) || studentCodeMatch;
 
             // Filtrar por carrera si `selectedCareer` está seleccionado
-            const matchesCareer = selectedCareer ? careerId === selectedCareer.value : true;
+            const matchesCareer = selectedCareer ? notification?.constancyThesisStepFive.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne.student.career.id === selectedCareer.value : true;
 
             return matchesSearch && matchesCareer;
         });
     }, [notifications, search, selectedCareer]);
+
 
 
     const closeModal = () => {
@@ -113,7 +105,7 @@ const JuryNotifications = () => {
                 selectedCareer={selectedCareer}
                 setSelectedCareer={setSelectedCareer}
             />
-            <NotificationTable notifications={filteredNotifications} onEdit={handleEdit} />
+            <NotificationTable notification={filteredNotifications} onEdit={handleEdit} />
             <NotificationModal
                 isOpen={isModalOpen}
                 notification={selectedNotification}

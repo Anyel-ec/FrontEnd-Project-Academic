@@ -1,28 +1,18 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Spanish } from "flatpickr/dist/l10n/es.js";
-
 import React, { Fragment } from 'react';
-import Flatpickr from 'react-flatpickr';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import IconX from '../../../../components/Icon/IconX';
 
 const NotificationModal = ({ isOpen, onClose, onSave, notification }) => {
     const initialValues = React.useMemo(
         () => ({
-            studentCode: notification?.student?.studentCode || 'N/A',
-            studentTwoCode: notification?.studentTwo?.studentCode || '',
-            studentFirstName: notification?.student?.firstNames || 'N/A',
-            studentLastName: notification?.student?.lastName || '',
-            studentTwoFirstName: notification?.studentTwo?.firstNames || 'N/A',
-            studentTwoLastName: notification?.studentTwo?.lastName || '',
-            meetRequirements: notification?.meetRequirements ? 'yes' : 'no',
-            thesisDate: notification?.thesisDate || 'N/A',
-            observations: notification?.observations || '',
+            studentCode: notification?.constancyThesisStepFive?.reportReviewStepFour.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.studentCode || 'N/A', // Accede directamente al código del estudiante
+            studentTwoCode: notification?.constancyThesisStepFive?.reportReviewStepFour.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.studentCode || '', // Maneja el caso donde studentTwo puede ser null
+            meetsRequirements: notification?.meetsRequirements ? 'yes' : 'no', // Booleano a texto
+            observations: notification?.observations || '', // Observaciones o vacío
         }),
-        [notification]
-    );
-    const today = new Date();
-    const maxDateAllowed = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+        [notification]);
+
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -31,30 +21,23 @@ const NotificationModal = ({ isOpen, onClose, onSave, notification }) => {
                 <div className="fixed inset-0 overflow-y-auto">
                     <div className="flex min-h-full items-center justify-center px-4 py-8">
                         <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg text-black dark:text-white-dark">
-                            <button
-                                type="button"
-                                onClick={onClose}
-                                className="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none"
-                            >
+                            <button type="button" onClick={onClose} className="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none">
                                 <IconX />
                             </button>
                             <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
-                                {notification ? 'Editar Registro' : 'Crear Registro'}
+                                {notification ?  'Editar Notificación' : 'Crear Notificación'}
                             </div>
                             <div className="p-5">
                                 <Formik
                                     initialValues={initialValues}
                                     onSubmit={(values) => {
                                         const transformedValues = {
-                                            meetRequirements: values.meetRequirements === 'yes',
+                                            meetsRequirements: values.meetsRequirements === 'yes',
                                             observations: values.observations,
-                                            thesisDate: values.thesisDate,
                                         };
 
-
-                                        onSave(transformedValues, notification?.id);
+                                        onSave(transformedValues, notification.iconstancyThesisStepFive?.d);
                                     }}
-
                                     enableReinitialize
                                 >
                                     {({ errors, submitCount }) => (
@@ -65,7 +48,7 @@ const NotificationModal = ({ isOpen, onClose, onSave, notification }) => {
                                                 <ErrorMessage name="studentCode" component="div" className="text-danger mt-1" />
                                             </div>
 
-                                            {notification?.studentTwo && (
+                                            {notification?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo && (
                                                 <div className={submitCount && errors.studentTwoCode ? 'has-error' : ''}>
                                                     <label htmlFor="studentTwoCode">Segundo Estudiante</label>
                                                     <Field name="studentTwoCode" type="text" id="studentTwoCode" readOnly className="form-input" />
@@ -74,56 +57,24 @@ const NotificationModal = ({ isOpen, onClose, onSave, notification }) => {
                                             )}
 
                                             <div>
-                                                <label htmlFor="meetRequirements">Cumple Requisitos</label>
+                                                <label htmlFor="meetsRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
                                                     <label>
-                                                        <Field type="radio" name="meetRequirements" value="yes" className="form-radio" />
+                                                        <Field type="radio" name="meetsRequirements" value="yes" className="form-radio" />
                                                         Sí
                                                     </label>
                                                     <label>
-                                                        <Field type="radio" name="meetRequirements" value="no" className="form-radio" />
+                                                        <Field type="radio" name="meetsRequirements" value="no" className="form-radio" />
                                                         No
                                                     </label>
                                                 </div>
-                                                <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" />
-                                            </div>
-                                            <div className={submitCount && errors.thesisDate ? 'has-error' : 'col-span-1'}>
-                                                <label htmlFor="thesisDate">Fecha de Nacimiento</label>
-                                                <Field name="thesisDate">
-                                                    {({ field, form }) => (
-                                                        <Flatpickr
-                                                            {...field}
-                                                            placeholder="Ingrese la fecha"
-                                                            value={field.value || ''}
-                                                            options={{
-                                                                dateFormat: 'Y-m-d',
-                                                                position: 'auto left',
-                                                                locale: Spanish,
-                                                                maxDate: maxDateAllowed.toISOString().split('T')[0],
-                                                            }}
-                                                            className="form-input"
-                                                            onChange={(date) => {
-                                                                // Usar formato local para evitar desfases
-                                                                const formattedDate = date[0].toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
-                                                                form.setFieldValue('thesisDate', formattedDate);
-                                                            }}
-                                                        />
-                                                    )}
-                                                </Field>
-                                                <ErrorMessage name="thesisDate" component="div" className="text-danger mt-1" />
+                                                <ErrorMessage name="meetsRequirements" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className="col-span-2">
                                                 <label htmlFor="observations">Observaciones</label>
-                                                <Field
-                                                    name="observations"
-                                                    as="textarea"
-                                                    id="observations"
-                                                    placeholder="Ingrese observaciones"
-                                                    className="form-input"
-                                                />
+                                                <Field name="observations" as="textarea" id="observations" placeholder="Ingrese observaciones" className="form-input" />
                                                 <ErrorMessage name="observations" component="div" className="text-danger mt-1" />
                                             </div>
-
 
                                             <div className="flex justify-end items-center mt-8 col-span-2">
                                                 <button type="button" className="btn btn-outline-danger" onClick={onClose}>

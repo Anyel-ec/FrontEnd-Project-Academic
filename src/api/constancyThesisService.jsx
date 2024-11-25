@@ -3,7 +3,6 @@ import AppEnvironments from '../config/AppEnvironments';
 
 const CONSTANCYTHESIS_API_URL = `${AppEnvironments.baseUrl}api/v1/constancia_tesis`;
 const PDF_API_URL = `${AppEnvironments.baseUrl}api/v1/pdfDocument/StepFive`;
-
 const getAuthToken = () => {
     return localStorage.getItem('token');
 };

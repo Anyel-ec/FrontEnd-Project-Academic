@@ -275,8 +275,8 @@ const TitleReservation = () => {
     };
 
     return (
-        <div className="p-5">
-            <h1 className="text-2xl font-bold mb-5">Constancia de Filtro</h1>
+        <>
+            <h2 className="text-2xl font-bold mb-5">Constancia de Filtro</h2>
             <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className=""></div>
                 <div className="flex sm:flex-row flex-col sm:items-center sm:gap-3 gap-4 w-full sm:w-auto">
@@ -360,7 +360,7 @@ const TitleReservation = () => {
             <ReservationModal isOpen={addContactModal} onClose={closeModal} reservation={editingReservation} onSave={handleSaveReservation} lineOptions={lineOptions} enableReinitialize />
 
             <ReservationTable selectedCareer={selectedCareer} titleReservations={titleReservations} apiError={apiError} onEdit={editReservation} onDelete={deleteTitleReservation} searchTerm={searchTerm} />
-        </div>
+        </>
     );
 };
 

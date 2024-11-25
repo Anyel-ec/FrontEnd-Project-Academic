@@ -104,11 +104,11 @@ const JuryAppoiment = () => {
     };
 
     return (
-        <div className="pt-5">
+        <>
             <JurySearch search={search} setSearch={setSearch} careerOptions={careerOptions} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} />
             <JuryTable currentJury={filteredJurys} onEdit={handleEdit} onSave={handleSave} adviserOptions={advisers} />
             <JuryModal juryAppointment={selectedJury} isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} adviserOptions={advisers} />
-        </div>
+        </>
     );
 };
 

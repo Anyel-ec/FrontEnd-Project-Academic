@@ -6,14 +6,14 @@ import IconX from '../../../../components/Icon/IconX';
 const ThesisModal = ({ isOpen, onClose, onSave, thesis }) => {
     const initialValues = React.useMemo(
         () => ({
-            studentCode: thesis?.student?.studentCode || 'N/A', // Accede directamente al código del estudiante
-            studentTwoCode: thesis?.studentTwo?.studentCode || '', // Maneja el caso donde studentTwo puede ser null
+            studentCode: thesis?.reportReviewStepFour.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.studentCode || 'N/A', // Accede directamente al código del estudiante
+            studentTwoCode: thesis?.reportReviewStepFour.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.studentCode || '', // Maneja el caso donde studentTwo puede ser null
             meetsRequirements: thesis?.meetsRequirements ? 'yes' : 'no', // Booleano a texto
             observations: thesis?.observations || '', // Observaciones o vacío
         }),
         [thesis]
     );
-    
+
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -49,7 +49,7 @@ const ThesisModal = ({ isOpen, onClose, onSave, thesis }) => {
                                                 <ErrorMessage name="studentCode" component="div" className="text-danger mt-1" />
                                             </div>
 
-                                            {thesis?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo && (
+                                            {thesis?.reportReviewStepFour?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo && (
                                                 <div className={submitCount && errors.studentTwoCode ? 'has-error' : ''}>
                                                     <label htmlFor="studentTwoCode">Segundo Estudiante</label>
                                                     <Field name="studentTwoCode" type="text" id="studentTwoCode" readOnly className="form-input" />

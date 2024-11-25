@@ -101,11 +101,11 @@ const ReportReview = () => {
         setSelectedReport(null);
     };
     return (
-        <div className="pt-5">
+        <>
             <ReportSearch search={search} setSearch={setSearch} careerOptions={careerOptions} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} />
             <ReportTable reports={filteredReports} onEdit={handleEdit} />
             <ReportModal isOpen={isModalOpen} report={selectedReport} onClose={closeModal} onSave={handleSave} adviserOptions={advisers} />
-        </div>
+        </>
     );
 };
 

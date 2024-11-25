@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
 
-const ThesisSearch = ({ search, setSearch, careerOptions, selectedCareer, setSelectedCareer }) => {
+const NotificationSearch = ({ search, setSearch, careerOptions, selectedCareer, setSelectedCareer }) => {
     // Agrega una opción para cuando no haya carreras disponibles
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark'); // Obtener el tema desde Redux
     const styles = HandleMode(isDarkMode); // Aplicar los estilos según el modo
@@ -41,4 +41,4 @@ const ThesisSearch = ({ search, setSearch, careerOptions, selectedCareer, setSel
     );
 };
 
-export default ThesisSearch;
+export default NotificationSearch;

@@ -122,7 +122,7 @@ const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit,
                                     <td>{new Date(reservation.createdAt).toLocaleString()}</td>
                                     <td>{new Date(reservation.updatedAt).toLocaleString()}</td>
                                     <td>
-                                        <TitleUpload reservaId={reservation.id} />
+                                        <TitleUpload reservaId={reservation.id} meetsRequirements={reservation.meetsRequirements} />
                                     </td>
                                     <td className="flex gap-4 items-center justify-center">
                                         {reservation.meetsRequirements

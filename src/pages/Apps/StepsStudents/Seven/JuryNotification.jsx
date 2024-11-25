@@ -2,15 +2,15 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
 import Swal from 'sweetalert2';
-import ThesisTable from './ThesisTable';
-import ThesisModal from './ThesisModal';
-import ThesisSearch from './ThesisSearch';
+import NotificationTable from './NotificationTable';
+import NotificationModal from './NotificationModal';
+import NotificationSearch from './NotificationSearch';
 import careerService from '../../../../api/careerService';
-import constancyThesisService from '../../../../api/constancyThesisService';
+import juryNotificationService from '../../../../api/juryNotificationService';
 
 const ConstancyThesis = () => {
     const dispatch = useDispatch();
-    const [currentThesis, setCurrentThesis] = useState([]);
+    const [currentNotification, setCurrentNotification] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedThesis, setSelectedThesis] = useState(null);
     const [selectedCareer, setSelectedCareer] = useState(null);
@@ -19,7 +19,7 @@ const ConstancyThesis = () => {
 
     useEffect(() => {
         dispatch(setPageTitle('Comprobación de Proyecto'));
-        fetchThesis();
+        fetchNotion();
         fetchCareers();
     }, [dispatch]);
 
@@ -37,11 +37,11 @@ const ConstancyThesis = () => {
         }
     }, []);
 
-    const fetchThesis = useCallback(async () => {
+    const fetchNotion = useCallback(async () => {
         try {
-            const thesis = await constancyThesisService.getAllConstancyThesis();
-            setCurrentThesis(thesis);
-            console.log(thesis)
+            const notification = await juryNotificationService.getAllJuryNotifications();
+            setCurrentNotification(notification);
+            console.log(notification)
         } catch (error) {
             console.error('Error al obtener los thesies:', error);
         }
@@ -51,11 +51,11 @@ const ConstancyThesis = () => {
         setSelectedThesis(thesis);
     };
 
-    const handleSave = async (updatedThesisData, thesisId) => {
+    const handleSave = async (updatedNotificationData, NotificationId) => {
         try {
-            await constancyThesisService.editConstancyThesis(thesisId, updatedThesisData);
+            await juryNotificationService.editJuryNotification(NotificationId, updatedNotificationData);
             Swal.fire('Éxito', 'Proyecto actualizado correctamente.', 'success');
-            await fetchThesis();
+            await fetchNotion();
             closeModal();
         } catch (error) {
             console.error('Error al guardar el proyecto:', error);
@@ -71,7 +71,7 @@ const ConstancyThesis = () => {
     };
     const filteredThesis = useMemo(() => {
         const normalizedSearch = normalizeText(search);
-        return currentThesis.filter((thesis) => {
+        return currentNotification.filter((thesis) => {
             const fullName = `${thesis.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne.student.firstNames} ${thesis.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne.student.lastName}`;
             const normalizedFullName = normalizeText(fullName);
             const studentCodeMatch = normalizeText(thesis.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne.student.studentCode).includes(normalizedSearch);
@@ -82,9 +82,9 @@ const ConstancyThesis = () => {
 
             return matchesSearch && matchesCareer;
         });
-    }, [currentThesis, search, selectedCareer]);
+    }, [currentNotification, search, selectedCareer]);
 
-    console.log(currentThesis)
+    console.log(currentNotification)
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -93,7 +93,7 @@ const ConstancyThesis = () => {
 
     return (
         <>
-            <ThesisSearch
+            <NotificationSearch
                 search={search}
                 setSearch={setSearch}
                 careerOptions={careerOptions}
@@ -101,17 +101,17 @@ const ConstancyThesis = () => {
                 setSelectedCareer={setSelectedCareer}
             />
 
-            <ThesisTable thesis={filteredThesis}
+            <NotificationTable notification={currentNotification}
                 onEdit={handleEdit}
             />
 
-            <ThesisModal
+            <NotificationModal
                 isOpen={isModalOpen}
-                thesis={selectedThesis}
+                notification={selectedThesis}
                 onClose={closeModal}
                 onSave={handleSave}
             />
-        </>
+        </ >
     );
 };
 
