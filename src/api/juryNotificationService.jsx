@@ -22,6 +22,15 @@ const getAllJuryNotifications = async () => {
         throw error;
     }
 };
+const getJuryByStudentCode = async (studentCode) => {
+    try {
+        const response = await axios.get(`${JURYNOTIFICATION_API_URL}student/${studentCode}`, getAuthHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener revisión por código de estudiante:', error);
+        throw error;
+    }
+};
 
 const addJuryNotification = async (juryNotification) => {
     try {
@@ -56,6 +65,7 @@ const deleteJuryNotification = async (id) => {
 export default {
     getAllJuryNotifications,
     addJuryNotification,
+    getJuryByStudentCode,
     editJuryNotification,
     deleteJuryNotification,
 };

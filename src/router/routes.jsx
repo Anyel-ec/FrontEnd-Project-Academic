@@ -19,8 +19,11 @@ import PastingApproval from '../pages/Apps/Steps/Eight/PastingApproval';
 import ConstancyStudents from '../pages/Apps/StepsStudents/One/TitleReservation';
 import ProjectApprovalStudents from '../pages/Apps/StepsStudents/Two/ProjectApproval';
 import JuryAppointmentStudents from '../pages/Apps/StepsStudents/Three/JuryAppointment';
-import ReportReviewStudents from '../pages/Apps/StepsStudents/Four/ProjectApproval';
+import ReportReviewStudents from '../pages/Apps/StepsStudents/Four/ReportReview';
 import ConstancyThesisStudents from '../pages/Apps/StepsStudents/Five/ConstancyThesis';
+import JuryNotificationsStudents from '../pages/Apps/StepsStudents/Six/JuryNotification';
+import ThesisApprovalStudents from '../pages/Apps/StepsStudents/Seven/ThesisApproval';
+import PastingApprovalStudent from '../pages/Apps/StepsStudents/Eight/PastingApproval';
 // <--End Students Imports-->
 
 import AuthRoute from '../security/AuthRoute ';
@@ -274,18 +277,26 @@ const routes = [
         ),
     },
     {
-        path: 'apps/paso-estudiante/constancia-de-tesis',
+        path: 'apps/paso-estudiante/notificacion-de-jurados',
         element: (
             <StudentRoute>
-                <ConstancyThesisStudents />
+                <JuryNotificationsStudents />
             </StudentRoute>
         ),
     },
     {
-        path: 'apps/paso-estudiante/constancia-de-tesis',
+        path: 'apps/paso-estudiante/aprobacion-de-tesis',
         element: (
             <StudentRoute>
-                <ConstancyThesisStudents />
+                <ThesisApprovalStudents />
+            </StudentRoute>
+        ),
+    },
+    {
+        path: 'apps/paso-estudiante/aprobacion-de-empastados',
+        element: (
+            <StudentRoute>
+                <PastingApprovalStudent />
             </StudentRoute>
         ),
     },

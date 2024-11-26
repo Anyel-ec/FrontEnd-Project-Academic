@@ -9,8 +9,7 @@ const ProjectApproval = () => {
     const dispatch = useDispatch();
     const [project, setProject] = useState([]);
     const username = useUserContext();
-    console.log(username);
-    // Fetch projects usando el username desde Redux
+
     const fetchProjects = useCallback(async () => {
         if (!username) {
             console.error('No se encontró un username válido');
@@ -33,11 +32,11 @@ const ProjectApproval = () => {
     }, [dispatch, username, fetchProjects]);
 
     return (
-        <div className="pt-5">
+        <>
             <h1 className="text-2xl font-bold mb-5">Paso 2 - Aprobación de Proyecto</h1>
             {/* Puedes pasar la información de proyectos al componente de tabla */}
             <ApprovalTable project={project} />
-        </div>
+        </>
     );
 };
 

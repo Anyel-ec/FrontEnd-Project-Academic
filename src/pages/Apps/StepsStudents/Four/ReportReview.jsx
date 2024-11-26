@@ -1,36 +1,36 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
-import JuryTable from './JuryTable';
-import juryNotificationService from '../../../../api/juryNotificationService';
+import ReportTable from './ReportTable';
+import reportReviewService from '../../../../api/reportReviewService';
 import { useUserContext } from "../../../../store/userContext";
 
-const JuryNotification = () => {
+const ReportReview = () => {
     const username = useUserContext(); // Obtiene el username desde el contexto
     const dispatch = useDispatch();
-    const [jury, setJury] = useState([]);
+    const [report, setReport] = useState([]);
     const [loading, setLoading] = useState(true); // Estado para manejar la carga de datos
 
-    const fetchjury = useCallback(async () => {
+    const fetchReports = useCallback(async () => {
         try {
             setLoading(true); // Inicia la carga
-            const juryResponse = await juryNotificationService.getJuryByStudentCode(username);
-            setJury(juryResponse);
+            const project = await reportReviewService.getReportByStudentCode(username);
+            setReport(project);
         } catch (error) {
             console.error('Error al obtener los proyectos:', error);
         } finally {
             setLoading(false); // Finaliza la carga
         }
     }, [username]);
-    
-    useEffect(() => {
-        dispatch(setPageTitle('Notificación de Jurados'));
 
-        // Llama a fetchjury solo si `username` está disponible
+    useEffect(() => {
+        dispatch(setPageTitle('Revisión de Reporte'));
+
+        // Llama a fetchReports solo si `username` está disponible
         if (username) {
-            fetchjury();
+            fetchReports();
         }
-    }, [dispatch, username, fetchjury]);
+    }, [dispatch, username, fetchReports]);
 
     // Renderización condicional mientras los datos se cargan
     if (loading) {
@@ -39,10 +39,10 @@ const JuryNotification = () => {
 
     return (
         <>
-            <h1 className="text-2xl font-bold mb-5">Paso 6 - Notificación de Jurados</h1>
-            <JuryTable jury={jury} />
+            <h1 className="text-2xl font-bold mb-5">Paso 4 - Revisión de Reporte</h1>
+            <ReportTable approval={report} />
         </>
     );
 };
 
-export default JuryNotification;
+export default ReportReview;

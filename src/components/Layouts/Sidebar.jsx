@@ -390,7 +390,7 @@ const Sidebar = () => {
                                                 </li>
                                                 {/* Paso 6 */}
                                                 <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/constancia-de-filtro" className="group">
+                                                    <NavLink to="/apps/paso-estudiante/notificacion-de-jurados" className="group">
                                                         <div className="flex items-center">
                                                             <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('6: Notificación de Jurados')}</span>
                                                         </div>
@@ -398,7 +398,7 @@ const Sidebar = () => {
                                                 </li>
                                                 {/* Paso 7 */}
                                                 <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/constancia-de-filtro" className="group">
+                                                    <NavLink to="/apps/paso-estudiante/aprobacion-de-tesis" className="group">
                                                         <div className="flex items-center">
                                                             <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('7: Aprobación de Tesis')}</span>
                                                         </div>
@@ -407,7 +407,7 @@ const Sidebar = () => {
                                                 
                                                 {/* Paso 8 */}
                                                 <li className="nav-item">
-                                                    <NavLink to="/apps/paso-estudiante/constancia-de-tesis" className="group">
+                                                    <NavLink to="/apps/paso-estudiante/aprobacion-de-empastados" className="group">
                                                         <div className="flex items-center">
                                                             <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('8: Aprobación de Empastados')}</span>
                                                         </div>

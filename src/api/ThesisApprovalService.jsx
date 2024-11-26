@@ -60,7 +60,15 @@ const saveThesisApproval = async (thesisApproval) => {
         handleError(error);
     }
 };
-
+const getThesisByStudentCode = async (studentCode) => {
+    try {
+        const response = await axios.get(`${THESISAPPROVAL_API_URL}student/${studentCode}`, getAuthHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener revisión por código de estudiante:', error);
+        throw error;
+    }
+};
 // Servicio para actualizar un registro existente
 const updateThesisApproval = async (id, thesisApproval) => {
     try {
@@ -87,5 +95,6 @@ export default {
     getThesisApprovalById,
     saveThesisApproval,
     updateThesisApproval,
+    getThesisByStudentCode,
     deleteThesisApproval,
 };

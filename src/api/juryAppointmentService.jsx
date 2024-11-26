@@ -21,7 +21,15 @@ const getAllJuryAppointments = async () => {
         throw error;
     }
 };
-
+const getJuryByStudentCode = async (studentCode) => {
+    try {
+        const response = await axios.get(`${JURYAPPOINTMENT_API_URL}student/${studentCode}`, getAuthHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener revisión por código de estudiante:', error);
+        throw error;
+    }
+};
 const addJuryAppointment = async (juryAppointment) => {
     try {
         const response = await axios.post(JURYAPPOINTMENT_API_URL, juryAppointment, getAuthHeaders());
@@ -31,15 +39,7 @@ const addJuryAppointment = async (juryAppointment) => {
         throw new Error('Error inesperado: ' + (error.response ? error.response.data.message : error.message));
     }
 };
-const getJuryByStudentCode = async (studentCode) =>{
-    try {
-        const response = await axios.get(`${JURYAPPOINTMENT_API_URL}student/${studentCode}`, getAuthHeaders());
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching title reservations:', error);
-        throw error;
-    }
-}
+
 const editJuryAppointment = async (id, juryAppointment) => {
     try {
         console.log('Datos enviados:', juryAppointment); // Validar los datos aquí

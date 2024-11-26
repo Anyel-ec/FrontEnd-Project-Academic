@@ -1,36 +1,35 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
-import JuryTable from './JuryTable';
-import juryNotificationService from '../../../../api/juryNotificationService';
+import TApprovalTable from './TApprovalTable';
+import thesisApprovalService from '../../../../api/thesisApprovalService';
 import { useUserContext } from "../../../../store/userContext";
 
-const JuryNotification = () => {
+const ThesisApproval = () => {
     const username = useUserContext(); // Obtiene el username desde el contexto
     const dispatch = useDispatch();
-    const [jury, setJury] = useState([]);
+    const [thesis, setThesis] = useState([]);
     const [loading, setLoading] = useState(true); // Estado para manejar la carga de datos
 
-    const fetchjury = useCallback(async () => {
+    const fetchThesis = useCallback(async () => {
         try {
             setLoading(true); // Inicia la carga
-            const juryResponse = await juryNotificationService.getJuryByStudentCode(username);
-            setJury(juryResponse);
+            const thesisResponse = await thesisApprovalService.getThesisByStudentCode(username);
+            setThesis(thesisResponse);
         } catch (error) {
             console.error('Error al obtener los proyectos:', error);
         } finally {
             setLoading(false); // Finaliza la carga
         }
     }, [username]);
-    
     useEffect(() => {
-        dispatch(setPageTitle('Notificación de Jurados'));
+        dispatch(setPageTitle('Aprobación de Tesis'));
 
-        // Llama a fetchjury solo si `username` está disponible
+        // Llama a fetchThesis solo si `username` está disponible
         if (username) {
-            fetchjury();
+            fetchThesis();
         }
-    }, [dispatch, username, fetchjury]);
+    }, [dispatch, username, fetchThesis]);
 
     // Renderización condicional mientras los datos se cargan
     if (loading) {
@@ -39,10 +38,10 @@ const JuryNotification = () => {
 
     return (
         <>
-            <h1 className="text-2xl font-bold mb-5">Paso 6 - Notificación de Jurados</h1>
-            <JuryTable jury={jury} />
+            <h1 className="text-2xl font-bold mb-5">Paso 7 - Aprobacion de Tesis</h1>
+            <TApprovalTable thesis={thesis} />
         </>
     );
 };
 
-export default JuryNotification;
+export default ThesisApproval;

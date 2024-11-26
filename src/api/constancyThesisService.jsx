@@ -23,7 +23,15 @@ const getAllConstancyThesis = async () => {
         throw error;
     }
 };
-
+const getConstancyByStudentCode = async (studentCode) => {
+    try {
+        const response = await axios.get(`${CONSTANCYTHESIS_API_URL}/student/${studentCode}`, getAuthHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener revisión por código de estudiante:', error);
+        throw error;
+    }
+};
 const editConstancyThesis = async (id, constancyThesis) => {
     try {
         const response = await axios.put(`${CONSTANCYTHESIS_API_URL}/${id}`, constancyThesis, getAuthHeaders());
@@ -92,6 +100,7 @@ const deletePdfDocument = async (id) => {
 export default {
     getAllConstancyThesis,
     editConstancyThesis,
+    getConstancyByStudentCode,
     deleteConstancyThesis,
     uploadPdfDocument,
     checkPdfExists,

@@ -40,7 +40,15 @@ const getAllPastingApprovals = async () => {
         handleError(error);
     }
 };
-
+const getPastingByStudentCode = async (studentCode) => {
+    try {
+        const response = await axios.get(`${PASTINGAPPROVAL_API_URL}student/${studentCode}`, getAuthHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener revisión por código de estudiante:', error);
+        throw error;
+    }
+};
 // Servicio para obtener un registro por ID
 const getPastingApprovalById = async (id) => {
     try {
@@ -86,6 +94,7 @@ export default {
     getAllPastingApprovals,
     getPastingApprovalById,
     savePastingApproval,
+    getPastingByStudentCode,
     updatePastingApproval,
     deletePastingApprovalById,
 };
