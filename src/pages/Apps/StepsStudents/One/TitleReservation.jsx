@@ -10,9 +10,13 @@ const TitleReservation = () => {
     const [reservation, setReservation] = useState([]);
     const [apiError, setApiError] = useState(null);
     const username = useUserContext();
-    
+
     // Método para obtener datos del paso 1
     const fetchTitleReservationStepOne = useCallback(async () => {
+        if (!username) {
+            console.error('No se encontró un username válido');
+            return;
+        }
         try {
             const reservationResponse = await titleReservationsService.getReservationByStudentCode(username);
             setReservation(reservationResponse);
@@ -32,7 +36,7 @@ const TitleReservation = () => {
             fetchTitleReservationStepOne();
         }
     }, [dispatch, username, fetchTitleReservationStepOne]);
-
+    console.log(reservation);
     return (
         <div className="p-5">
             <h1 className="text-2xl font-bold mb-5">Paso 1 - Subir Proyecto de Tesis</h1>

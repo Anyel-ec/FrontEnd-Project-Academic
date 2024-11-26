@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback,useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
 import ApprovalTable from './ApprovalTable';
@@ -27,8 +27,10 @@ const ProjectApproval = () => {
 
     useEffect(() => {
         dispatch(setPageTitle('Aprobación de Proyecto'));
-        fetchProjects();
-    }, [dispatch, fetchProjects]);
+        if (username) {
+            fetchProjects();
+        }
+    }, [dispatch, username, fetchProjects]);
 
     return (
         <div className="pt-5">

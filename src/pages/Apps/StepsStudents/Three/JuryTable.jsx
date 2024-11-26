@@ -1,6 +1,6 @@
 import { showObservations } from "../utils/ShowObservations";
 const JuryTable = ({ jury }) => {
-    console.log(project);
+    console.log("dks", jury);
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
             <div className="table-responsive">
@@ -15,31 +15,31 @@ const JuryTable = ({ jury }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {project ? (
-                            <tr key={project.id}>
+                        {jury ? (
+                            <tr key={jury.id}>
                                 <td>
-                                    {project.titleReservationStepOne?.student?.studentCode || 'N/A'}
-                                    {project.titleReservationStepOne?.studentTwo && (
+                                    {jury.projectApprovalStepTwo?.titleReservationStepOne?.student?.studentCode || 'N/A'}
+                                    {jury.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo && (
                                         <>
                                             <br />
-                                            {project.titleReservationStepOne?.studentTwo.studentCode || 'N/A'}
+                                            {jury.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo.studentCode || 'N/A'}
                                         </>
                                     )}
                                 </td>
 
                                 <td>
-                                    {project.titleReservationStepOne?.student?.firstNames ?? ''} {project.titleReservationStepOne?.student?.lastName ?? ''}
-                                    {project.titleReservationStepOne?.studentTwo && (
+                                    {jury.projectApprovalStepTwo?.titleReservationStepOne?.student?.firstNames ?? ''} {jury.projectApprovalStepTwo?.titleReservationStepOne?.student?.lastName ?? ''}
+                                    {jury.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo && (
                                         <p>
-                                            {project.titleReservationStepOne?.studentTwo?.firstNames ?? ''} {project.titleReservationStepOne?.studentTwo?.lastName ?? ''}
+                                            {jury.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.firstNames ?? ''} {jury.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.lastName ?? ''}
                                         </p>
                                     )}
                                 </td>
-                                <td>{project.titleReservationStepOne?.student?.career?.name || 'N/A'}</td>
+                                <td>{jury.projectApprovalStepTwo?.titleReservationStepOne?.student?.career?.name || 'N/A'}</td>
 
-                                <td>{new Date(project.updatedAt).toLocaleString()}</td>
+                                <td>{new Date(jury.updatedAt).toLocaleString()}</td>
                                 <td>
-                                    <button className="btn btn-sm btn-outline-success" onClick={() => showObservations(project.observations)}>
+                                    <button className="btn btn-sm btn-outline-success" onClick={() => showObservations(jury.observations)}>
                                         Observaciones
                                     </button>
                                 </td>
