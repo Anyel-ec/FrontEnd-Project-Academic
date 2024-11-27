@@ -20,7 +20,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
             observation: project?.observations || '',
             adviser: project?.adviser ? { value: project.adviser.id, label: `${project.adviser.firstNames} ${project.adviser.lastName}` } : null,
             coadviser: project?.coadviser ? { value: project.coadviser.id, label: `${project.coadviser.firstNames} ${project.coadviser.lastName}` } : null,
-            approvedProject: project?.approvedProject ? 'yes' : 'no',
+            meetRequirements: project?.meetRequirements ? 'yes' : 'no',
         }),
         [project, adviserOptions]
     );
@@ -50,7 +50,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                             },
                                             coadviser: values.coadviser ? { id: values.coadviser.value } : null,
                                             observations: values.observation || '',
-                                            approvedProject: values.approvedProject === 'yes', // Conversión a booleano
+                                            meetRequirements: values.meetRequirements === 'yes', // Conversión a booleano
                                         };
 
                                         console.log('Llamando a onSave con:', transformedValues);
@@ -92,7 +92,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                             </div>
 
                                             <div className="col-span-1">
-                                                <label htmlFor="coadviser">Proyecto Aprobado</label>
+                                                <label htmlFor="coadviser">Seleccione Co-asesor  </label>
                                                 <Select
                                                     id="coadviser"
                                                     styles={styles}
@@ -109,18 +109,18 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                 />
                                             </div>
                                             <div>
-                                                <label htmlFor="approvedProject">Cumple Requisitos</label>
+                                                <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
                                                     <label>
-                                                        <Field type="radio" name="approvedProject" value="yes" className="form-radio" />
+                                                        <Field type="radio" name="meetRequirements" value="yes" className="form-radio" />
                                                         Sí
                                                     </label>
                                                     <label>
-                                                        <Field type="radio" name="approvedProject" value="no" className="form-radio" />
+                                                        <Field type="radio" name="meetRequirements" value="no" className="form-radio" />
                                                         No
                                                     </label>
                                                 </div>
-                                                <ErrorMessage name="approvedProject" component="div" className="text-danger mt-1" />
+                                                <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className="col-span-2">
                                                 <label htmlFor="observation">Observaciones</label>

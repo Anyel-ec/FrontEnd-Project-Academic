@@ -32,7 +32,7 @@ const ApprovalTable = ({ projects, onEdit, onDelete, disabledProjects }) => {
                             <th>Estudiante(s)</th>
                             <th>Código(s)</th>
                             <th>Carrera</th>
-                            <th>Proyecto Aceptado</th>
+                            <th>Cumple Requisitos</th>
                             <th>Asesor</th>
                             <th>Co-Asesor</th>
                             <th>Última Actualización</th>
@@ -61,7 +61,7 @@ const ApprovalTable = ({ projects, onEdit, onDelete, disabledProjects }) => {
                                         )}
                                     </td>
                                     <td>{project.titleReservationStepOne.student.career?.name || 'N/A'}</td>
-                                    <td>{project.approvedProject? 'Sí' : 'No'}</td>
+                                    <td>{project.meetRequirements? 'Sí' : 'No'}</td>
                                     <td>{project.adviser ? `${project.adviser.firstNames || ' '} ${project.adviser.lastName || ' '}` : 'N/A'}</td>
                                     <td>{project.coadviser ? `${project.coadviser.firstNames || ' '} ${project.coadviser.lastName || ' '}` : 'N/A'}</td>
                                     <td>{formatearFecha(project.updatedAt)}</td>

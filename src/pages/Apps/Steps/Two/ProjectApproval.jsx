@@ -104,8 +104,6 @@ const ProjectApproval = () => {
     return (
         <>
             <ApprovalSearch search={search} setSearch={setSearch} careerOptions={careerOptions} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} />
-
-            {/* <h1 className="text-2xl font-bold mb-5">Comprobación de Proyecto</h1> */}
             <ApprovalTable projects={filteredProjects} onEdit={handleEdit} />
             <ApprovalModal isOpen={isModalOpen} onClose={closeModal} project={selectedProject} onSave={handleSave} adviserOptions={advisers} />
         </>

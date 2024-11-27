@@ -52,7 +52,7 @@ const getReservationByStudentCode = async (studentCode) =>{
     }
 }
 // Obtener todas las reservas de título
-const getProgressOneByStudentCode = async (studentCode) => {
+const getProgresByStudentCode = async (studentCode) => {
     try {
         const response = await axios.get(`${PROGRESS_API_URL}${studentCode}`, getAuthHeaders());
         return response.data;
@@ -147,7 +147,7 @@ export default {
     getReservationByStudentCode,
     deleteTitleReservation,
     searchTitleReservations,
-    getProgressOneByStudentCode,
+    getProgresByStudentCode,
     uploadPdf,
     viewPdf,
     deletePdf,

@@ -73,7 +73,7 @@ const Progress = () => {
                     (approval) => approval.titleReservationStepOne.id === reservation.id
                 );
     
-                if (projectApproval && projectApproval.approvedProject) {
+                if (projectApproval && projectApproval.meetsRequirements) {
                     progress = 100;
                 } else if (reservation.meetsRequirements) {
                     progress = 50;

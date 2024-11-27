@@ -2,48 +2,35 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../store/themeConfigSlice';
 import titleReservationsService from '../api/titleReservationsService';
-import userService from '../api/userService'; // Importar el servicio
+import { useUserContext } from '../store/userContext';
 const ProgressStudent = () => {
     const dispatch = useDispatch();
-    const [titleReservations, setTitleReservations] = useState([]);
-    const [apiError, setApiError] = useState(null);
-    const [user, setUser] = useState({ idUser: '', username: '' });
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const storedUser = JSON.parse(localStorage.getItem('user'));
-                if (storedUser && storedUser.username) {
-                    const userData = await userService.getUser(storedUser.username);
-                    setUser(userData);
-                } else {
-                    console.error('No user found in localStorage');
-                }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        };
-
-        fetchUserData();
-    }, []);
+    const [progress, setProgress] = useState([]);
+    // const [apiError, setApiError] = useState(null);
+    const username = useUserContext();
 
     useEffect(() => {
         dispatch(setPageTitle('Progreso de Pasos'));
-        if (user.username) {
-            fetchTitleReservations();
+        if (username) {
+            fetchProgress();
         }
-    }, [dispatch, user.username]);
+    }, [dispatch, username]);
 
-    const fetchTitleReservations = useCallback(async () => {
+    const format = (dateString) => {
+        if (!dateString) return 'N/A';
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+        return new Date(dateString).toLocaleString('es-ES', options);
+    };
+    const fetchProgress = useCallback(async () => {
         try {
-            const reservations = await titleReservationsService.getProgressOneByStudentCode(user.username);
-            setTitleReservations(reservations);
-            setApiError(null);
+            const reservations = await titleReservationsService.getProgresByStudentCode(username);
+            setProgress(reservations);
+            // setApiError(null);
         } catch (error) {
             console.error('Error fetching title reservations:', error);
-            setApiError('Failed to load title reservations.');
+            // setApiError('Failed to load title reservations.');
         }
-    }, [user.username]);
+    }, [username]);
 
     return (
         <div className="pt-5">
@@ -60,35 +47,63 @@ const ProgressStudent = () => {
                                         <th>Estudiante(s)</th>
                                         <th>Proyectos</th>
                                         <th>Progreso</th>
+                                        <th>Fecha de Actualización</th>
                                     </tr>
                                 </thead>
                                 <tbody className="dark:text-white-dark">
-                                    {titleReservations.length > 0 && (
+                                    {progress.length > 0 && (
                                         <tr>
                                             <td colSpan="3" className="font-bold text-white">
-                                                {titleReservations[0].stepObject?.student &&
-                                                    `${titleReservations[0].stepObject.student.firstNames} ${titleReservations[0].stepObject.student.lastName}`}
-                                                {titleReservations[0].stepObject?.studentTwo &&
-                                                    ` & ${titleReservations[0].stepObject.studentTwo.firstNames} ${titleReservations[0].stepObject.studentTwo.lastName}`}
+                                                {progress[0].stepObject?.student &&
+                                                    `${progress[0].stepObject.student.firstNames} ${progress[0].stepObject.student.lastName}`}
+                                                {progress[0].stepObject?.studentTwo &&
+                                                    ` & ${progress[0].stepObject.studentTwo.firstNames} ${progress[0].stepObject.studentTwo.lastName}`}
                                             </td>
                                         </tr>
                                     )}
-                                    {titleReservations.map((step, index) => (
-                                        <tr key={step.number}>
-                                            <td>{`Step ${step.stepName}`}</td>
-                                            <td>
-                                                <div className="h-1.5 bg-[#ebedf2] dark:bg-dark/40 rounded-full flex w-full">
-                                                    <div
-                                                        className={`bg-${step.completionPercentage === 100 ? 'success' : step.completionPercentage >= 30 ? 'warning' : 'gray'} rounded-full`}
-                                                        style={{ width: `${step.completionPercentage}%` }}
-                                                    ></div>
-                                                </div>
-                                            </td>
-                                            <td
-                                                className={`${step.completionPercentage === 100 ? 'text-success' : step.completionPercentage >= 30 ? 'text-warning' : 'text-gray'}`}
-                                            >{`${step.completionPercentage}%`}</td>
-                                        </tr>
-                                    ))}
+                                    {progress
+                                        .filter((step) => step.completionPercentage > 0) // Filtra pasos con porcentaje mayor a 0
+                                        .map((step) => (
+                                            <tr key={step.stepNumber}>
+                                                <td>{`Paso ${step.stepNumber}`}</td>
+                                                <td>
+                                                    <div className="h-1.5 bg-[#ebedf2] dark:bg-dark/40 rounded-full flex w-full">
+                                                        <div
+                                                            className={`bg-${step.completionPercentage === 100
+                                                                ? 'success'
+                                                                : step.completionPercentage >= 70
+                                                                    ? 'primary'
+                                                                    : step.completionPercentage >= 30
+                                                                        ? 'warning'
+                                                                        : 'gray'
+                                                                } rounded-full`}
+                                                            style={{ width: `${step.completionPercentage}%` }}
+                                                        ></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    {step.stepObject?.createdAt
+                                                        ? new Intl.DateTimeFormat('es-ES', {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                        }).format(new Date(step.stepObject.createdAt))
+                                                        : 'No disponible'}
+                                                </td>
+                                                <td
+                                                    className={`text-${step.completionPercentage === 100
+                                                        ? 'success'
+                                                        : step.completionPercentage >= 70
+                                                            ? 'primary'
+                                                            : step.completionPercentage >= 30
+                                                                ? 'warning'
+                                                                : 'gray'
+                                                        }`}
+                                                >{`${step.completionPercentage}%`}</td>
+                                            </tr>
+                                        ))}
                                 </tbody>
                             </table>
                         </div>
