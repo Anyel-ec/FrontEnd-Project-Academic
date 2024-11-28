@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Pagination from '../Pagination';
 import ThesisUpload from './ThesisUpload';
+import Swal from 'sweetalert2';
 const ThesisTable = ({ thesis, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -54,10 +55,25 @@ const ThesisTable = ({ thesis, onEdit }) => {
                                         <ThesisUpload thesisId={thesis.id} />
                                     </td>
                                     <td className="flex gap-4 items-center justify-center">
-                                        <button onClick={() => onEdit(thesis)} className="btn btn-sm btn-outline-primary">
-                                            Editar
-                                        </button>
-
+                                        {
+                                            thesis.meetsRequirements ? (
+                                                <button
+                                                    onClick={() =>
+                                                        Swal.fire("Paso Completado", "Constancia de tesis exitosa.", "success")
+                                                    }
+                                                    className="btn btn-sm btn-outline-info"
+                                                >
+                                                    Completado
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => onEdit(thesis)}
+                                                    className="btn btn-sm btn-outline-primary"
+                                                >
+                                                    Editar
+                                                </button>
+                                            )
+                                        }
                                     </td>
                                 </tr>
                             ))

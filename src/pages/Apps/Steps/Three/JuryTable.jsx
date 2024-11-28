@@ -53,13 +53,6 @@ const JuryTable = ({ currentJury, onEdit, onSave }) => {
                 }
             });
 
-            // Imprimir en consola los jurados seleccionados
-            console.log('Jurados seleccionados:', {
-                president: randomSelection['president'],
-                firstMember: randomSelection['firstMember'],
-                secondMember: randomSelection['secondMember'],
-                accessory: randomSelection['accessory'],
-            });
 
             // Devolver el objeto con los jurados seleccionados
             return {

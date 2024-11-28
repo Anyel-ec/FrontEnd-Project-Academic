@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Pagination from '../Pagination';
+import Swal from 'sweetalert2';
 const NotificationTable = ({ notification, onEdit }) => {
-    console.log(notification)
+
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
     const totalPages = Math.ceil(notification?.length / itemsPerPage);
@@ -52,9 +53,25 @@ const NotificationTable = ({ notification, onEdit }) => {
                                     <td>{notification?.updatedAt}</td>
 
                                     <td className="flex gap-4 items-center justify-center">
-                                        <button onClick={() => onEdit(notification)} className="btn btn-sm btn-outline-primary">
-                                            Editar
-                                        </button>
+                                        {
+                                            notification.meetRequirements ? (
+                                                <button
+                                                    onClick={() =>
+                                                        Swal.fire("Paso Completado", "Jurados notificados exitosamente.", "success")
+                                                    }
+                                                    className="btn btn-sm btn-outline-info"
+                                                >
+                                                    Completado
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => onEdit(notification)}
+                                                    className="btn btn-sm btn-outline-primary"
+                                                >
+                                                    Editar
+                                                </button>
+                                            )
+                                        }
 
                                     </td>
                                 </tr>

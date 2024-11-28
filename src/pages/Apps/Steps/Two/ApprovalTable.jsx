@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Pagination from '../Pagination';
+import Swal from 'sweetalert2';
 
-const ApprovalTable = ({ projects, onEdit, onDelete, disabledProjects }) => {
+const ApprovalTable = ({ projects, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const itemsPerPage = 10;
@@ -11,12 +12,6 @@ const ApprovalTable = ({ projects, onEdit, onDelete, disabledProjects }) => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentProjects = projects.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
-    // for(let i = 0; i < currentProject.length; i++) {
-    //     console.log("respuesta", currentProject[i])
-    //     if(currentProject[i].titleReservationStepOne.id)  {
-    //         console.log("si existe",currentProject[i].titleReservationStepOne.id)
-    //     }
-    // }
     const formatearFecha = (dateString) => {
         if (!dateString) return 'N/A';
         const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -61,20 +56,35 @@ const ApprovalTable = ({ projects, onEdit, onDelete, disabledProjects }) => {
                                         )}
                                     </td>
                                     <td>{project.titleReservationStepOne.student.career?.name || 'N/A'}</td>
-                                    <td>{project.meetRequirements? 'Sí' : 'No'}</td>
+                                    <td>{project.meetRequirements ? 'Sí' : 'No'}</td>
                                     <td>{project.adviser ? `${project.adviser.firstNames || ' '} ${project.adviser.lastName || ' '}` : 'N/A'}</td>
                                     <td>{project.coadviser ? `${project.coadviser.firstNames || ' '} ${project.coadviser.lastName || ' '}` : 'N/A'}</td>
                                     <td>{formatearFecha(project.updatedAt)}</td>
                                     <td className="flex gap-4 items-center justify-center">
-                                        <button onClick={() => onEdit(project)} className="btn btn-sm btn-outline-primary">
-                                            Editar
-                                        </button>
-                                        {/* <button
-                                            onClick={() => onDelete(project.id)}
-                                            className="btn btn-sm btn-outline-danger"
-                                        >
-                                            Eliminar
-                                        </button> */}
+                                        {
+                                            project.meetRequirements ? (
+                                                <button
+                                                    onClick={() =>
+                                                        Swal.fire(
+                                                            "Paso Completado",
+                                                            "Proyecto aprobado exitosamente.",
+                                                            "success"
+                                                        )
+                                                    }
+                                                    className="btn btn-sm btn-outline-info"
+                                                >
+                                                    Completado
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => onEdit(project)}
+                                                    className="btn btn-sm btn-outline-primary"
+                                                >
+                                                    Editar
+                                                </button>
+                                            )
+                                        }
+
                                     </td>
                                 </tr>
                             ))

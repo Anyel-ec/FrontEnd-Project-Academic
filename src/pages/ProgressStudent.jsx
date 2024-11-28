@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../store/themeConfigSlice';
-import titleReservationsService from '../api/titleReservationsService';
+import progressService from '../api/progressService';
 import { useUserContext } from '../store/userContext';
 const ProgressStudent = () => {
     const dispatch = useDispatch();
@@ -23,7 +23,7 @@ const ProgressStudent = () => {
     };
     const fetchProgress = useCallback(async () => {
         try {
-            const reservations = await titleReservationsService.getProgresByStudentCode(username);
+            const reservations = await progressService.getProgresByStudentCode(username);
             setProgress(reservations);
             // setApiError(null);
         } catch (error) {

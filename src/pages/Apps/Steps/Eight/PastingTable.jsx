@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Pagination from '../Pagination';
+import Swal from 'sweetalert2';
 const PastingTable = ({ pastings, onEdit }) => {
     console.log(pastings);
     const [currentPage, setCurrentPage] = useState(1);
@@ -28,7 +29,7 @@ const PastingTable = ({ pastings, onEdit }) => {
                             currentNotification.map((pasting) => (
                                 <tr key={pasting?.id}>
                                     <td>
-                {pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.firstNames} {pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.lastName}
+                                        {pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.firstNames} {pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.lastName}
                                         {pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo && (
                                             <>
                                                 <span className="font-bold"> - </span>
@@ -42,12 +43,12 @@ const PastingTable = ({ pastings, onEdit }) => {
                                             ?.titleReservationStepOne?.student?.studentCode || 'N/A'}
                                         {pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo
                                             ?.titleReservationStepOne?.studentTwo && (
-                                            <>
-                                                <br />
-                                                {pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree
-                                                    .projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.studentCode || 'N/A'}
-                                            </>
-                                        )}
+                                                <>
+                                                    <br />
+                                                    {pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree
+                                                        .projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.studentCode || 'N/A'}
+                                                </>
+                                            )}
                                     </td>
                                     <td>
                                         {pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo
@@ -58,9 +59,25 @@ const PastingTable = ({ pastings, onEdit }) => {
                                     <td>{pasting?.updatedAt}</td>
 
                                     <td className="flex gap-4 items-center justify-center">
-                                        <button onClick={() => onEdit(pasting)} className="btn btn-sm btn-outline-primary">
-                                            Editar
-                                        </button>
+                                        {
+                                            pasting.meetRequirements ? (
+                                                <button
+                                                    onClick={() =>
+                                                        Swal.fire("Paso Completado", "Aprobación de empastados exitosa.", "success")
+                                                    }
+                                                    className="btn btn-sm btn-outline-info"
+                                                >
+                                                    Completado
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => onEdit(pasting)}
+                                                    className="btn btn-sm btn-outline-primary"
+                                                >
+                                                    Editar
+                                                </button>
+                                            )
+                                        }
                                     </td>
                                 </tr>
                             ))

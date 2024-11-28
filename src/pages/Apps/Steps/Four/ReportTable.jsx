@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Pagination from '../Pagination'; // Asegúrate de ajustar la ruta si es necesario
 import { getReportDetails, formatDate } from '../utils/ReportUtils'; // Ajusta la ruta si es necesario
-
+import Swal from 'sweetalert2';
 const ReportTable = ({ reports, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -61,9 +61,29 @@ const ReportTable = ({ reports, onEdit }) => {
                                         <td>{coadviser ? `${coadviser.firstNames || ' '} ${coadviser.lastName || ' '}` : 'N/A'}</td>
                                         <td>{formatDate(updatedAt)}</td>
                                         <td className="flex gap-4 items-center justify-center">
-                                            <button onClick={() => onEdit(report)} className="btn btn-sm btn-outline-primary">
-                                                Editar
-                                            </button>
+                                            {
+                                                report.meetRequirements ? (
+                                                    <button
+                                                        onClick={() =>
+                                                            Swal.fire(
+                                                                "Paso Completado",
+                                                                "Reporte revisado exitosamente.",
+                                                                "success"
+                                                            )
+                                                        }
+                                                        className="btn btn-sm btn-outline-info"
+                                                    >
+                                                        Completado
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => onEdit(report)}
+                                                        className="btn btn-sm btn-outline-primary"
+                                                    >
+                                                        Editar
+                                                    </button>
+                                                )
+                                            }
                                         </td>
                                     </tr>
                                 );

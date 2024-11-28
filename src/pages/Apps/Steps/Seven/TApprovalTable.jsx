@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Pagination from '../Pagination';
+import Swal from 'sweetalert2';
 const TApprovalTable = ({ tapprovals, onEdit }) => {
     console.log(tapprovals);
     const [currentPage, setCurrentPage] = useState(1);
@@ -38,31 +39,31 @@ const TApprovalTable = ({ tapprovals, onEdit }) => {
                                         }
                                         {tapproval?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne
                                             ?.studentTwo && (
-                                            <>
-                                                <span className="font-bold"> - </span>
-                                                <br />
-                                                {
-                                                    tapproval?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo
-                                                        ?.titleReservationStepOne?.studentTwo.firstNames
-                                                }{' '}
-                                                {
-                                                    tapproval?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo
-                                                        ?.titleReservationStepOne?.studentTwo.lastName
-                                                }
-                                            </>
-                                        )}
+                                                <>
+                                                    <span className="font-bold"> - </span>
+                                                    <br />
+                                                    {
+                                                        tapproval?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo
+                                                            ?.titleReservationStepOne?.studentTwo.firstNames
+                                                    }{' '}
+                                                    {
+                                                        tapproval?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo
+                                                            ?.titleReservationStepOne?.studentTwo.lastName
+                                                    }
+                                                </>
+                                            )}
                                     </td>
                                     <td>
                                         {tapproval?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne
                                             ?.student?.studentCode || 'N/A'}
                                         {tapproval?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne
                                             ?.studentTwo && (
-                                            <>
-                                                <br />
-                                                {tapproval?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo
-                                                    ?.titleReservationStepOne?.studentTwo?.studentCode || 'N/A'}
-                                            </>
-                                        )}
+                                                <>
+                                                    <br />
+                                                    {tapproval?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo
+                                                        ?.titleReservationStepOne?.studentTwo?.studentCode || 'N/A'}
+                                                </>
+                                            )}
                                     </td>
                                     <td>
                                         {tapproval?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne
@@ -73,9 +74,24 @@ const TApprovalTable = ({ tapprovals, onEdit }) => {
                                     <td>{tapproval?.updatedAt}</td>
 
                                     <td className="flex gap-4 items-center justify-center">
-                                        <button onClick={() => onEdit(tapproval)} className="btn btn-sm btn-outline-primary">
-                                            Editar
-                                        </button>
+                                        {
+                                            tapproval.meetRequirements ? (
+                                                <button
+                                                    onClick={() =>
+                                                        Swal.fire("Paso Completado", "Tesis aprobada exitosamente.", "success")
+                                                    }
+                                                    className="btn btn-sm btn-outline-info"
+                                                >
+                                                    Completado
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => onEdit(tapproval)}
+                                                    className="btn btn-sm btn-outline-primary"
+                                                >
+                                                    Editar
+                                                </button>
+                                            )}
                                     </td>
                                 </tr>
                             ))
