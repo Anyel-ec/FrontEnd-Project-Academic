@@ -125,18 +125,18 @@ const Sidebar = () => {
 
                                     <AnimateHeight duration={300} height={currentMenu === 'dashboard' ? 'auto' : 0}>
                                         <ul className="sub-menu text-gray-500">
-                                            <li>
+                                            {/* <li>
                                                 <NavLink to="/">{t('sales')}</NavLink>
-                                            </li>
+                                            </li> */}
                                             <li>
                                                 <NavLink to="/progreso">{t('Progreso')}</NavLink>
                                             </li>
-                                            <li>
+                                            {/* <li>
                                                 <NavLink to="/finance">{t('finance')}</NavLink>
                                             </li>
                                             <li>
                                                 <NavLink to="/crypto">{t('crypto')}</NavLink>
-                                            </li>
+                                            </li> */}
                                         </ul>
                                     </AnimateHeight>
                                 </li>
@@ -314,18 +314,18 @@ const Sidebar = () => {
 
                                     <AnimateHeight duration={300} height={currentMenu === 'dashboard' ? 'auto' : 0}>
                                         <ul className="sub-menu text-gray-500">
-                                            <li>
+                                            {/* <li>
                                                 <NavLink to="/">{t('sales')}</NavLink>
-                                            </li>
+                                            </li> */}
                                             <li>
                                                 <NavLink to="/progreso-estudiante">{t('Progreso')}</NavLink>
                                             </li>
-                                            <li>
+                                            {/* <li>
                                                 <NavLink to="/finance">{t('finance')}</NavLink>
                                             </li>
                                             <li>
                                                 <NavLink to="/crypto">{t('crypto')}</NavLink>
-                                            </li>
+                                            </li> */}
                                         </ul>
                                     </AnimateHeight>
                                 </li>

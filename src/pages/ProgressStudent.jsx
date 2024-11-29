@@ -81,6 +81,17 @@ const ProgressStudent = () => {
                                                         ></div>
                                                     </div>
                                                 </td>
+
+                                                <td
+                                                    className={`text-${step.completionPercentage === 100
+                                                        ? 'success'
+                                                        : step.completionPercentage >= 70
+                                                            ? 'primary'
+                                                            : step.completionPercentage >= 30
+                                                                ? 'warning'
+                                                                : 'gray'
+                                                        }`}
+                                                >{`${step.completionPercentage}%`}</td>
                                                 <td>
                                                     {step.stepObject?.createdAt
                                                         ? new Intl.DateTimeFormat('es-ES', {
@@ -92,16 +103,6 @@ const ProgressStudent = () => {
                                                         }).format(new Date(step.stepObject.createdAt))
                                                         : 'No disponible'}
                                                 </td>
-                                                <td
-                                                    className={`text-${step.completionPercentage === 100
-                                                        ? 'success'
-                                                        : step.completionPercentage >= 70
-                                                            ? 'primary'
-                                                            : step.completionPercentage >= 30
-                                                                ? 'warning'
-                                                                : 'gray'
-                                                        }`}
-                                                >{`${step.completionPercentage}%`}</td>
                                             </tr>
                                         ))}
                                 </tbody>
