@@ -16,11 +16,11 @@ const ProgressStudent = () => {
         }
     }, [dispatch, username]);
 
-    const format = (dateString) => {
-        if (!dateString) return 'N/A';
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-        return new Date(dateString).toLocaleString('es-ES', options);
-    };
+    // const format = (dateString) => {
+    //     if (!dateString) return 'N/A';
+    //     const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+    //     return new Date(dateString).toLocaleString('es-ES', options);
+    // };
     const fetchProgress = useCallback(async () => {
         try {
             const reservations = await progressService.getProgresByStudentCode(username);
@@ -31,7 +31,7 @@ const ProgressStudent = () => {
             // setApiError('Failed to load title reservations.');
         }
     }, [username]);
-
+    console.log(progress)
     return (
         <div className="pt-5">
             <div className="grid grid-cols-1 mb-5">

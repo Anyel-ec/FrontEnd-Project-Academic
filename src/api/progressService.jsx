@@ -26,7 +26,7 @@ const getProgresByStudentCode = async (studentCode) => {
 // Obtener todas las reservas de título
 const getAllprogress = async () => {
     try {
-        const response = await axios.get(`${PROGRESS_API_URL}todos`, getAuthHeaders());
+        const response = await axios.get(`${PROGRESS_API_URL}todos/simplificado`, getAuthHeaders());
         return response.data;
     } catch (error) {
         console.error('Error fetching progress:', error);
