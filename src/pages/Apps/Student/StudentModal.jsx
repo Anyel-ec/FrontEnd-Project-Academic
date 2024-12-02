@@ -8,9 +8,10 @@ import Select from 'react-select';
 import IconX from '../../../components/Icon/IconX';
 import { HandleMode } from '../styles/selectStyles';
 import { useSelector } from 'react-redux'; // O useContext si usas contexto
+import { useNumericKeyDown } from '../Steps/utils/useNumericKeyDown ';
 
 const validationSchema = Yup.object().shape({
-    studentCode: Yup.string().length(6, 'Debe tener exactamente 6 caracteres').required('Campo requerido'),
+    studentCode: Yup.string().length(6, 'Debe tener exactamente 6 números').required('Campo requerido').matches(/^\d{6}$/, 'Código debe tener exactamente 6 números'),
     dni: Yup.string()
         .required('DNI es requerido')
         .matches(/^\d{8}$/, 'DNI debe tener exactamente 8 números') // Solo acepta 8 dígitos
@@ -45,7 +46,7 @@ const validateDate = (date) => {
         setBirthDateError('La fecha de nacimiento no puede ser una fecha futura');
         return false;
     }
-    
+
     const age = today.getFullYear() - selectedDate.getFullYear();
     const isBirthdayPassed = today.getMonth() > selectedDate.getMonth() || (today.getMonth() === selectedDate.getMonth() && today.getDate() >= selectedDate.getDate());
 
@@ -53,7 +54,7 @@ const validateDate = (date) => {
         setBirthDateError('Debe tener al menos 18 años');
         return false;
     }
-    
+
     setBirthDateError('');
     return true;
 };
@@ -61,6 +62,8 @@ const validateDate = (date) => {
 const StudentModal = ({ isOpen, onClose, onSave, student, careerOptions }) => {
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark'); // Obtener el tema desde Redux
     const styles = HandleMode(isDarkMode); // Aplicar los estilos según el modo
+    const handleKeyDown = useNumericKeyDown();
+
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" open={isOpen} onClose={onClose} className="relative z-[51]">
@@ -98,7 +101,8 @@ const StudentModal = ({ isOpen, onClose, onSave, student, careerOptions }) => {
                                             {errors.serverError && <div className="text-danger">{errors.serverError}</div>}
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Código</label>
-                                                <Field name="studentCode" type="text" id="studentCode" placeholder="Ingrese el código del estudiante" maxLength={6} className="form-input" />
+                                                <Field name="studentCode" type="text" id="studentCode" placeholder="Ingrese el código del estudiante" maxLength={6} className="form-input" onKeyDown={handleKeyDown}
+                                                />
                                                 <ErrorMessage name="studentCode" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className={submitCount && errors.dni ? 'has-error' : ''}>
@@ -110,12 +114,9 @@ const StudentModal = ({ isOpen, onClose, onSave, student, careerOptions }) => {
                                                     placeholder="Ingrese el DNI"
                                                     maxLength={8}
                                                     className="form-input"
-                                                    onKeyDown={(e) => {
-                                                        // Permite solo números y teclas especiales como borrar y flechas
-                                                        if (!/\d/.test(e.key) && e.key !== 'Backspace' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
-                                                            e.preventDefault();
-                                                        }
-                                                    }}
+                                                    onKeyDown={
+                                                        handleKeyDown
+                                                    }
                                                 />
                                                 <ErrorMessage name="dni" component="div" className="text-danger mt-1" />
                                             </div>
@@ -184,12 +185,9 @@ const StudentModal = ({ isOpen, onClose, onSave, student, careerOptions }) => {
                                                     placeholder="Ingrese el número de celular"
                                                     maxLength={9}
                                                     className="form-input"
-                                                    onKeyDown={(e) => {
-                                                        // Permite solo números y teclas especiales como borrar y flechas
-                                                        if (!/\d/.test(e.key) && e.key !== 'Backspace' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
-                                                            e.preventDefault();
-                                                        }
-                                                    }}
+                                                    onKeyDown={
+                                                        handleKeyDown
+                                                    }
                                                 />
                                                 <ErrorMessage name="phone" component="div" className="text-danger mt-1" />
                                             </div>

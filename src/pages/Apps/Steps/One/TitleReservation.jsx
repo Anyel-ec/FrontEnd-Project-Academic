@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
+import IconLoader from '../../../../components/Icon/IconLoader';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
@@ -26,6 +27,9 @@ const TitleReservation = () => {
     const [editingReservation, setEditingReservation] = useState(null); // Reservación que se está editando
     const [addContactModal, setAddContactModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [isDisabled, setIsDisabled] = useState(false);
+
 
     useEffect(() => {
         dispatch(setPageTitle('Constancia de Filtro'));
@@ -106,6 +110,8 @@ const TitleReservation = () => {
     };
 
     const addTitleReservations = async (selectedStudents) => {
+        setIsLoading(true);
+        setIsDisabled(true);
         try {
             const titleReservationData = {
                 student: { id: selectedStudents[0].value },
@@ -124,8 +130,12 @@ const TitleReservation = () => {
             } else {
                 Swal.fire('Error', 'Error inesperado: ' + error.message, 'error');
             }
+        } finally {
+            setIsLoading(false); // Establecer en false una vez que termine la carga
+            setIsDisabled(false);
         }
     };
+
 
     // Eliminar reservación
     const deleteTitleReservation = async (reservationId, studentId, resetForm) => {
@@ -350,9 +360,22 @@ const TitleReservation = () => {
                             errors={errors}
                             submitCount={submitCount}
                         />
-                        <button type="submit" className="bg-blue-500 text-white font-bold py-2 px-4 mt-5 rounded hover:bg-blue-700" disabled={isSubmitting}>
-                            {isSubmitting ? 'Guardando...' : 'Guardar'}
+                        <button
+                            type="submit"
+                            className="bg-blue-500 text-white font-bold py-2 px-4 mt-5 rounded hover:bg-blue-700"
+                            disabled={isSubmitting || isLoading}
+                        >
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <span className="mr-2">Guardando</span>
+                                    <IconLoader className="animate-[spin_2s_linear_infinite] inline-block align-middle ltr:ml-2 rtl:mr-2 shrink-0" />
+                                </div>
+                            ) : (
+                                'Guardar'
+                            )}
                         </button>
+
+
                     </Form>
                 )}
             </Formik>

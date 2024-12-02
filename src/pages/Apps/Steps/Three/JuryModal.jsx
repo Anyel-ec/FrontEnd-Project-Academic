@@ -1,12 +1,13 @@
 import { Dialog, Transition } from '@headlessui/react';
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
+import IconLoader from '../../../../components/Icon/IconLoader';
 import IconX from '../../../../components/Icon/IconX';
 
-const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions }) => {
+const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions, isLoading }) => {
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
     console.log(juryAppointment);
@@ -187,8 +188,15 @@ const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions })
                                                     <button type="button" className="btn btn-outline-danger" onClick={onClose}>
                                                         Cancelar
                                                     </button>
-                                                    <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
-                                                        Guardar
+                                                    <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4" disabled={isLoading}>
+                                                        {isLoading ? (
+                                                            <span className="flex items-center">
+                                                                Guardando
+                                                                <IconLoader className="animate-[spin_2s_linear_infinite] inline-block ml-2" />
+                                                            </span>
+                                                        ) : (
+                                                            'Guardar'
+                                                        )}
                                                     </button>
                                                 </div>
                                             </Form>

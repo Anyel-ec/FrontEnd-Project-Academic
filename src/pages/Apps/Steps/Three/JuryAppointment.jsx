@@ -20,7 +20,7 @@ const JuryAppoiment = () => {
     const [selectedCareer, setSelectedCareer] = useState(null);
     const [search, setSearch] = useState('');
     const [careerOptions, setCareerOptions] = useState([]);
-
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         dispatch(setPageTitle('Designación de Jurados'));
@@ -66,6 +66,7 @@ const JuryAppoiment = () => {
     };
 
     const handleSave = async (updatedJuryData, projectId) => {
+        setIsLoading(true);
         try {
             await juryAppointmentService.editJuryAppointment(projectId, updatedJuryData);
             Swal.fire('Éxito', 'Jurados actualizado correctamente.', 'success');
@@ -74,6 +75,9 @@ const JuryAppoiment = () => {
         } catch (error) {
             console.error('Error al guardar el jurado:', error.response?.data || error.message);
             Swal.fire('Error', 'No se pudo guardar el jurado. Revisa los datos e inténtalo nuevamente.', 'error');
+        } finally {
+            setIsLoading(false); // Establecer en false una vez que termine la carga
+
         }
     };
     const normalizeText = (text) => {
@@ -107,7 +111,7 @@ const JuryAppoiment = () => {
         <>
             <JurySearch search={search} setSearch={setSearch} careerOptions={careerOptions} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} />
             <JuryTable currentJury={filteredJurys} onEdit={handleEdit} onSave={handleSave} adviserOptions={advisers} />
-            <JuryModal juryAppointment={selectedJury} isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} adviserOptions={advisers} />
+            <JuryModal juryAppointment={selectedJury} isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} isLoading={isLoading} adviserOptions={advisers} />
         </>
     );
 };
