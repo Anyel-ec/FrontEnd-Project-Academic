@@ -9,11 +9,13 @@ import IconX from '../../../components/Icon/IconX';
 import { HandleMode } from '../styles/selectStyles';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { useNumericKeyDown } from '../Steps/utils/useNumericKeyDown ';
+import { useNonNumericKeyDown } from '../Steps/utils/useNonNumericKeyDown';
 
 const validationSchema = Yup.object().shape({
     dni: Yup.string()
         .required('DNI es requerido')
-        .matches(/^\d{8}$/, 'DNI debe tener exactamente 8 números') // Solo acepta 8 dígitos
+        .matches(/^\d{8}$/, 'DNI debe tener exactamente 8 números')
         .length(8, 'DNI debe tener 8 caracteres'),
     firstNames: Yup.string()
         .required('Nombre es requerido')
@@ -42,7 +44,8 @@ const TeacherModal = ({ isOpen, onClose, onSave, teacher, careerOptions }) => {
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
     const [birthDateError, setBirthDateError] = useState('');
-
+    const handleKeyDown = useNumericKeyDown();
+    const handleNonKeyDown = useNonNumericKeyDown();
     // Calcula la fecha mínima permitida (hace 18 años)
     const today = new Date();
     const maxDateAllowed = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
@@ -109,28 +112,23 @@ const TeacherModal = ({ isOpen, onClose, onSave, teacher, careerOptions }) => {
                                                     placeholder="Ingrese el DNI"
                                                     maxLength={8}
                                                     className="form-input"
-                                                    onKeyDown={(e) => {
-                                                        if (!/\d/.test(e.key) && e.key !== 'Backspace' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
-                                                            e.preventDefault();
-                                                        }
-
-                                                    }}
+                                                    onKeyDown={handleKeyDown}
                                                 />{' '}
                                                 <ErrorMessage name="dni" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className={submitCount && errors.firstNames ? 'has-error' : ''}>
                                                 <label htmlFor="firstNames">Nombre</label>
-                                                <Field name="firstNames" type="text" id="firstNames" placeholder="Ingrese el nombre" maxLength={150} className="form-input" />
+                                                <Field name="firstNames" type="text" id="firstNames" placeholder="Ingrese el nombre" maxLength={150} className="form-input" onKeyDown={handleNonKeyDown}/>
                                                 <ErrorMessage name="firstNames" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className={submitCount && errors.lastName ? 'has-error' : ''}>
                                                 <label htmlFor="lastName">Apellido Paterno</label>
-                                                <Field name="lastName" type="text" id="lastName" placeholder="Ingrese el apellido paterno" maxLength={50} className="form-input" />
+                                                <Field name="lastName" type="text" id="lastName" placeholder="Ingrese el apellido paterno" maxLength={50} className="form-input" onKeyDown={handleNonKeyDown} />
                                                 <ErrorMessage name="lastName" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className={submitCount && errors.middleName ? 'has-error' : ''}>
                                                 <label htmlFor="middleName">Apellido Materno</label>
-                                                <Field name="middleName" type="text" id="middleName" placeholder="Ingrese el apellido materno" maxLength={50} className="form-input" />
+                                                <Field name="middleName" type="text" id="middleName" placeholder="Ingrese el apellido materno" maxLength={50} className="form-input" onKeyDown={handleNonKeyDown}/>
                                                 <ErrorMessage name="middleName" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className={submitCount && errors.career ? 'has-error' : ''}>
@@ -190,12 +188,7 @@ const TeacherModal = ({ isOpen, onClose, onSave, teacher, careerOptions }) => {
                                                     placeholder="Ingrese el número de celular"
                                                     maxLength={9}
                                                     className="form-input"
-                                                    onKeyDown={(e) => {
-                                                        // Permite solo números y teclas especiales como borrar y flechas
-                                                        if (!/\d/.test(e.key) && e.key !== 'Backspace' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
-                                                            e.preventDefault();
-                                                        }
-                                                    }}
+                                                    onKeyDown={handleKeyDown}
                                                 />
                                                 <ErrorMessage name="phone" component="div" className="text-danger mt-1" />
                                             </div>

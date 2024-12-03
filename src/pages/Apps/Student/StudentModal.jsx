@@ -9,6 +9,7 @@ import IconX from '../../../components/Icon/IconX';
 import { HandleMode } from '../styles/selectStyles';
 import { useSelector } from 'react-redux'; // O useContext si usas contexto
 import { useNumericKeyDown } from '../Steps/utils/useNumericKeyDown ';
+import { useNonNumericKeyDown } from '../Steps/utils/useNonNumericKeyDown';
 
 const validationSchema = Yup.object().shape({
     studentCode: Yup.string().length(6, 'Debe tener exactamente 6 números').required('Campo requerido').matches(/^\d{6}$/, 'Código debe tener exactamente 6 números'),
@@ -63,6 +64,7 @@ const StudentModal = ({ isOpen, onClose, onSave, student, careerOptions }) => {
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark'); // Obtener el tema desde Redux
     const styles = HandleMode(isDarkMode); // Aplicar los estilos según el modo
     const handleKeyDown = useNumericKeyDown();
+    const handleNonKeyDown = useNonNumericKeyDown();
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -114,25 +116,23 @@ const StudentModal = ({ isOpen, onClose, onSave, student, careerOptions }) => {
                                                     placeholder="Ingrese el DNI"
                                                     maxLength={8}
                                                     className="form-input"
-                                                    onKeyDown={
-                                                        handleKeyDown
-                                                    }
+                                                    onKeyDown={handleKeyDown}
                                                 />
                                                 <ErrorMessage name="dni" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className={submitCount && errors.firstNames ? 'has-error' : ''}>
                                                 <label htmlFor="firstNames">Nombre</label>
-                                                <Field name="firstNames" type="text" id="firstNames" placeholder="Ingrese el nombre" maxLength={150} className="form-input" />
+                                                <Field name="firstNames" type="text" id="firstNames" placeholder="Ingrese el nombre" maxLength={150} className="form-input" onKeyDown={handleNonKeyDown}/>
                                                 <ErrorMessage name="firstNames" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className={submitCount && errors.lastName ? 'has-error' : ''}>
                                                 <label htmlFor="lastName">Apellido Paterno</label>
-                                                <Field name="lastName" type="text" id="lastName" placeholder="Ingrese el apellido paterno" maxLength={50} className="form-input" />
+                                                <Field name="lastName" type="text" id="lastName" placeholder="Ingrese el apellido paterno" maxLength={50} className="form-input" onKeyDown={handleNonKeyDown}/>
                                                 <ErrorMessage name="lastName" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className={submitCount && errors.middleName ? 'has-error' : ''}>
                                                 <label htmlFor="middleName">Apellido Materno</label>
-                                                <Field name="middleName" type="text" id="middleName" placeholder="Ingrese el apellido materno" maxLength={50} className="form-input" />
+                                                <Field name="middleName" type="text" id="middleName" placeholder="Ingrese el apellido materno" maxLength={50} className="form-input" onKeyDown={handleNonKeyDown}/>
                                                 <ErrorMessage name="middleName" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className={submitCount && errors.career ? 'has-error' : ''}>

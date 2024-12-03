@@ -38,6 +38,7 @@ const getTeachers = async () => {
             teacherData.career
         ));
     } catch (error) {
+        // console.error(response.data.message)
         console.error("Error fetching teachers", error);
         throw error;
     }

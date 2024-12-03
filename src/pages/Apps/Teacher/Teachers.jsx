@@ -32,9 +32,9 @@ const Teachers = () => {
                 label: career.name,
                 data: career,
             }));
-
             setCareerOptions(options);
         } catch (error) {
+            
             console.error('Error fetching careers:', error);
         }
     }, []);
