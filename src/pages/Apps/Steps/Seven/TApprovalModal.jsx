@@ -28,6 +28,7 @@ const TApprovalModal = ({ isOpen, onClose, onSave, tapproval }) => {
         }),
         [tapproval]
     );
+
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" open={isOpen} onClose={onClose} className="relative z-[51]">
@@ -54,7 +55,7 @@ const TApprovalModal = ({ isOpen, onClose, onSave, tapproval }) => {
                                     }}
                                     enableReinitialize
                                 >
-                                    {({ errors, submitCount }) => (
+                                    {({ setFieldValue, values, errors, submitCount }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
@@ -74,19 +75,49 @@ const TApprovalModal = ({ isOpen, onClose, onSave, tapproval }) => {
                                                 <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
                                                     <label>
-                                                        <Field type="radio" name="meetRequirements" value="yes" className="form-radio" />
+                                                        <Field
+                                                            type="radio"
+                                                            name="meetRequirements"
+                                                            value="yes"
+                                                            className="form-radio"
+                                                            onChange={() => {
+                                                                setFieldValue('meetRequirements', 'yes');
+                                                                setFieldValue('observations', ''); // Borra las observaciones
+                                                            }}
+                                                        />
                                                         Sí
                                                     </label>
                                                     <label>
-                                                        <Field type="radio" name="meetRequirements" value="no" className="form-radio" />
+                                                        <Field
+                                                            type="radio"
+                                                            name="meetRequirements"
+                                                            value="no"
+                                                            className="form-radio"
+                                                            onChange={() => {
+                                                                setFieldValue('meetRequirements', 'no');
+                                                            }}
+                                                        />
                                                         No
                                                     </label>
                                                 </div>
                                                 <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" />
                                             </div>
+
+                                            {/* Campo de Observaciones */}
                                             <div className="col-span-2">
                                                 <label htmlFor="observations">Observaciones</label>
-                                                <Field name="observations" as="textarea" id="observations" placeholder="Ingrese observaciones" className="form-input" />
+                                                <Field
+                                                    name="observations"
+                                                    as="textarea"
+                                                    id="observations"
+                                                    placeholder="Ingrese observaciones"
+                                                    className="form-input"
+                                                    disabled={values.meetRequirements === 'yes'}
+                                                    style={{
+                                                        cursor: values.meetRequirements === 'yes' ? 'not-allowed' : 'auto',
+                                                        opacity: values.meetRequirements === 'yes' ? 0.5 : 1,
+                                                    }}
+                                                />
                                                 <ErrorMessage name="observations" component="div" className="text-danger mt-1" />
                                             </div>
 

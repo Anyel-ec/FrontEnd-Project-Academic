@@ -105,12 +105,9 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                     onChange={(e) => {
                                                         const query = e.target.value;
                                                         setFieldValue('title', query);
-                                                        handleTitleSearch(query); // Ejecuta la búsqueda difusa
+                                                        handleTitleSearch(query);
                                                     }}
                                                 />
-                                                <ErrorMessage name="title" component="div" className="text-danger mt-1" />
-
-                                                {/* Mostrar resultados de búsqueda */}
                                                 {searchResults.length > 0 && (
                                                     <ul className="absolute z-[100] bg-white dark:bg-[#1a1f2b] mt-2 max-h-48 overflow-y-auto shadow-lg border border-gray-300 dark:border-gray-600 w-full rounded-md">
                                                         {searchResults.map((result) => (
@@ -128,8 +125,8 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                         ))}
                                                     </ul>
                                                 )}
+                                                <ErrorMessage name="title" component="div" className="text-danger mt-1" />
                                             </div>
-                                            {/* Select para la línea de investigación */}
                                             <div className="col-span-1">
                                                 <label htmlFor="lineOfResearch">Línea de Investigación</label>
                                                 <Select
@@ -143,7 +140,6 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                     placeholder="Seleccione una línea..."
                                                 />
                                             </div>
-                                            {/* Campo para la similitud del proyecto */}
                                             <div className="col-span-1">
                                                 <label htmlFor="projectSimilarity">Similitud del proyecto</label>
                                                 <Field
@@ -162,11 +158,28 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                 <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
                                                     <label>
-                                                        <Field type="radio" name="meetRequirements" value="yes" className="form-radio" />
+                                                        <Field
+                                                            type="radio"
+                                                            name="meetRequirements"
+                                                            value="yes"
+                                                            className="form-radio"
+                                                            onChange={() => {
+                                                                setFieldValue('meetRequirements', 'yes');
+                                                                setFieldValue('observation', '');
+                                                            }}
+                                                        />
                                                         Sí
                                                     </label>
                                                     <label>
-                                                        <Field type="radio" name="meetRequirements" value="no" className="form-radio" />
+                                                        <Field
+                                                            type="radio"
+                                                            name="meetRequirements"
+                                                            value="no"
+                                                            className="form-radio"
+                                                            onChange={() => {
+                                                                setFieldValue('meetRequirements', 'no');
+                                                            }}
+                                                        />
                                                         No
                                                     </label>
                                                 </div>
@@ -174,14 +187,25 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                             </div>
                                             <div className="col-span-2">
                                                 <label htmlFor="observation">Observaciones</label>
-                                                <Field name="observation" as="textarea" id="observation" placeholder="Ingrese observaciones" className="form-input" />
+                                                <Field
+                                                    name="observation"
+                                                    as="textarea"
+                                                    id="observation"
+                                                    placeholder="Ingrese observaciones"
+                                                    className="form-input"
+                                                    disabled={values.meetRequirements === 'yes'} // Desactiva el campo si 'Sí' está seleccionado
+                                                    style={{
+                                                        cursor: values.meetRequirements === 'yes' ? 'not-allowed' : 'auto',
+                                                        opacity: values.meetRequirements === 'yes' ? 0.5 : 1,
+                                                    }}
+                                                />
                                                 <ErrorMessage name="observation" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className="flex justify-end items-center mt-8 col-span-2">
                                                 <button type="button" className="btn btn-outline-danger" onClick={onClose}>
                                                     Cancelar
                                                 </button>
-                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4 "  >
+                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
                                                     Actualizar
                                                 </button>
                                             </div>

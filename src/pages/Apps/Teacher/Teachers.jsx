@@ -34,7 +34,7 @@ const Teachers = () => {
             }));
             setCareerOptions(options);
         } catch (error) {
-            
+
             console.error('Error fetching careers:', error);
         }
     }, []);
@@ -65,18 +65,18 @@ const Teachers = () => {
             // Concatena el nombre completo antes de normalizar y comparar
             const fullName = `${teacher.firstNames} ${teacher.lastName}${teacher.middleName ? ' ' + teacher.middleName : ''}`;
             const normalizedFullName = normalizeText(fullName);
-    
+
             // Normaliza y compara el DNI y el nombre completo
             const dniMatch = normalizeText(teacher.dni.toString()).includes(normalizedSearch);
             const fullNameMatch = normalizedFullName.includes(normalizedSearch);
-    
+
             // Verifica si la carrera seleccionada coincide con la carrera del docente
             const matchesCareer = selectedCareer ? teacher.career?.id === selectedCareer.value : true;
-    
+
             return (dniMatch || fullNameMatch) && matchesCareer;
         });
     }, [contactList, search, selectedCareer]); // Agrega 'selectedCareer' como dependencia
-    
+
 
     const saveTeacher = async (values, { resetForm }) => {
         const payload = {
@@ -102,7 +102,12 @@ const Teachers = () => {
             closeModal();
         } catch (error) {
             console.error('Error guardando el docente:', error);
-            showMessage('Error guardando el docente. Por favor, inténtalo de nuevo más tarde.', 'error');
+            if (error.response.status === 400) {
+                showMessage('Campos duplicados. Por favor, corregirlos.', 'error');
+
+            } else {
+                showMessage('Error guardando el docente. Por favor, inténtalo de nuevo más tarde.', 'error');
+            }
         }
     };
 
