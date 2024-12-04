@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Pagination from '../Pagination';
 import Swal from 'sweetalert2';
+import { formatDate } from '../utils/Dates';
 
 const ApprovalTable = ({ projects, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -12,11 +13,6 @@ const ApprovalTable = ({ projects, onEdit }) => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentProjects = projects.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
-    const formatearFecha = (dateString) => {
-        if (!dateString) return 'N/A';
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-        return new Date(dateString).toLocaleString('es-ES', options);
-    };
 
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
@@ -59,7 +55,7 @@ const ApprovalTable = ({ projects, onEdit }) => {
                                     <td>{project.meetRequirements ? 'Sí' : 'No'}</td>
                                     <td>{project.adviser ? `${project.adviser.firstNames || ' '} ${project.adviser.lastName || ' '}` : 'N/A'}</td>
                                     <td>{project.coadviser ? `${project.coadviser.firstNames || ' '} ${project.coadviser.lastName || ' '}` : 'N/A'}</td>
-                                    <td>{formatearFecha(project.updatedAt)}</td>
+                                    <td>{formatDate(project.updatedAt)}</td>
                                     <td className="flex gap-4 items-center justify-center">
                                         {
                                             project.meetRequirements ? (

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Pagination from '../Pagination';
 import Swal from 'sweetalert2';
+import { formatDate } from '../utils/Dates';
 const NotificationTable = ({ notification, onEdit }) => {
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -50,7 +51,7 @@ const NotificationTable = ({ notification, onEdit }) => {
                                     <td>{notification?.meetRequirements ? 'Sí' : 'No'}</td>
                                     <td>{notification?.thesisDate}</td>
 
-                                    <td>{notification?.updatedAt}</td>
+                                    <td>{formatDate(notification?.updatedAt)}</td>
 
                                     <td className="flex gap-4 items-center justify-center">
                                         {

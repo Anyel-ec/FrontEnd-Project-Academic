@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Pagination from '../Pagination';
 import ThesisUpload from './ThesisUpload';
 import Swal from 'sweetalert2';
+import { formatDate } from '../utils/Dates';
 const ThesisTable = ({ thesis, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -50,7 +51,7 @@ const ThesisTable = ({ thesis, onEdit }) => {
                                     </td>
                                     <td>{thesis?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.career?.name || 'N/A'}</td>
                                     <td>{thesis?.meetsRequirements ? 'Sí' : 'No'}</td>
-                                    <td>{thesis?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.updatedAt}</td>
+                                    <td>{formatDate(thesis?.updatedAt)}</td>
                                     <td>
                                         <ThesisUpload thesisId={thesis.id} />
                                     </td>

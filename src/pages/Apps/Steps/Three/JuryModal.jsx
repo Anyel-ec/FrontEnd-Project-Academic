@@ -21,40 +21,40 @@ const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions, i
             meetRequirements: juryAppointment?.meetRequirements ? 'yes' : 'no',
             president: juryAppointment?.president
                 ? {
-                      value: juryAppointment.president.id,
-                      label: `${juryAppointment.president.firstNames} ${juryAppointment.president.lastName}`,
-                  }
+                    value: juryAppointment.president.id,
+                    label: `${juryAppointment.president.firstNames} ${juryAppointment.president.lastName}`,
+                }
                 : null,
             firstMember: juryAppointment?.firstMember
                 ? {
-                      value: juryAppointment.firstMember.id,
-                      label: `${juryAppointment.firstMember.firstNames} ${juryAppointment.firstMember.lastName}`,
-                  }
+                    value: juryAppointment.firstMember.id,
+                    label: `${juryAppointment.firstMember.firstNames} ${juryAppointment.firstMember.lastName}`,
+                }
                 : null,
             secondMember: juryAppointment?.secondMember
                 ? {
-                      value: juryAppointment.secondMember.id,
-                      label: `${juryAppointment.secondMember.firstNames} ${juryAppointment.secondMember.lastName}`,
-                  }
+                    value: juryAppointment.secondMember.id,
+                    label: `${juryAppointment.secondMember.firstNames} ${juryAppointment.secondMember.lastName}`,
+                }
                 : null,
             accessory: juryAppointment?.accessory
                 ? {
-                      value: juryAppointment.accessory.id,
-                      label: `${juryAppointment.accessory.firstNames} ${juryAppointment.accessory.lastName}`,
-                  }
+                    value: juryAppointment.accessory.id,
+                    label: `${juryAppointment.accessory.firstNames} ${juryAppointment.accessory.lastName}`,
+                }
                 : null,
 
             adviser: juryAppointment?.projectApprovalStepTwo?.adviser
                 ? {
-                      value: juryAppointment?.projectApprovalStepTwo?.adviser.id,
-                      label: `${juryAppointment?.projectApprovalStepTwo?.adviser.firstNames} ${juryAppointment?.projectApprovalStepTwo?.adviser.lastName}`,
-                  }
+                    value: juryAppointment?.projectApprovalStepTwo?.adviser.id,
+                    label: `${juryAppointment?.projectApprovalStepTwo?.adviser.firstNames} ${juryAppointment?.projectApprovalStepTwo?.adviser.lastName}`,
+                }
                 : null,
             coadviser: juryAppointment?.projectApprovalStepTwo?.coadviser
                 ? {
-                      value: juryAppointment?.projectApprovalStepTwo?.coadviser.id,
-                      label: `${juryAppointment?.projectApprovalStepTwo?.coadviser.firstNames} ${juryAppointment?.projectApprovalStepTwo?.coadviser.lastName}`,
-                  }
+                    value: juryAppointment?.projectApprovalStepTwo?.coadviser.id,
+                    label: `${juryAppointment?.projectApprovalStepTwo?.coadviser.firstNames} ${juryAppointment?.projectApprovalStepTwo?.coadviser.lastName}`,
+                }
                 : null,
         }),
         [juryAppointment]
@@ -168,11 +168,16 @@ const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions, i
                                                     <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                     <div className="flex gap-4">
                                                         <label>
-                                                            <Field type="radio" name="meetRequirements" value="yes" className="form-radio" />
+                                                            <Field type="radio" name="meetRequirements" value="yes" className="form-radio" onChange={() => {
+                                                                setFieldValue('meetRequirements', 'yes');
+                                                                setFieldValue('observations', '');
+                                                            }} />
                                                             Sí
                                                         </label>
                                                         <label>
-                                                            <Field type="radio" name="meetRequirements" value="no" className="form-radio" />
+                                                            <Field type="radio" name="meetRequirements" value="no" className="form-radio" onChange={() => {
+                                                                setFieldValue('meetRequirements', 'no');
+                                                            }} />
                                                             No
                                                         </label>
                                                     </div>
@@ -180,7 +185,11 @@ const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions, i
 
                                                 <div className="col-span-2">
                                                     <label htmlFor="observations">Observaciones</label>
-                                                    <Field name="observations" as="textarea" id="observations" placeholder="Ingrese observaciones" className="form-input" />
+                                                    <Field name="observations" as="textarea" id="observations" placeholder="Ingrese observaciones" className="form-input" disabled={values.meetRequirements === 'yes'}
+                                                        style={{
+                                                            cursor: values.meetRequirements === 'yes' ? 'not-allowed' : 'auto',
+                                                            opacity: values.meetRequirements === 'yes' ? 0.5 : 1,
+                                                        }} />
                                                     <ErrorMessage name="observations" component="div" className="text-danger mt-1" />
                                                 </div>
 

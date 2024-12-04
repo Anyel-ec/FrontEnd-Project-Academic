@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Pagination from '../Pagination';
 import Swal from 'sweetalert2';
+import { formatDate } from '../utils/Dates';
+
 const TApprovalTable = ({ tapprovals, onEdit }) => {
     console.log(tapprovals);
     const [currentPage, setCurrentPage] = useState(1);
@@ -71,7 +73,7 @@ const TApprovalTable = ({ tapprovals, onEdit }) => {
                                     </td>
                                     <td>{tapproval?.meetRequirements ? 'Sí' : 'No'}</td>
 
-                                    <td>{tapproval?.updatedAt}</td>
+                                    <td>{formatDate(tapproval?.updatedAt)}</td>
 
                                     <td className="flex gap-4 items-center justify-center">
                                         {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import teacherService from '../../../../api/teacherService';
 import Pagination from '../Pagination';
 import Swal from 'sweetalert2';
+import { formatDate } from '../utils/Dates';
 
 const JuryTable = ({ currentJury, onEdit, onSave }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -14,11 +15,6 @@ const JuryTable = ({ currentJury, onEdit, onSave }) => {
     const jurys = currentJury.slice(indexOfFirstItem, indexOfLastItem);
     const [isLoading, setIsLoading] = useState(false);
 
-    const formatearFecha = (dateString) => {
-        if (!dateString) return 'N/A';
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-        return new Date(dateString).toLocaleString('es-ES', options);
-    };
 
     const elegirJurados = async (jury) => {
         const careerId = jury.projectApprovalStepTwo.adviser.career.id;
@@ -139,7 +135,7 @@ const JuryTable = ({ currentJury, onEdit, onSave }) => {
                                             ? `${jury.projectApprovalStepTwo?.coadviser.firstNames || ' '} ${jury.projectApprovalStepTwo?.coadviser.lastName || ' '}`
                                             : 'N/A'}
                                     </td>
-                                    <td>{formatearFecha(jury.updatedAt)}</td>
+                                    <td>{formatDate(jury.updatedAt)}</td>
                                     <td className="flex gap-4 items-center justify-center">
                                         {jury.meetRequirements ? (
                                             <button onClick={() => Swal.fire('Paso Completado', 'Jurados designado exitosamente.', 'success')} className="btn btn-sm btn-outline-info">

@@ -41,7 +41,7 @@ const ThesisModal = ({ isOpen, onClose, onSave, thesis }) => {
                                     }}
                                     enableReinitialize
                                 >
-                                    {({ errors, submitCount }) => (
+                                    {({ setFieldValue, values, errors, submitCount }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
@@ -61,11 +61,16 @@ const ThesisModal = ({ isOpen, onClose, onSave, thesis }) => {
                                                 <label htmlFor="meetsRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
                                                     <label>
-                                                        <Field type="radio" name="meetsRequirements" value="yes" className="form-radio" />
+                                                        <Field type="radio" name="meetsRequirements" value="yes" className="form-radio" onChange={() => {
+                                                            setFieldValue('meetsRequirements', 'yes');
+                                                            setFieldValue('observations', '');
+                                                        }} />
                                                         Sí
                                                     </label>
                                                     <label>
-                                                        <Field type="radio" name="meetsRequirements" value="no" className="form-radio" />
+                                                        <Field type="radio" name="meetsRequirements" value="no" className="form-radio" onChange={() => {
+                                                            setFieldValue('meetsRequirements', 'no');
+                                                        }} />
                                                         No
                                                     </label>
                                                 </div>
@@ -73,7 +78,11 @@ const ThesisModal = ({ isOpen, onClose, onSave, thesis }) => {
                                             </div>
                                             <div className="col-span-2">
                                                 <label htmlFor="observations">Observaciones</label>
-                                                <Field name="observations" as="textarea" id="observations" placeholder="Ingrese observaciones" className="form-input" />
+                                                <Field name="observations" as="textarea" id="observations" placeholder="Ingrese observaciones" className="form-input" disabled={values.meetsRequirements === 'yes'}
+                                                    style={{
+                                                        cursor: values.meetsRequirements === 'yes' ? 'not-allowed' : 'auto',
+                                                        opacity: values.meetsRequirements === 'yes' ? 0.5 : 1,
+                                                    }} />
                                                 <ErrorMessage name="observations" component="div" className="text-danger mt-1" />
                                             </div>
 

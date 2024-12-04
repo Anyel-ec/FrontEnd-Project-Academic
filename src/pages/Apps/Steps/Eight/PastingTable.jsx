@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Pagination from '../Pagination';
 import Swal from 'sweetalert2';
+import { formatDate } from '../utils/Dates';
 const PastingTable = ({ pastings, onEdit }) => {
     console.log(pastings);
     const [currentPage, setCurrentPage] = useState(1);
@@ -56,7 +57,7 @@ const PastingTable = ({ pastings, onEdit }) => {
                                     </td>
                                     <td>{pasting?.meetRequirements ? 'Sí' : 'No'}</td>
 
-                                    <td>{pasting?.updatedAt}</td>
+                                    <td>{formatDate(pasting?.updatedAt)}</td>
 
                                     <td className="flex gap-4 items-center justify-center">
                                         {

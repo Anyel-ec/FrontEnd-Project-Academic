@@ -4,8 +4,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import ConstancyVoucherOne from './ConstancyVoucherOne';
 import ConstancyVoucherTwo from './ConstancyVoucherTwo';
 import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importación es correcto
-import { getYear } from '../utils/Dates';
-
+import { getYear, formatDate } from '../utils/Dates';
 const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit, onDelete, searchTerm }) => {
     const itemsPerPage = 8;
     const [currentPage, setCurrentPage] = useState(1);
@@ -119,8 +118,8 @@ const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit,
                                     <td>{reservation.project ? 'Sí' : 'No'}</td>
                                     <td>{reservation.observations || 'Ninguna'}</td>
                                     <td>{reservation.projectSimilarity}%</td>
-                                    <td>{new Date(reservation.createdAt).toLocaleString()}</td>
-                                    <td>{new Date(reservation.updatedAt).toLocaleString()}</td>
+                                    <td>{formatDate(reservation.createdAt)}</td>
+                                    <td>{formatDate(reservation.updatedAt)}</td>
                                     <td>
                                         <TitleUpload reservaId={reservation.id} meetsRequirements={reservation.meetsRequirements} />
                                     </td>
