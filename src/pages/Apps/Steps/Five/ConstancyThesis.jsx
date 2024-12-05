@@ -1,10 +1,11 @@
+// ConstancyThesis.jsx
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
 import Swal from 'sweetalert2';
 import ThesisTable from './ThesisTable';
 import ThesisModal from './ThesisModal';
-import ThesisSearch from './ThesisSearch';
+import ThesisSearch from './ThesisSearch'; // Asegúrate de tener este componente
 import careerService from '../../../../api/careerService';
 import constancyThesisService from '../../../../api/constancyThesisService';
 
@@ -16,11 +17,12 @@ const ConstancyThesis = () => {
     const [selectedCareer, setSelectedCareer] = useState(null);
     const [search, setSearch] = useState('');
     const [careerOptions, setCareerOptions] = useState([]);
+    const [apiError, setApiError] = useState(null);
 
     useEffect(() => {
         dispatch(setPageTitle('Comprobación de Proyecto'));
-        fetchThesis();
         fetchCareers();
+        fetchThesis();
     }, [dispatch]);
 
     const fetchCareers = useCallback(async () => {
@@ -34,6 +36,7 @@ const ConstancyThesis = () => {
             setCareerOptions(options);
         } catch (error) {
             console.error('Error fetching careers:', error);
+            setApiError('Error al cargar las carreras.');
         }
     }, []);
 
@@ -41,17 +44,19 @@ const ConstancyThesis = () => {
         try {
             const thesis = await constancyThesisService.getAllConstancyThesis();
             setCurrentThesis(thesis);
-            console.log(thesis)
+            console.log(thesis);
         } catch (error) {
-            console.error('Error al obtener los thesies:', error);
+            console.error('Error al obtener las constancias de tesis:', error);
+            setApiError('Error al cargar las constancias de tesis.');
         }
     }, []);
+
     const handleEdit = async (thesis) => {
-        setIsModalOpen(true);
         setSelectedThesis(thesis);
+        setIsModalOpen(true);
     };
 
-    const handleSave = async (updatedThesisData, thesisId) => {
+    const handleSave = async (thesisId, updatedThesisData) => {
         try {
             await constancyThesisService.editConstancyThesis(thesisId, updatedThesisData);
             Swal.fire('Éxito', 'Proyecto actualizado correctamente.', 'success');
@@ -69,6 +74,7 @@ const ConstancyThesis = () => {
             .replace(/[\u0300-\u036f]/g, '')
             .toLowerCase();
     };
+
     const filteredThesis = useMemo(() => {
         const normalizedSearch = normalizeText(search);
         return currentThesis.filter((thesis) => {
@@ -83,8 +89,6 @@ const ConstancyThesis = () => {
             return matchesSearch && matchesCareer;
         });
     }, [currentThesis, search, selectedCareer]);
-
-    console.log(currentThesis)
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -101,7 +105,10 @@ const ConstancyThesis = () => {
                 setSelectedCareer={setSelectedCareer}
             />
 
-            <ThesisTable thesis={filteredThesis}
+            {apiError && <div className="text-danger">{apiError}</div>}
+
+            <ThesisTable
+                thesis={filteredThesis}
                 onEdit={handleEdit}
             />
 

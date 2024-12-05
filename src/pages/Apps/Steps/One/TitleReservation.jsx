@@ -1,3 +1,4 @@
+// TitleReservation.jsx
 import { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
@@ -10,7 +11,7 @@ import lineResearchService from '../../../../api/LineResearchService';
 import studentService from '../../../../api/studentService';
 import titleReservationsService from '../../../../api/titleReservationsService';
 import SelectCareer from './SelectCareer';
-import MultiSelectStudent from './MultiSelectStudent'; // Componente MultiSelect
+import MultiSelectStudent from './MultiSelectStudent';
 import ReservationTable from './ReservationTable';
 import ReservationModal from './ReservationModal';
 import IconSearch from '../../../../components/Icon/IconSearch';
@@ -24,12 +25,11 @@ const TitleReservation = () => {
     const [studentOptions, setStudentOptions] = useState([]);
     const [filteredStudentOptions, setFilteredStudentOptions] = useState([]);
     const [apiError, setApiError] = useState(null);
-    const [editingReservation, setEditingReservation] = useState(null); // Reservación que se está editando
+    const [editingReservation, setEditingReservation] = useState(null);
     const [addContactModal, setAddContactModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isDisabled, setIsDisabled] = useState(false);
-
 
     useEffect(() => {
         dispatch(setPageTitle('Constancia de Filtro'));
@@ -49,7 +49,7 @@ const TitleReservation = () => {
                 data: student,
             }));
             setStudentOptions(options);
-            filterStudents(options); // Filtrar según las reservaciones actuales
+            filterStudents(options);
             setApiError(null);
         } catch (error) {
             console.error('Error al obtener los estudiantes:', error);
@@ -96,15 +96,13 @@ const TitleReservation = () => {
     const filterStudentsByCareer = (careerId) => {
         if (!careerId) {
             setFilteredStudentOptions([]);
-            setLineOptions([]); // Limpiar las líneas de investigación
+            setLineOptions([]);
         } else {
             const reservedStudentIds = new Set(
                 titleReservations.flatMap((reservation) => [reservation.student.id.toString(), reservation.studentTwo ? reservation.studentTwo.id.toString() : null].filter(Boolean))
             );
             const filteredByCareer = studentOptions.filter((student) => student.careerId === careerId && !reservedStudentIds.has(student.value));
             setFilteredStudentOptions(filteredByCareer);
-
-            // Obtener las líneas de investigación de la carrera seleccionada
             fetchResearchLines(careerId);
         }
     };
@@ -131,11 +129,10 @@ const TitleReservation = () => {
                 Swal.fire('Error', 'Error inesperado: ' + error.message, 'error');
             }
         } finally {
-            setIsLoading(false); // Establecer en false una vez que termine la carga
+            setIsLoading(false);
             setIsDisabled(false);
         }
     };
-
 
     // Eliminar reservación
     const deleteTitleReservation = async (reservationId, studentId, resetForm) => {
@@ -154,7 +151,7 @@ const TitleReservation = () => {
             try {
                 await titleReservationsService.deleteTitleReservation(reservationId);
                 await fetchTitleReservations();
-                filterStudents(studentOptions); // Actualizar lista de estudiantes
+                filterStudents(studentOptions);
                 Swal.fire('Eliminado!', 'La reservación ha sido eliminada exitosamente.', 'success');
             } catch (error) {
                 Swal.fire('Error', 'Error al eliminar la reservación.', 'error');
@@ -183,7 +180,7 @@ const TitleReservation = () => {
     }, []);
 
     const handleSaveReservation = async (reservationId, values) => {
-        let title; // Define title aquí para que esté disponible en el bloque catch
+        let title;
         try {
             const titleReservationData = {
                 meetsRequirements: values?.meetRequirements === 'yes',
@@ -193,7 +190,7 @@ const TitleReservation = () => {
                 lineOfResearch: values.lineOfResearch ? { id: values.lineOfResearch.value } : null,
             };
 
-            title = titleReservationData.title; // Asigna el valor de title aquí
+            title = titleReservationData.title;
 
             if (values?.meetRequirements === 'yes') {
                 Swal.fire({
@@ -238,7 +235,7 @@ const TitleReservation = () => {
                                     closeModal(); // Cerrar el modal automáticamente después de la actualización
                                 }
                             } catch (error) {
-                                Swal.fire('Error', 'Unexpected error: ' + error.message, 'error');
+                                Swal.fire('Error', 'Error inesperado: ' + error.message, 'error');
                             }
                         } else if (result.isDismissed) {
                             Swal.fire({
@@ -260,18 +257,18 @@ const TitleReservation = () => {
                     await fetchTitleReservations();
                     closeModal();
                 }
-                response.status === 409 ? console.log('repetido', title) : console.log('czxc');
                 console.log(titleReservationData.title);
             }
         } catch (error) {
             if (error.response && error.response.data.includes('Ya existe una reserva con este título')) {
-                Swal.fire('Error', `${error.response.data}: ${title}`, 'error'); // Usando title en el mensaje de error
+                Swal.fire('Error', `${error.response.data}: ${title}`, 'error');
             } else {
-                Swal.fire('Duplicidad', `Ya existe el título de proyecto "${title}"`, 'error'); // Usando title en el mensaje de error
+                Swal.fire('Duplicidad', `Ya existe el título de proyecto "${title}"`, 'error');
             }
         }
     };
 
+    // Editar reservación
     const editReservation = (reservation) => {
         const careerId = reservation.student.career.id;
         fetchResearchLines(careerId);
@@ -279,6 +276,7 @@ const TitleReservation = () => {
         setAddContactModal(true);
     };
 
+    // Cerrar el modal
     const closeModal = () => {
         setAddContactModal(false);
         setEditingReservation(null);
@@ -293,7 +291,7 @@ const TitleReservation = () => {
                     <div className="relative">
                         <input
                             type="text"
-                            placeholder="Buscar por DNI, codigo y nombre"
+                            placeholder="Buscar por DNI, código y nombre"
                             className="form-input py-2 ltr:pr-11 rtl:pl-11 peer"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -346,7 +344,7 @@ const TitleReservation = () => {
                             options={careerOptions}
                             value={values.career}
                             setFieldValue={setFieldValue}
-                            onChange={setSelectedCareer} // Asegúrate de implementar este prop en SelectCareer
+                            onChange={setSelectedCareer}
                             filterStudentsByCareer={filterStudentsByCareer}
                             errors={errors}
                             submitCount={submitCount}
@@ -374,15 +372,27 @@ const TitleReservation = () => {
                                 'Guardar'
                             )}
                         </button>
-
-
                     </Form>
                 )}
             </Formik>
 
-            <ReservationModal isOpen={addContactModal} onClose={closeModal} reservation={editingReservation} onSave={handleSaveReservation} lineOptions={lineOptions} enableReinitialize />
+            <ReservationModal 
+                isOpen={addContactModal} 
+                onClose={closeModal} 
+                reservation={editingReservation} 
+                onSave={handleSaveReservation} 
+                lineOptions={lineOptions}
+                enableReinitialize 
+            />
 
-            <ReservationTable selectedCareer={selectedCareer} titleReservations={titleReservations} apiError={apiError} onEdit={editReservation} onDelete={deleteTitleReservation} searchTerm={searchTerm} />
+            <ReservationTable 
+                selectedCareer={selectedCareer} 
+                titleReservations={titleReservations} 
+                apiError={apiError} 
+                onEdit={editReservation} 
+                onDelete={deleteTitleReservation} 
+                searchTerm={searchTerm} 
+            />
         </>
     );
 };

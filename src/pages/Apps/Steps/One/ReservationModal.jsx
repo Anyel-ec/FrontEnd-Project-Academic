@@ -1,5 +1,6 @@
+// ReservationModal.jsx
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
@@ -9,9 +10,24 @@ import { useSelector } from 'react-redux';
 import titleReservationsService from '../../../../api/titleReservationsService';
 
 const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions }) => {
-    const [searchResults, setSearchResults] = useState([]);
+    const [pdfAvailable, setPdfAvailable] = useState(null); // Estado para manejar la disponibilidad del PDF
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
+
+    useEffect(() => {
+        if (isOpen && reservation?.id) {
+            titleReservationsService.viewPdf(reservation.id)
+                .then((pdfData) => {
+                    setPdfAvailable(!!pdfData); // true si hay PDF, false si no
+                })
+                .catch((error) => {
+                    console.error('Error al cargar el PDF:', error);
+                    setPdfAvailable(false); // Manejar el error como "No disponible"
+                });
+        } else {
+            setPdfAvailable(null); // Resetear el estado cuando el modal se cierra
+        }
+    }, [isOpen, reservation]);
 
     const validationSchema = Yup.object({
         studentCode: Yup.string().max(6, 'Máximo 6 caracteres').required('Requerido'),
@@ -30,26 +46,9 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
         projectSimilarity: reservation?.projectSimilarity || 0,
     };
 
-    const handleTitleSearch = async (searchQuery) => {
-        if (searchQuery) {
-            try {
-                const results = await titleReservationsService.searchTitleReservations(searchQuery);
-                setSearchResults(results);
-            } catch (error) {
-                console.error('Error al buscar títulos:', error);
-            }
-        } else {
-            setSearchResults([]);
-        }
-    };
-
     const handleSubmit = async (values, { setSubmitting }) => {
-        try {
-            onSave(reservation.id, values);
-        } catch (error) {
-            Swal.fire('Error', 'Hubo un error al guardar los datos: ' + error.message, 'error');
-            setSubmitting(false);
-        }
+        await onSave(reservation.id, values);
+        setSubmitting(false);
     };
 
     return (
@@ -61,8 +60,13 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                         <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg text-black dark:text-white-dark">
                             <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3">Aceptar Reservación</div>
                             <div className="p-5">
-                                <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} enableReinitialize>
-                                    {({ setFieldValue, values, submitCount, errors }) => (
+                                <Formik
+                                    initialValues={initialValues}
+                                    validationSchema={validationSchema}
+                                    onSubmit={handleSubmit}
+                                    enableReinitialize
+                                >
+                                    {({ setFieldValue, values, submitCount, errors, isSubmitting }) => (
                                         <Form className="grid grid-cols-1 gap-4 sm:grid-cols-2 relative">
                                             <div className={submitCount && errors.studentCode ? 'has-error' : ''}>
                                                 <label htmlFor="studentCode">Primer Estudiante</label>
@@ -72,8 +76,6 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                     id="studentCode"
                                                     readOnly
                                                     placeholder="Ingrese el código del estudiante"
-                                                    max={25}
-                                                    min={0}
                                                     maxLength={6}
                                                     className="form-input"
                                                 />
@@ -105,26 +107,9 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                     onChange={(e) => {
                                                         const query = e.target.value;
                                                         setFieldValue('title', query);
-                                                        handleTitleSearch(query);
+                                                        // Opcional: implementar búsqueda de títulos si es necesario
                                                     }}
                                                 />
-                                                {searchResults.length > 0 && (
-                                                    <ul className="absolute z-[100] bg-white dark:bg-[#1a1f2b] mt-2 max-h-48 overflow-y-auto shadow-lg border border-gray-300 dark:border-gray-600 w-full rounded-md">
-                                                        {searchResults.map((result) => (
-                                                            <button
-                                                                key={result.id}
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    setFieldValue('title', result.title);
-                                                                    setSearchResults([]);
-                                                                }}
-                                                                className="w-full text-left cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                                            >
-                                                                {result.title}
-                                                            </button>
-                                                        ))}
-                                                    </ul>
-                                                )}
                                                 <ErrorMessage name="title" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className="col-span-1">
@@ -193,7 +178,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                     id="observation"
                                                     placeholder="Ingrese observaciones"
                                                     className="form-input"
-                                                    disabled={values.meetRequirements === 'yes'} // Desactiva el campo si 'Sí' está seleccionado
+                                                    disabled={values.meetRequirements === 'yes'}
                                                     style={{
                                                         cursor: values.meetRequirements === 'yes' ? 'not-allowed' : 'auto',
                                                         opacity: values.meetRequirements === 'yes' ? 0.5 : 1,
@@ -205,8 +190,16 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                 <button type="button" className="btn btn-outline-danger" onClick={onClose}>
                                                     Cancelar
                                                 </button>
-                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
-                                                    Actualizar
+                                                <button
+                                                    type="submit"
+                                                    className="btn btn-primary ltr:ml-4 rtl:mr-4"
+                                                    disabled={!pdfAvailable || isSubmitting} // Deshabilita si no hay PDF o está enviando
+                                                >
+                                                    {pdfAvailable === null
+                                                        ? 'Cargando...'
+                                                        : pdfAvailable
+                                                            ? 'Actualizar'
+                                                            : 'No disponible'}
                                                 </button>
                                             </div>
                                         </Form>
@@ -219,6 +212,5 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
             </Dialog>
         </Transition>
     );
-};
-
+}
 export default ReservationModal;
