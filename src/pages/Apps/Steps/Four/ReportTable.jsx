@@ -71,6 +71,7 @@ const ReportTable = ({ reports, onEdit }) => {
                                                                 "success"
                                                             )
                                                         }
+
                                                         className="btn btn-sm btn-outline-info"
                                                     >
                                                         Completado

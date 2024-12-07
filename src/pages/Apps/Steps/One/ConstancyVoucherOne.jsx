@@ -45,7 +45,7 @@ const ConstancyVoucher = ({ reservation }) => (
                     <Text>C. c.</Text>
                     <Text>Archivo</Text>
                     <Text>REG. N° 051</Text>
-                    <View style={styles.hr}></View>
+                    <View style={styles.hr} />
                     <View style={styles.footerInfo}>
                         <Text>Campus Universitario S/N, Tamburco, Abancay-Apurímac</Text>
                         <Text>Carretera Panamericana Abancay-Cusco Km. 5</Text>

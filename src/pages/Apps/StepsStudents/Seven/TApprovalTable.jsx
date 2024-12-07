@@ -1,6 +1,6 @@
 import { showObservations } from "../utils/ShowObservations";
 const TApprovalTable = ({ thesis }) => {
-     console.log("resp7:",thesis);
+    console.log("resp7:", thesis);
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
             <div className="table-responsive">
@@ -47,7 +47,7 @@ const TApprovalTable = ({ thesis }) => {
                         ) : (
                             <tr>
                                 <td colSpan="11" className="px-4 py-2 text-center">
-                                    No disponibles
+                                    El sexto paso aún no ah terminado
                                 </td>
                             </tr>
                         )}

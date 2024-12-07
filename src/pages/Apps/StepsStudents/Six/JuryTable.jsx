@@ -1,6 +1,6 @@
 import { showObservations } from "../utils/ShowObservations";
 const JuryTable = ({ jury }) => {
-     console.log("resp7:",jury);
+    console.log("resp7:", jury);
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
             <div className="table-responsive">
@@ -47,7 +47,7 @@ const JuryTable = ({ jury }) => {
                         ) : (
                             <tr>
                                 <td colSpan="11" className="px-4 py-2 text-center">
-                                    No disponibles
+                                    El quinto paso aún no ah terminado
                                 </td>
                             </tr>
                         )}

@@ -1,4 +1,4 @@
-import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importación es correcto
+import TitleUpload from './TitleUpload';
 
 const ReservationTable = ({ reservation, apiError }) => {
     return (
@@ -46,7 +46,7 @@ const ReservationTable = ({ reservation, apiError }) => {
                         ) : (
                             <tr>
                                 <td colSpan="11" className="px-4 py-2 text-center">
-                                    No hay reservaciones disponibles
+                                    Primer paso aún no iniciado
                                 </td>
                             </tr>
                         )}

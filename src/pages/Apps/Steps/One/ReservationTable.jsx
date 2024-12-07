@@ -38,12 +38,13 @@ const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit,
     );
 
     const filteredByCareer =
-        selectedCareer && selectedCareer.value
+        selectedCareer?.value
             ? titleReservations.filter((reservation) => reservation.student.career.id === selectedCareer.value)
             : titleReservations;
 
     const normalizedSearchTerm = searchTerm
         .normalize('NFD')
+        // biome-ignore lint/suspicious/noMisleadingCharacterClass: <explanation>
         .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase();
 
@@ -52,6 +53,7 @@ const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit,
             reservation.student.studentCode.toLowerCase().includes(normalizedSearchTerm) ||
             `${reservation.student.firstNames} ${reservation.student.lastName}`
                 .normalize('NFD')
+                // biome-ignore lint/suspicious/noMisleadingCharacterClass: <explanation>
                 .replace(/[\u0300-\u036f]/g, '')
                 .toLowerCase()
                 .includes(normalizedSearchTerm) ||
@@ -59,6 +61,7 @@ const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit,
                 (reservation.studentTwo.studentCode.toLowerCase().includes(normalizedSearchTerm) ||
                     `${reservation.studentTwo.firstNames} ${reservation.studentTwo.lastName}`
                         .normalize('NFD')
+                        // biome-ignore lint/suspicious/noMisleadingCharacterClass: <explanation>
                         .replace(/[\u0300-\u036f]/g, '')
                         .toLowerCase()
                         .includes(normalizedSearchTerm)))

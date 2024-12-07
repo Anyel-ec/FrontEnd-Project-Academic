@@ -116,6 +116,7 @@ const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions, i
                                                         value={values.president}
                                                         onChange={(option) => setFieldValue('president', option)}
                                                         placeholder="Seleccione un presidente..."
+                                                        isClearable
                                                     />
                                                 </div>
 
@@ -128,6 +129,7 @@ const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions, i
                                                         value={values.firstMember}
                                                         onChange={(option) => setFieldValue('firstMember', option)}
                                                         placeholder="Seleccione un primer miembro..."
+                                                        isClearable
                                                     />
                                                 </div>
 
@@ -140,6 +142,7 @@ const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions, i
                                                         value={values.secondMember}
                                                         onChange={(option) => setFieldValue('secondMember', option)}
                                                         placeholder="Seleccione un segundo miembro..."
+                                                        isClearable
                                                     />
                                                 </div>
 
@@ -152,6 +155,7 @@ const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions, i
                                                         value={values.accessory}
                                                         onChange={(option) => setFieldValue('accessory', option)}
                                                         placeholder="Seleccione un accesitario..."
+                                                        isClearable
                                                     />
                                                 </div>
 

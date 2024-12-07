@@ -47,7 +47,7 @@ const PastingTable = ({ pasting }) => {
                         ) : (
                             <tr>
                                 <td colSpan="11" className="px-4 py-2 text-center">
-                                    No disponibles
+                                    El septimo paso aún no ah terminado
                                 </td>
                             </tr>
                         )}

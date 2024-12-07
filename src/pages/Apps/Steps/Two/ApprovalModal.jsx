@@ -86,13 +86,19 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                             label: `${adviser.firstNames} ${adviser.lastName}`,
                                                         }))}
                                                     value={values.adviser}
-                                                    onChange={(option) => setFieldValue('adviser', option)}
+                                                    onChange={(option) => {
+                                                        setFieldValue('adviser', option);
+                                                        if (!option) {
+                                                            setFieldValue('coadviser', null);
+                                                        }
+                                                    }}
                                                     placeholder="Seleccione un asesor..."
+                                                    isClearable
                                                 />
                                             </div>
 
                                             <div className="col-span-1">
-                                                <label htmlFor="coadviser">Seleccione Co-asesor  </label>
+                                                <label htmlFor="coadviser">Seleccione Co-asesor </label>
                                                 <Select
                                                     id="coadviser"
                                                     styles={styles}
@@ -106,16 +112,23 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                     onChange={(option) => setFieldValue('coadviser', option)}
                                                     placeholder="Seleccione un coasesor..."
                                                     isDisabled={!values.adviser}
+                                                    isClearable
                                                 />
                                             </div>
                                             <div>
                                                 <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
                                                     <label>
-                                                        <Field type="radio" name="meetRequirements" value="yes" className="form-radio" onChange={() => {
-                                                            setFieldValue('meetRequirements', 'yes');
-                                                            setFieldValue('observation', '');
-                                                        }} />
+                                                        <Field
+                                                            type="radio"
+                                                            name="meetRequirements"
+                                                            value="yes"
+                                                            className="form-radio"
+                                                            onChange={() => {
+                                                                setFieldValue('meetRequirements', 'yes');
+                                                                setFieldValue('observation', '');
+                                                            }}
+                                                        />
                                                         Sí
                                                     </label>
                                                     <label>
@@ -123,17 +136,29 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                         No
                                                     </label>
                                                 </div>
-                                                <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" onChange={() => {
-                                                    setFieldValue('meetRequirements', 'no');
-                                                }} />
+                                                <ErrorMessage
+                                                    name="meetRequirements"
+                                                    component="div"
+                                                    className="text-danger mt-1"
+                                                    onChange={() => {
+                                                        setFieldValue('meetRequirements', 'no');
+                                                    }}
+                                                />
                                             </div>
                                             <div className="col-span-2">
                                                 <label htmlFor="observation">Observaciones</label>
-                                                <Field name="observation" as="textarea" id="observation" placeholder="Ingrese observaciones" className="form-input" disabled={values.meetRequirements === 'yes'} // Desactiva el campo si 'Sí' está seleccionado
+                                                <Field
+                                                    name="observation"
+                                                    as="textarea"
+                                                    id="observation"
+                                                    placeholder="Ingrese observaciones"
+                                                    className="form-input"
+                                                    disabled={values.meetRequirements === 'yes'} // Desactiva el campo si 'Sí' está seleccionado
                                                     style={{
                                                         cursor: values.meetRequirements === 'yes' ? 'not-allowed' : 'auto',
                                                         opacity: values.meetRequirements === 'yes' ? 0.5 : 1,
-                                                    }} />
+                                                    }}
+                                                />
                                                 <ErrorMessage name="observation" component="div" className="text-danger mt-1" />
                                             </div>
 
@@ -141,7 +166,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                 <button type="button" className="btn btn-outline-danger" onClick={onClose}>
                                                     Cancelar
                                                 </button>
-                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4" >
+                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
                                                     Guardar
                                                 </button>
                                             </div>
