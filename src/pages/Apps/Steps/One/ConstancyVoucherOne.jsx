@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 import { getWrittenDate, getYear } from '../utils/Dates'
 import Logo from './BANNER.png';
 import styles from './ConstancyVoucherStyles';
-
 const actualData = getWrittenDate();
 const anio = getYear();
-
 const ConstancyVoucher = ({ reservation }) => (
     <Document>
         <Page size="A4">
