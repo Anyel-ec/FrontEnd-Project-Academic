@@ -1,11 +1,10 @@
 import IconSearch from '../../../../components/Icon/IconSearch';
 import Select from 'react-select';
+import useDarkMode from '../utils/darkMode';
 import { HandleMode } from '../../styles/selectStyles';
-import { useSelector } from 'react-redux';
-
 const Header = ({ search, setSearch, careerOptions, selectedCareer, setSelectedCareer }) => {
     // Agrega una opción para cuando no haya carreras disponibles
-    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark'); // Obtener el tema desde Redux
+    const isDarkMode = useDarkMode();
     const styles = HandleMode(isDarkMode); // Aplicar los estilos según el modo
     const optionsWithPlaceholder = careerOptions.length > 0 ? careerOptions : [{ value: '', label: 'No hay carreras disponibles', isDisabled: true }];
 
@@ -13,7 +12,7 @@ const Header = ({ search, setSearch, careerOptions, selectedCareer, setSelectedC
         <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex flex-col">
                 <h2 className="text-2xl font-bold mb-5">Aprobación de Proyecto</h2>
-                
+
             </div>
             <div className="flex sm:flex-row flex-col sm:items-center sm:gap-3 gap-4 w-full sm:w-auto">
                 <div className="flex gap-3">

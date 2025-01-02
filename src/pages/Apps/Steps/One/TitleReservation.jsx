@@ -376,22 +376,22 @@ const TitleReservation = () => {
                 )}
             </Formik>
 
-            <ReservationModal 
-                isOpen={addContactModal} 
-                onClose={closeModal} 
-                reservation={editingReservation} 
-                onSave={handleSaveReservation} 
+            <ReservationModal
+                isOpen={addContactModal}
+                onClose={closeModal}
+                reservation={editingReservation}
+                onSave={handleSaveReservation}
                 lineOptions={lineOptions}
-                enableReinitialize 
+                enableReinitialize
             />
 
-            <ReservationTable 
-                selectedCareer={selectedCareer} 
-                titleReservations={titleReservations} 
-                apiError={apiError} 
-                onEdit={editReservation} 
-                onDelete={deleteTitleReservation} 
-                searchTerm={searchTerm} 
+            <ReservationTable
+                selectedCareer={selectedCareer}
+                titleReservations={titleReservations}
+                apiError={apiError}
+                onEdit={editReservation}
+                onDelete={deleteTitleReservation}
+                searchTerm={searchTerm}
             />
         </>
     );

@@ -2,14 +2,13 @@ import IconUserPlus from '../../../components/Icon/IconUserPlus';
 import IconSearch from '../../../components/Icon/IconSearch';
 import Select from 'react-select';
 import { HandleMode } from '../styles/selectStyles';
-import { useSelector } from 'react-redux';
+import useDarkMode from '../Steps/utils/darkMode';
 
 const Header = ({ search, setSearch, onAddStudent, careerOptions, selectedCareer, setSelectedCareer }) => {
-    // Agrega una opción para cuando no haya carreras disponibles
-    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark'); // Obtener el tema desde Redux
-    const styles = HandleMode(isDarkMode); // Aplicar los estilos según el modo
+    const isDarkMode = useDarkMode();
     const optionsWithPlaceholder = careerOptions.length > 0 ? careerOptions : [{ value: '', label: 'No hay carreras disponibles', isDisabled: true }];
 
+    const styles = HandleMode(isDarkMode); // Aplicar los estilos según el modo
     return (
         <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex flex-col">

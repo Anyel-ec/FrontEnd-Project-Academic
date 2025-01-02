@@ -1,11 +1,11 @@
 import IconUserPlus from "../../../components/Icon/IconUserPlus";
 import IconSearch from "../../../components/Icon/IconSearch";
 import Select from "react-select";
+import useDarkMode from "../Steps/utils/darkMode";
 import { HandleMode } from '../styles/selectStyles';
-import { useSelector } from 'react-redux';
 
 const Header = ({ search, setSearch, onAddTeacher, careerOptions, selectedCareer, setSelectedCareer }) => {
-    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark'); // Obtener el tema desde Redux
+    const isDarkMode = useDarkMode();// Aplicar los estilos según el modo
     const styles = HandleMode(isDarkMode); // Aplicar los estilos según el modo
     return (
         <div className="flex items-center justify-between flex-wrap gap-4">

@@ -1,11 +1,11 @@
 import IconSearch from '../../../../components/Icon/IconSearch';
 import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
-import { useSelector } from 'react-redux';
+import useDarkMode from '../utils/darkMode';
 
 const ThesisSearch = ({ search, setSearch, careerOptions, selectedCareer, setSelectedCareer }) => {
     // Agrega una opción para cuando no haya carreras disponibles
-    const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark'); // Obtener el tema desde Redux
+    const isDarkMode = useDarkMode();
     const styles = HandleMode(isDarkMode); // Aplicar los estilos según el modo
     const optionsWithPlaceholder = careerOptions.length > 0 ? careerOptions : [{ value: '', label: 'No hay carreras disponibles', isDisabled: true }];
 
