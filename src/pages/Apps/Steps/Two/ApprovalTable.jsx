@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Pagination from '../Pagination';
-import Swal from 'sweetalert2';
 import { formatDate } from '../utils/Dates';
+import PdfTwo from '../pdfSteps/PdfTwo';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 
 const ApprovalTable = ({ projects, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -13,6 +14,17 @@ const ApprovalTable = ({ projects, onEdit }) => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentProjects = projects.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
+
+    const getDownloadButton = (project) => {
+        const DocumentComponent = project.titleReservationStepOne.studentTwo ? "dsa" : PdfTwo;
+        const fileName = `P2 INFORME-${project.id}-Aprobación de proyecto de Tesis.pdf`;
+        return (
+            <PDFDownloadLink document={<DocumentComponent project={project} />} fileName={fileName}>
+
+                <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
+            </PDFDownloadLink>
+        );
+    };
 
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
@@ -59,18 +71,7 @@ const ApprovalTable = ({ projects, onEdit }) => {
                                     <td className="flex gap-4 items-center justify-center">
                                         {
                                             project.meetRequirements ? (
-                                                <button
-                                                    onClick={() =>
-                                                        Swal.fire(
-                                                            "Paso Completado",
-                                                            "Proyecto aprobado exitosamente.",
-                                                            "success"
-                                                        )
-                                                    }
-                                                    className="btn btn-sm btn-outline-info"
-                                                >
-                                                    Completado
-                                                </button>
+                                                getDownloadButton(project)
                                             ) : (
                                                 <button
                                                     onClick={() => onEdit(project)}
