@@ -3,7 +3,7 @@ import { Text, View } from '@react-pdf/renderer';
 import styles from './styles/PdfTwoStyles';
 import { getWrittenDateFromInput, getWrittenDate, getYear } from '../utils/Dates';
 
-const PdfTwo = ({ project }) => {
+const PdfTwoT = ({ project }) => {
     console.log(project);
     const anio = getYear();
     const applicationDate = getWrittenDateFromInput("2024-12-01 22:06:49");
@@ -169,4 +169,4 @@ const PdfTwo = ({ project }) => {
     );
 };
 
-export default PdfTwo;
+export default PdfTwoT;

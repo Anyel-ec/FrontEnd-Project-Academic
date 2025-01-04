@@ -20,6 +20,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
             observation: project?.observations || '',
             adviser: project?.adviser ? { value: project.adviser.id, label: `${project.adviser.firstNames} ${project.adviser.lastName}` } : null,
             coadviser: project?.coadviser ? { value: project.coadviser.id, label: `${project.coadviser.firstNames} ${project.coadviser.lastName}` } : null,
+            engineeringFaculty: project?.engineeringFaculty ? { value: project.engineeringFaculty.id, label: `${project.engineeringFaculty.firstNames} ${project.engineeringFaculty.lastName}` } : null,
             meetRequirements: project?.meetRequirements ? 'yes' : 'no',
         }),
         [project, adviserOptions]
@@ -49,6 +50,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                 id: values.adviser ? values.adviser.value : null,
                                             },
                                             coadviser: values.coadviser ? { id: values.coadviser.value } : null,
+                                            engineeringFaculty: values.engineeringFaculty ? { id: values.engineeringFaculty.value } : null,
                                             observations: values.observation || '',
                                             meetRequirements: values.meetRequirements === 'yes', // Conversión a booleano
                                         };

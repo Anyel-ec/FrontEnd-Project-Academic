@@ -21,7 +21,7 @@ const ApprovalTable = ({ projects, onEdit }) => {
         return (
             <PDFDownloadLink document={<DocumentComponent project={project} />} fileName={fileName}>
 
-                <button className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
+                <button type='button' className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
             </PDFDownloadLink>
         );
     };
