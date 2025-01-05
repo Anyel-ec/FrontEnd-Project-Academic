@@ -146,9 +146,9 @@ const JuryTable = ({ currentJury, onEdit, onSave }) => {
                                                 <button onClick={() => onEdit(jury)} className="btn btn-sm btn-outline-primary">
                                                     Editar
                                                 </button>
-                                                <button onClick={() => handleRandomJurySelection(jury)} className="btn btn-sm btn-outline-danger" disabled={isLoading}>
+                                                {/* <button onClick={() => handleRandomJurySelection(jury)} className="btn btn-sm btn-outline-danger" disabled={isLoading}>
                                                     {isLoading ? 'Cargando...' : 'Elegir Jurados'}
-                                                </button>
+                                                </button> */}
                                             </>
                                         )}
                                     </td>

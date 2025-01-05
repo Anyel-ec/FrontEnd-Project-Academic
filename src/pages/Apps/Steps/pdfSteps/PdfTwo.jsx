@@ -1,60 +1,11 @@
 import PdfBase from './PdfBase';
 import { Text, View } from '@react-pdf/renderer';
 import styles from './styles/PdfTwoStyles';
-import { getWrittenDateFromInput, getWrittenDate, getYear,formatDate, formatNumberWithZero } from '../utils/Dates';
-
+import { getWrittenDate, getYear, formatDate, formatNumberWithZero } from '../utils/Dates';
 
 const PdfTwo = ({ project }) => {
-    console.log(project);
     const anio = getYear();
-    const applicationDate = getWrittenDateFromInput("2024-12-01 22:06:49");
     const actualData = getWrittenDate();
-    // const project = {
-    //     anio: anio,
-    //     actualData: actualData,
-    //     applicationDate: applicationDate,
-    //     id: 123,
-    //     title: 'Análisis de Algoritmos en Redes Neuronales',
-    //     projectSimilarity: 18,
-    //     engineeringFaculty?: {
-    //         dni: 123456789,
-    //         firstName: "Joel",
-    //         middleName: "Jose",
-    //         lastName: "Huacan",
-    //         carrer: {
-    //             name: "Ingeniería de Sistemas",
-    //         }
-    //     },
-    //     asesor: { 
-    //         dni: 123456784,
-    //         firstName: "Juan",
-    //         middleName: "Anyel",
-    //         lastName: "Paztos",
-    //         carrer: {
-    //             name: "Ingeniería de Sistemas",
-    //         }
-    //     },
-    //     coAsesor: {
-    //         dni: 123456754,
-    //         firstName: "Jerick",
-    //         middleName: "Johan",
-    //         lastName: "Patiño",
-    //         carrer: {
-    //             name: "Ingeniería de Sistemas",
-    //         }
-    //     },
-    //     student: {
-    //         firstName: 'Juan',
-    //         middleName: 'Alberto',
-    //         lastName: 'Carlos',
-    //         dni: '12345678',
-    //         studentCode: '2024001',
-    //         career: {
-    //             name: 'Ingeniería de Sistemas',
-    //         },
-    //     },
-    // };
-
     return (
         <PdfBase commemorativeText={false}>
             <Text style={styles?.h1}>
@@ -88,7 +39,7 @@ const PdfTwo = ({ project }) => {
                     <Text style={styles?.tableColHeader}>REF.</Text>
                     <View style={styles?.tableCol}>
                         <Text>
-                            <Text style={styles?.bold}>:</Text> SOLICITUD de
+                            <Text style={styles?.bold}>:</Text> SOLICITUD de 
                             <Text>{formatDate(project.updatedAt)}</Text>
                             <Text style={styles?.bold}>                                    Reg. N° {formatNumberWithZero(project.id)}</Text>
                         </Text>
@@ -108,57 +59,94 @@ const PdfTwo = ({ project }) => {
                 </View>
                 <Text>-------------------------------------------------------------------------------------------------------------</Text>
             </View>
-            <View style={styles?.section}>
-                <Text>
-                    Por intermedio del presente, me dirijo a usted, para informarle que,
-                    <Text style={styles?.bold}> {`${project?.titleReservationStepOne?.student?.firstNames} ${project?.titleReservationStepOne?.student?.middleName} ${project?.titleReservationStepOne?.student?.lastName} `}</Text>
-                    identificado con DNI N° <Text style={styles?.bold}>{project?.titleReservationStepOne?.student?.dni}</Text> y con código de matrícula N°
-                    <Text style={styles?.bold}> {project?.titleReservationStepOne?.student?.studentCode}</Text> Bachiller de la
-                    <Text style={styles?.bold}> E.A.P. de {project?.titleReservationStepOne?.student?.career.name}</Text> y Sistemas de la Facultad de Ingeniería, ha presentado el proyecto de tesis titulada:{' '}
-                    <Text style={styles?.bold}>
-                        {project?.title}
+
+            {/* Sección condicional para uno o dos estudiantes */}
+            {project?.titleReservationStepOne?.studentTwo ? (
+                // Formato para dos estudiantes
+                <View style={styles?.section}>
+                    <Text>
+                        Por intermedio del presente, me dirijo a usted, para informarle que,
+                        <Text style={styles?.bold}>
+                            {` ${project?.titleReservationStepOne?.student?.firstNames} ${project?.titleReservationStepOne?.student?.middleName} ${project?.titleReservationStepOne?.student?.lastName}`}
+                        </Text>{' '}
+                        identificado con DNI N°{' '}
+                        <Text style={styles?.bold}>{project?.titleReservationStepOne?.student?.dni}</Text> y con código de matrícula N°{' '}
+                        <Text style={styles?.bold}>{project?.titleReservationStepOne?.student?.studentCode}</Text>, junto con{' '}
+                        <Text style={styles?.bold}>
+                            {`${project?.titleReservationStepOne?.studentTwo?.firstNames} ${project?.titleReservationStepOne?.studentTwo?.middleName} ${project?.titleReservationStepOne?.studentTwo?.lastName}`}
+                        </Text>{' '}
+                        identificado con DNI N°{' '}
+                        <Text style={styles?.bold}>{project?.titleReservationStepOne?.studentTwo?.dni}</Text> y con código de matrícula N°{' '}
+                        <Text style={styles?.bold}>{project?.titleReservationStepOne?.studentTwo?.studentCode}</Text> Bachilleres de la
+                        <Text style={styles?.bold}>
+                            {' '}
+                            E.A.P. de {project?.titleReservationStepOne?.student?.career.name}
+                        </Text>{' '}
+                        de la Facultad de Ingeniería, han presentado el proyecto de tesis titulado:{' '}
+                        <Text style={styles?.bold}>{project?.titleReservationStepOne?.title}</Text>; cuyo asesor es el{' '}
+                        <Text style={styles?.bold}>
+                            {`${project?.adviser?.firstNames} ${project?.adviser?.middleName} ${project?.adviser?.lastName}`}
+                        </Text>{' '}
+                        y Co asesor{' '}
+                        <Text style={[styles?.bold, styles?.blueText]}>
+                            {`${project?.coadviser?.firstNames} ${project?.coadviser?.middleName} ${project?.coadviser?.lastName}`}
+                        </Text>
+                        , en cumplimiento con los requisitos exigidos para la
+                        <Text style={styles?.bold}> aprobación del proyecto de tesis</Text> según reglamento de investigación UNAMBA (Artículos
+                        <Text style={styles?.bold}> 5, 7, 17, 24 y 27</Text>), adjunto los antecedentes que detallo a continuación:
                     </Text>
-                    ; cuyo asesor es el <Text style={styles?.bold}>{`${project?.adviser?.firstNames} ${project?.adviser?.middleName} ${project?.adviser?.lastName}`} y</Text>; Co asesor
-                    <Text style={[styles?.bold, styles?.blueText]}> {`${project?.coadviser?.firstNames} ${project?.coadviser?.middleName} ${project?.coadviser?.lastName}`}</Text>, en cumplimiento con los requisitos exigidos para la
-                    <Text style={styles?.bold}> aprobación del proyecto de tesis</Text> según reglamento de investigación UNAMBA (Artículos
-                    <Text style={styles?.bold}> 5, 7, 17, 24 y 27</Text>), adjunto los antecedentes que detallo a continuación:
-                </Text>
-            </View>
+                </View>
+            ) : (
+                // Formato para un estudiante
+                <View style={styles?.section}>
+                    <Text>
+                        Por intermedio del presente, me dirijo a usted, para informarle que,
+                        <Text style={styles?.bold}>
+                            {` ${project?.titleReservationStepOne?.student?.firstNames} ${project?.titleReservationStepOne?.student?.middleName} ${project?.titleReservationStepOne?.student?.lastName}`}
+                        </Text>{' '}
+                        identificado con DNI N°{' '}
+                        <Text style={styles?.bold}>{project?.titleReservationStepOne?.student?.dni}</Text> y con código de matrícula N°{' '}
+                        <Text style={styles?.bold}>{project?.titleReservationStepOne?.student?.studentCode}</Text>, Bachiller de la
+                        <Text style={styles?.bold}>
+                            {' '}
+                            E.A.P. de {project?.titleReservationStepOne?.student?.career.name}
+                        </Text>{' '}
+                        de la Facultad de Ingeniería, ha presentado el proyecto de tesis titulado:{' '}
+                        <Text style={styles?.bold}>{project?.titleReservationStepOne?.title}</Text>; cuyo asesor es el{' '}
+                        <Text style={styles?.bold}>
+                            {`${project?.adviser?.firstNames} ${project?.adviser?.middleName} ${project?.adviser?.lastName}`}
+                        </Text>{' '}
+                        y Co asesor{' '}
+                        <Text style={[styles?.bold, styles?.blueText]}>
+                            {`${project?.coadviser?.firstNames} ${project?.coadviser?.middleName} ${project?.coadviser?.lastName}`}
+                        </Text>
+                        , en cumplimiento con los requisitos exigidos para la
+                        <Text style={styles?.bold}> aprobación del proyecto de tesis</Text> según reglamento de investigación UNAMBA (Artículos
+                        <Text style={styles?.bold}> 5, 7, 17, 24 y 27</Text>), adjunto los antecedentes que detallo a continuación:
+                    </Text>
+                </View>
+            )}
+
+            {/* Resto del contenido permanece igual */}
             <View style={styles?.ul}>
-                <Text style={styles?.ulLi}>
-                    1.	Solicitud de aprobación de proyecto de tesis
-                </Text>
-                <Text style={styles?.ulLi}>
-                    2.	Anexo 4 (Informe de asesoría según reglamento de investigación)
-                </Text>
-                <Text style={styles?.ulLi}>
-                    3.	Constancia de filtro de similitud y reporte de Software COMPILATIO magister
-                </Text>
-                <Text style={styles?.ulLi}>
-                    4.	Ejemplar de proyecto de tesis en físico.
-                </Text>
-                <Text style={styles?.ulLi}>
-                    5.	Constancias de haber aprobado Metodología de investigación.
-                </Text>
-                <Text style={styles?.ulLi}>
-                    6.	Pagos de S/.20.00 por concepto de revisión y aprobación de proyecto de tesis
-                </Text>
-                <Text style={styles?.ulLi}>
-                    7.	CTI Vitae de CONCYTEC de Asesor.
-                </Text>
+                <Text style={styles?.ulLi}>1. Solicitud de aprobación de proyecto de tesis</Text>
+                <Text style={styles?.ulLi}>2. Anexo 4 (Informe de asesoría según reglamento de investigación)</Text>
+                <Text style={styles?.ulLi}>3. Constancia de filtro de similitud y reporte de Software COMPILATIO magister</Text>
+                <Text style={styles?.ulLi}>4. Ejemplar de proyecto de tesis en físico.</Text>
+                <Text style={styles?.ulLi}>5. Constancias de haber aprobado Metodología de investigación.</Text>
+                <Text style={styles?.ulLi}>6. Pagos de S/.20.00 por concepto de revisión y aprobación de proyecto de tesis</Text>
+                <Text style={styles?.ulLi}>7. CTI Vitae de CONCYTEC de Asesor.</Text>
             </View>
             <View style={styles?.section}>
                 <Text>
                     En concordancia a los artículos 17, 24 y 27 del Reglamento de Investigación UNAMBA vigente, la Dirección
-                    de la Unidad de Investigación de la Facultad de Ingeniería
-                    <Text style={[styles?.bold, styles?.underline]}>
+                    de la Unidad de Investigación de la Facultad de Ingeniería{' '}
+                    <Text style={styles?.underline}>
                         cumple con elevar el presente informe para la
                         formalización y aprobación del presente proyecto de tesis mediante acto resolutivo.
-                    </Text>
-                    Indicando que el
-                    interesado a partir de la aprobación del proyecto, tiene un plazo máximo de un año para la ejecución
+                    </Text>{' '}
+                    Indicando que el interesado a partir de la aprobación del proyecto, tiene un plazo máximo de un año para la ejecución
                     del proyecto de tesis, pudiendo ampliarse por seis meses, previa justificación del Asesor.
-
                 </Text>
             </View>
             <View style={styles?.section}>
