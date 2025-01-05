@@ -1,7 +1,7 @@
 import PdfBase from './PdfBase';
 import { Text, View } from '@react-pdf/renderer';
 import styles from './styles/PdfTwoStyles';
-import { getWrittenDateFromInput, getWrittenDate, getYear } from '../utils/Dates';
+import { getWrittenDateFromInput, getWrittenDate, getYear,formatDate } from '../utils/Dates';
 
 const PdfTwoT = ({ project }) => {
     console.log(project);
@@ -88,7 +88,7 @@ const PdfTwoT = ({ project }) => {
                     <View style={styles?.tableCol}>
                         <Text>
                             <Text style={styles?.bold}>:</Text> SOLICITUD de
-                            <Text>{applicationDate}</Text>
+                            <Text>{formatDate(project.updatedAt)}</Text>
                             <Text style={styles?.bold}>                                    Reg. N° 080</Text>
                         </Text>
                         <Text>Anexo 4 (Docente Asesor)</Text>

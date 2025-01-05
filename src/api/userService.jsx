@@ -19,7 +19,7 @@ const getUser = async (username) => {
         });
 
         // Mapear la respuesta si es necesario
-        const userData = response.data.resultado;
+        const userData = response.data.result;
         return new User(userData.idUser, userData.username, userData.firstName, userData.lastName, userData.email);
     } catch (error) {
         console.error('Error fetching user', error);

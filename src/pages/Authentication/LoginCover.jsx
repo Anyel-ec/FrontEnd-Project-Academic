@@ -5,6 +5,7 @@ import { setPageTitle } from '../../store/themeConfigSlice';
 import IconMail from '../../components/Icon/IconMail';
 import IconLockDots from '../../components/Icon/IconLockDots';
 import AuthService from '../../../src/api/AuthService';
+import axios from 'axios';
 
 const LoginCover = () => {
     const dispatch = useDispatch();
@@ -12,11 +13,12 @@ const LoginCover = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+
 
     useEffect(() => {
         dispatch(setPageTitle('Iniciar Sesión'));
     }, [dispatch]);
-
     const handleLogin = async (e) => {
         e.preventDefault();
         const isSuccess = await AuthService.login(username, password);
@@ -24,7 +26,6 @@ const LoginCover = () => {
             navigate('/');
         }
     };
-
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
@@ -106,8 +107,8 @@ const LoginCover = () => {
                                         </span>
                                     </div>
                                 </div>
-                                <button type="submit" className="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]">
-                                    Iniciar Sesión
+                                <button type="submit" className="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]" disabled={loading}>
+                                    {loading ? 'Cargando...' : 'Iniciar Sesión'}
                                 </button>
                             </form>
                         </div>

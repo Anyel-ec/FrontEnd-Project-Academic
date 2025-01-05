@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Pagination from '../Pagination';
 import { formatDate } from '../utils/Dates';
 import PdfTwo from '../pdfSteps/PdfTwo';
+import PdfTwoT from '../pdfSteps/PdfTwoT';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 
 const ApprovalTable = ({ projects, onEdit }) => {
@@ -16,7 +17,7 @@ const ApprovalTable = ({ projects, onEdit }) => {
     const currentProjects = projects.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
 
     const getDownloadButton = (project) => {
-        const DocumentComponent = project.titleReservationStepOne.studentTwo ? "dsa" : PdfTwo;
+        const DocumentComponent = project.titleReservationStepOne.studentTwo ? PdfTwoT : PdfTwo;
         const fileName = `P2 INFORME-${project.id}-Aprobación de proyecto de Tesis.pdf`;
         return (
             <PDFDownloadLink document={<DocumentComponent project={project} />} fileName={fileName}>

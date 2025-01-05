@@ -1,7 +1,8 @@
 import PdfBase from './PdfBase';
 import { Text, View } from '@react-pdf/renderer';
 import styles from './styles/PdfTwoStyles';
-import { getWrittenDateFromInput, getWrittenDate, getYear } from '../utils/Dates';
+import { getWrittenDateFromInput, getWrittenDate, getYear,formatDate, formatNumberWithZero } from '../utils/Dates';
+
 
 const PdfTwo = ({ project }) => {
     console.log(project);
@@ -88,8 +89,8 @@ const PdfTwo = ({ project }) => {
                     <View style={styles?.tableCol}>
                         <Text>
                             <Text style={styles?.bold}>:</Text> SOLICITUD de
-                            <Text>{applicationDate}</Text>
-                            <Text style={styles?.bold}>                                    Reg. N° 080</Text>
+                            <Text>{formatDate(project.updatedAt)}</Text>
+                            <Text style={styles?.bold}>                                    Reg. N° {formatNumberWithZero(project.id)}</Text>
                         </Text>
                         <Text>Anexo 4 (Docente Asesor)</Text>
                     </View>
@@ -149,7 +150,7 @@ const PdfTwo = ({ project }) => {
             <View style={styles?.section}>
                 <Text>
                     En concordancia a los artículos 17, 24 y 27 del Reglamento de Investigación UNAMBA vigente, la Dirección
-                    de la Unidad de Investigación de la Facultad de Ingeniería 
+                    de la Unidad de Investigación de la Facultad de Ingeniería
                     <Text style={[styles?.bold, styles?.underline]}>
                         cumple con elevar el presente informe para la
                         formalización y aprobación del presente proyecto de tesis mediante acto resolutivo.

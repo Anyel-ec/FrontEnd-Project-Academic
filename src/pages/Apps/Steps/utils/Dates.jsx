@@ -82,3 +82,6 @@ export const getFullWrittenDateTimeFromInput = (inputDate) => {
 
     return `${day} de ${month} del año ${yearInWords}, siendo las ${hours}:${minutes} horas`;
 };
+export const formatNumberWithZero = (number) => {
+    return number.toString().padStart(3, '0');
+};

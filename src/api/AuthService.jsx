@@ -9,73 +9,44 @@ const UPDATE_FIRST_ACCESS_URL = `${AppEnvironments.baseUrl}api/v1/usuarios/actua
 
 const login = async (username, password) => {
     try {
-        const response = await axios.post(AUTH_API_URL, {
-            username: username,
-            password: password
-        });
-        if (response.data.respuesta) {
-            const token = response.data.mensaje;
+        const response = await axios.post(AUTH_API_URL, { username, password });
+        if (response.data.success) {
+            const token = response.data.result;
+            console.log('Token recibido:', token);
+
             // Guardar el token en localStorage
             localStorage.setItem('token', token);
-            // Ahora obtener los datos del usuario
+
+            // Verificar los datos del usuario
             const userResponse = await axios.get(`${USER_API_URL}${username}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: { Authorization: `Bearer ${token}` },
             });
 
-            if (userResponse.data.respuesta) {
-                const userData = userResponse.data.resultado;
-                // Excluir la contraseña
-                const { password, ...userWithoutPassword } = userData;
-
-                // Guardar los datos del usuario en localStorage
+            if (userResponse.data.success) {
+                const { password: _, ...userWithoutPassword } = userResponse.data.result; // Cambiado a 'result'
                 localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-                console.log("Datos del usuario guardados en localStorage", userWithoutPassword);
-
-                // Verificar si es el primer inicio de sesión y si el rol es "estudiante"
-                if (userWithoutPassword.firstLogin && userWithoutPassword.rol.name === 'estudiante') {
-                    // Redirigir a la página de cambio de contraseña
-                    window.location.href = '/auth/cambiar-contrasena';
-                    console.log(userWithoutPassword);
-                    return false; // Evitar redirecciones adicionales
-                }
-
                 return true;
             } else {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'No se pudieron obtener los datos del usuario.',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                });
-                return false;
+                throw new Error('No se pudieron obtener los datos del usuario.');
             }
-        } else {
-            Swal.fire({
-                title: 'Error',
-                text: response.data.mensaje,
-                icon: 'error',
-                confirmButtonText: 'Aceptar'
-            });
-            return false;
-        }
+        } 
     } catch (error) {
-        console.error("Error al hacer login", error);
+        console.error('Error en AuthService.login:', error);
         Swal.fire({
             title: 'Error',
-            text: 'Hubo un error al intentar iniciar sesión.',
+            text: error.message || 'Hubo un problema al iniciar sesión.',
             icon: 'error',
-            confirmButtonText: 'Aceptar'
+            confirmButtonText: 'Aceptar',
         });
-        throw error;
+        return false;
     }
 };
+
 
 const actualizarContrasena = async (username, newPassword) => {
     try {
         const response = await axios.post(`${UPDATE_PASSWORD_URL}${username}`, { password: newPassword }); // Cambia `newPassword` a `password`
-        return response.data; // Asegúrate de devolver todo el objeto de respuesta
+        return response.data;
     } catch (error) {
         console.error("Error al actualizar la contraseña", error);
         Swal.fire({
@@ -91,7 +62,7 @@ const actualizarContrasena = async (username, newPassword) => {
 const updateFirstAccess = async (username) => {
     try {
         const response = await axios.put(`${UPDATE_FIRST_ACCESS_URL}${username}`);
-        return response.data; // Asegúrate de devolver todo el objeto de respuesta
+        return response.data;
     } catch (error) {
         console.error("Error al actualizar el primer acceso", error);
         Swal.fire({
