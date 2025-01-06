@@ -6,7 +6,6 @@ const PDF_API_URL = `${AppEnvironments.baseUrl}api/v1/pdfDocument/StepFive`;
 const getAuthToken = () => {
     return localStorage.getItem('token');
 };
-console.log(localStorage.getItem('token'));
 const getAuthHeaders = () => ({
     headers: {
         Authorization: `Bearer ${getAuthToken()}`,

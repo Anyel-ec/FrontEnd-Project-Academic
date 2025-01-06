@@ -17,7 +17,7 @@ const PdfTwo = ({ project }) => {
                     <Text style={styles?.tableColHeader}>A</Text>
                     <View style={styles?.tableCol}>
                         <Text>
-                            <Text style={styles?.bold}>:</Text> Dr. {`${project?.engineeringFaculty?.firstName} ${project?.engineeringFaculty?.middleName} ${project?.engineeringFaculty?.lastName}`}
+                            <Text style={styles?.bold}>:</Text> {project?.titleReservationStepOne?.student?.career?.faculty?.deanFacultyName}
                         </Text>
                         <Text>Decano de la Facultad de Ingeniería – UNAMBA</Text>
                     </View>
@@ -39,9 +39,9 @@ const PdfTwo = ({ project }) => {
                     <Text style={styles?.tableColHeader}>REF.</Text>
                     <View style={styles?.tableCol}>
                         <Text>
-                            <Text style={styles?.bold}>:</Text> SOLICITUD de 
+                            <Text style={styles?.bold}>:</Text> SOLICITUD de
                             <Text>{formatDate(project.updatedAt)}</Text>
-                            <Text style={styles?.bold}>                                    Reg. N° {formatNumberWithZero(project.id)}</Text>
+                            <Text style={styles?.bold}>                                    Reg. N° {formatNumberWithZero(project.registrationNumber)}</Text>
                         </Text>
                         <Text>Anexo 4 (Docente Asesor)</Text>
                     </View>

@@ -1,134 +1,109 @@
-
+import React from 'react';
 import PdfBase from './PdfBase';
-import { PDFViewer, Text, View } from '@react-pdf/renderer';
+import { Text, View } from '@react-pdf/renderer';
 import styles from './styles/PdfThreeAStyles';
-import { getFullWrittenDateTimeFromInput, getWrittenDate, getYear } from '../../utils/Dates';
+import { getFullWrittenDateTimeFromInput, getWrittenDateFromInput, formatISODateToSimpleDate, getYear } from '../utils/Dates';
 
-const PdfThreeA = () => {
+const PdfThreeA = ({ jury }) => {
+    // Validación de entrada para evitar errores
+    if (!jury) {
+        console.error("El objeto 'jury' no se recibió correctamente");
+        return (
+            <PdfBase commemorativeText={false}>
+                <Text style={styles.h1}>Error: Datos del jurado no disponibles</Text>
+            </PdfBase>
+        );
+    }
+
+    // Fechas y valores procesados
+    const currentDateTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const applicationDate = getFullWrittenDateTimeFromInput(currentDateTime);
+
+    const updatedDate = jury?.updatedAt ? formatISODateToSimpleDate(jury.updatedAt) : "Fecha no disponible";
+    const requestDate = getWrittenDateFromInput(updatedDate);
+
     const anio = getYear();
-    const applicationDate = getFullWrittenDateTimeFromInput("2024-12-01 22:06:49");
-    const actualData = getWrittenDate();
-    const juryAppointment = {
-        anio: anio,
-        actualData: actualData,
-        applicationDate: applicationDate,
-        id: 123,
-        title: 'Análisis de Algoritmos en Redes Neuronales',
-        projectSimilarity: 18,
-        engineeringFaculty: {
-            dni: 123456789,
-            firstName: "Joel",
-            middleName: "Jose",
-            lastName: "Huacan",
-            carrer: {
-                name: "Ingeniería de Sistemas",
-            }
-        },
-        asesor: {
-            dni: 123456784,
-            firstName: "Juan",
-            middleName: "Anyel",
-            lastName: "Paztos",
-            carrer: {
-                name: "Ingeniería de Sistemas",
-            }
-        },
-        coAsesor: {
-            dni: 123456754,
-            firstName: "Jerick",
-            middleName: "Johan",
-            lastName: "Patiño",
-            carrer: {
-                name: "Ingeniería de Sistemas",
-            }
-        },
-        student: {
-            firstName: 'Juan Carlos',
-            lastName: 'Perez Gomez',
-            dni: '12345678',
-            studentCode: '2024001',
-            career: {
-                name: 'Ingeniería de Sistemas',
-            },
-        },
-    };
-    console.log(applicationDate);
 
     return (
+        <PdfBase commemorativeText={false}>
+            <Text style={styles.h1}>ACTA DE DESIGNACIÓN DE JURADOS DE TESIS</Text>
 
-        <PDFViewer style={{ width: '100vw', height: '100vh' }}>
-
-            <PdfBase commemorativeText={false}>
-                <Text style={styles.h1}>
-                    ACTA DE DESIGNACIÓN DE JURADOS DE TESIS
+            <View style={styles.section}>
+                <Text>
+                    En fecha {applicationDate}, reunidas de manera presencial, el director de la Unidad de Investigación de la Facultad de Ingeniería,
+                    <Text style={styles.bold}> Dr. Lintol Contreras Salas</Text>, y miembros de la Comisión de Investigación de la
+                    <Text style={styles.bold}> Escuela Académico Profesional de {jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.career?.name || "Carrera no disponible"}</Text>,
+                    conformado por el Mgt. {jury?.projectApprovalStepTwo?.adviser?.firstNames || ""} {jury?.projectApprovalStepTwo?.adviser?.middleName || ""} {jury?.projectApprovalStepTwo?.adviser?.lastName || ""} y demás miembros de la comisión y en atención a la solicitud s/n presentado por el
+                    <Text style={styles.bold}> Bachiller {jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.firstName} {jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.middleName} {jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.lastName}</Text>,
+                    de fecha {requestDate}, peticionando la designación de jurados para revisión del informe final de tesis denominado
+                    <Text style={styles.bold}>: “{jury?.projectApprovalStepTwo?.titleReservationStepOne?.title || "Título no disponible"}",</Text> aprobado mediante
+                    <Text style={styles.bold}> RESOLUCIÓN DECANAL N° {jury.id}-{anio}-DFI-UNAMBA</Text>.
+                    Se procede a realizar la designación de jurados e incorporación de Asesor de acuerdo al
+                    <Text style={styles.bold}> CAPÍTULO VII: DEL INFORME Y LA DESIGNACIÓN DE JURADOS (Art.46)</Text> del Reglamento de Investigación,
+                    aprobado bajo <Text style={styles.bold}>RESOLUCIÓN N° {jury?.deanResolution || "Resolución no disponible"} – CU-UNAMBA</Text>,
+                    quedando el jurado evaluador de la siguiente manera:
                 </Text>
-                <View style={styles.section}>
-                    <Text>
-                        En fecha 12 de setiembre del año dos mil veinticuatro, siendo las 12:00 horas reunidas de manera presencial, el director de la Unidad de Investigación de la Facultad de Ingeniería
-                        <Text style={styles.bold}> Dr. Lintol Contreras Salas</Text>
-                        , y miembros de la Comisión de Investigación de la<Text style={styles.bold}> Escuela Académico Profesional de Ingeniería Civil</Text> conformado por el Mgt.  Calixto Cañari Otero y demás miembros de la comisión y en atención a la solicitud s/n presentado por el
-                        <Text style={styles.bold}> Bachiller JULIO INCA GÓMEZ</Text>, de fecha 11 de setiembre del 2024 peticionando la designación de jurados para revisión del informe final de tesis denominado
-                        <Text style={styles.bold}>: “Optimización del tiempo y costo en la formulación de proyectos de riego utilizando Delphin Express en la ORFEI, Apurímac - 2024",</Text>aprobado mediante
-                        <Text style={styles.bold}>
-                            RESOLUCIÓN DECANAL N° 221-2024-DFI-UNAMBA
-                        </Text>
-                        , Se procede a realizar la designación de jurados e incorporación de Asesor de acuerdo<Text style={styles.bold}>al CAPÍTULO VII: DEL INFORME Y LA DESIGNACIÓN DE JURADOS   (Art.46) del Reglamento de Investigación</Text>
-                        aprobado bajo<Text style={styles.bold}> RESOLUCIÓN N° 168-2024(2) – CU-UNAMBA</Text>, quedando el jurado evaluador de la siguiente manera:
+            </View>
+
+            <View style={styles.table}>
+                {/* Presidente */}
+                <View style={styles.tableRow}>
+                    <Text style={styles.tableColHeader}>
+                        {jury?.president?.firstNames || ""} {jury?.president?.middleName || ""} {jury?.president?.lastName || ""}
                     </Text>
-                </View>
-                <View style={styles.table}>
-                    {/* Row 1 */}
-                    <View style={styles.tableRow}>
-                        <Text style={styles.tableColHeader}>Mg. Diomedes Napoleón Ferrel Sarmiento</Text>
-                        <View style={styles.tableCol}>
-                            <Text>
-                                <Text style={styles.bold}>Presidente</Text>
-                            </Text>
-                        </View>
-                    </View>
-
-                    {/* Row 2 */}
-                    <View style={styles.tableRow}>
-                        <Text style={styles.tableColHeader}>Ing. Milson Moran Moreano</Text>
-                        <View style={styles.tableCol}>
-                            <Text style={styles.bold}>Primer Miembro</Text>
-                        </View>
-                    </View>
-
-                    {/* Row 3 */}
-                    <View style={styles.tableRow}>
-                        <Text style={styles.tableColHeader}>Mgt. Rómulo Gómez Noblega</Text>
-                        <View style={styles.tableCol}>
-                            <Text style={styles.bold}>Segundo Miembro</Text>
-                        </View>
-                    </View>
-
-                    {/* Row 4 */}
-                    <View style={styles.tableRow}>
-                        <Text style={styles.tableColHeader}>Ing. Fredy Huaman Gonzales</Text>
-                        <View style={styles.tableCol}>
-                            <Text style={styles.bold}>Accesitario</Text>
-                        </View>
-                    </View>
-
-                    {/* Row 5 */}
-                    <View style={styles.tableRow}>
-                        <Text style={styles.tableColHeader}>Dr. Edwar Ilasaca Cahuata</Text>
-                        <View style={styles.tableCol}>
-                            <Text style={styles.bold}>Asesor</Text>
-                        </View>
+                    <View style={styles.tableCol}>
+                        <Text style={styles.bold}>Presidente</Text>
                     </View>
                 </View>
-                <View style={[styles.section, styles.sectionFinal]}>
-                    <Text>
-                        Siendo las 12:30 horas del mismo día se culmina la reunión, firmando este documento los participantes en señal de conformidad, el mismo que será adjuntado al libro de actas de la Unidad de Investigación de la Facultad de Ingeniería en
-                        <Text style={styles.bold}>
-                            folio N° 056-2024.
-                        </Text>
+
+                {/* Primer Miembro */}
+                <View style={styles.tableRow}>
+                    <Text style={styles.tableColHeader}>
+                        {jury?.firstMember?.firstNames || ""} {jury?.firstMember?.middleName || ""} {jury?.firstMember?.lastName || ""}
                     </Text>
+                    <View style={styles.tableCol}>
+                        <Text style={styles.bold}>Primer Miembro</Text>
+                    </View>
                 </View>
-            </PdfBase>
-        </PDFViewer>
+
+                {/* Segundo Miembro */}
+                <View style={styles.tableRow}>
+                    <Text style={styles.tableColHeader}>
+                        {jury?.secondMember?.firstNames || ""} {jury?.secondMember?.middleName || ""} {jury?.secondMember?.lastName || ""}
+                    </Text>
+                    <View style={styles.tableCol}>
+                        <Text style={styles.bold}>Segundo Miembro</Text>
+                    </View>
+                </View>
+
+                {/* Accesitario */}
+                <View style={styles.tableRow}>
+                    <Text style={styles.tableColHeader}>
+                        {jury?.accessory?.firstNames || ""} {jury?.accessory?.middleName || ""} {jury?.accessory?.lastName || ""}
+                    </Text>
+                    <View style={styles.tableCol}>
+                        <Text style={styles.bold}>Accesitario</Text>
+                    </View>
+                </View>
+
+                {/* Asesor */}
+                <View style={styles.tableRow}>
+                    <Text style={styles.tableColHeader}>
+                        {jury?.projectApprovalStepTwo?.adviser?.firstNames || ""} {jury?.projectApprovalStepTwo?.adviser?.middleName || ""} {jury?.projectApprovalStepTwo?.adviser?.lastName || ""}
+                    </Text>
+                    <View style={styles.tableCol}>
+                        <Text style={styles.bold}>Asesor</Text>
+                    </View>
+                </View>
+            </View>
+
+            <View style={[styles.section, styles.sectionFinal]}>
+                <Text>
+                    Siendo las {jury?.hour || "Hora no disponible"} horas del mismo día, se culmina la reunión, firmando este documento los participantes en señal de conformidad, el mismo que será adjuntado al libro de actas de la Unidad de Investigación de la Facultad de Ingeniería en
+                    <Text style={styles.bold}> folio N° {jury?.numberFolio || "Folio no disponible"}.</Text>
+                </Text>
+            </View>
+        </PdfBase>
     );
 };
 

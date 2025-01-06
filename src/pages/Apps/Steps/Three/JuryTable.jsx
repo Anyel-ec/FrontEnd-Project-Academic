@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import teacherService from '../../../../api/teacherService';
+
 import Pagination from '../Pagination';
-import Swal from 'sweetalert2';
-import { formatDate } from '../utils/Dates';
+import PDFDownloadButtons from '../utils/PDFDownloadButtons';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import PdfThreeA from '../pdfSteps/PdfThreeA';
+import PdfThreeC from '../pdfSteps/PdfThreeC';
+import PdfThreeCM from '../pdfSteps/PdfThreeCM';
+import { formatDate, formatNumberWithZero } from '../utils/Dates';
 
 const JuryTable = ({ currentJury, onEdit, onSave }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -13,68 +17,66 @@ const JuryTable = ({ currentJury, onEdit, onSave }) => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const jurys = currentJury.slice(indexOfFirstItem, indexOfLastItem);
-    const [isLoading, setIsLoading] = useState(false);
+    console.log(jurys.updatedAt);
+    // const elegirJurados = async (jury) => {
+    //     const careerId = jury.projectApprovalStepTwo.adviser.career.id;
+
+    //     try {
+    //         const allAdvisers = await teacherService.getTeachersByCareer(careerId);
+    //         console.log('Todos los docentes obtenidos:', allAdvisers);
+
+    //         // Extraer los nombres de los asesores seleccionados de la interfaz
+    //         const selectedAdvisers = [
+    //             jury.projectApprovalStepTwo.adviser?.firstNames + ' ' + jury.projectApprovalStepTwo.adviser?.lastName,
+    //             jury.projectApprovalStepTwo.coadviser?.firstNames + ' ' + jury.projectApprovalStepTwo.coadviser?.lastName,
+    //         ].filter((name) => name); // Filtrar undefined o nombres vacíos
+
+    //         // Normalizar y filtrar los docentes que no están seleccionados
+    //         const normalize = (str) => str.toLowerCase().trim();
+    //         const availableAdvisers = allAdvisers.filter((adviser) => !selectedAdvisers.map(normalize).includes(normalize(adviser.firstNames + ' ' + adviser.lastName)));
+
+    //         console.log('Docentes disponibles:', availableAdvisers);
+
+    //         // Seleccionar aleatoriamente los jurados
+    //         const randomSelection = {};
+    //         const roles = ['president', 'firstMember', 'secondMember', 'accessory']; // Los roles a asignar
+
+    //         roles.forEach((role) => {
+    //             if (availableAdvisers.length > 0) {
+    //                 const randomIndex = Math.floor(Math.random() * availableAdvisers.length); // Índice aleatorio
+    //                 randomSelection[role] = { id: availableAdvisers[randomIndex].id };
+    //                 availableAdvisers.splice(randomIndex, 1); // Remover para evitar duplicados
+    //             } else {
+    //                 randomSelection[role] = null; // Si no hay suficientes docentes
+    //             }
+    //         });
 
 
-    const elegirJurados = async (jury) => {
-        const careerId = jury.projectApprovalStepTwo.adviser.career.id;
-
-        try {
-            const allAdvisers = await teacherService.getTeachersByCareer(careerId);
-            console.log('Todos los docentes obtenidos:', allAdvisers);
-
-            // Extraer los nombres de los asesores seleccionados de la interfaz
-            const selectedAdvisers = [
-                jury.projectApprovalStepTwo.adviser?.firstNames + ' ' + jury.projectApprovalStepTwo.adviser?.lastName,
-                jury.projectApprovalStepTwo.coadviser?.firstNames + ' ' + jury.projectApprovalStepTwo.coadviser?.lastName,
-            ].filter((name) => name); // Filtrar undefined o nombres vacíos
-
-            // Normalizar y filtrar los docentes que no están seleccionados
-            const normalize = (str) => str.toLowerCase().trim();
-            const availableAdvisers = allAdvisers.filter((adviser) => !selectedAdvisers.map(normalize).includes(normalize(adviser.firstNames + ' ' + adviser.lastName)));
-
-            console.log('Docentes disponibles:', availableAdvisers);
-
-            // Seleccionar aleatoriamente los jurados
-            const randomSelection = {};
-            const roles = ['president', 'firstMember', 'secondMember', 'accessory']; // Los roles a asignar
-
-            roles.forEach((role) => {
-                if (availableAdvisers.length > 0) {
-                    const randomIndex = Math.floor(Math.random() * availableAdvisers.length); // Índice aleatorio
-                    randomSelection[role] = { id: availableAdvisers[randomIndex].id };
-                    availableAdvisers.splice(randomIndex, 1); // Remover para evitar duplicados
-                } else {
-                    randomSelection[role] = null; // Si no hay suficientes docentes
-                }
-            });
-
-
-            // Devolver el objeto con los jurados seleccionados
-            return {
-                president: randomSelection['president'],
-                firstMember: randomSelection['firstMember'],
-                secondMember: randomSelection['secondMember'],
-                accessory: randomSelection['accessory'],
-            };
-        } catch (error) {
-            console.error('Error al obtener los docentes:', error);
-            return {
-                president: null,
-                firstMember: null,
-                secondMember: null,
-                accessory: null,
-            };
-        }
-    };
-    const handleRandomJurySelection = async (jury) => {
-        setIsLoading(true);
-        const selectedJurors = await elegirJurados(jury);
-        setIsLoading(false);
-        if (onSave) {
-            onSave(selectedJurors, jury.id); // Asumiendo que `jury.id` es el ID del proyecto
-        }
-    };
+    //         // Devolver el objeto con los jurados seleccionados
+    //         return {
+    //             president: randomSelection['president'],
+    //             firstMember: randomSelection['firstMember'],
+    //             secondMember: randomSelection['secondMember'],
+    //             accessory: randomSelection['accessory'],
+    //         };
+    //     } catch (error) {
+    //         console.error('Error al obtener los docentes:', error);
+    //         return {
+    //             president: null,
+    //             firstMember: null,
+    //             secondMember: null,
+    //             accessory: null,
+    //         };
+    //     }
+    // };
+    // const handleRandomJurySelection = async (jury) => {
+    //     setIsLoading(true);
+    //     const selectedJurors = await elegirJurados(jury);
+    //     setIsLoading(false);
+    //     if (onSave) {
+    //         onSave(selectedJurors, jury.id); // Asumiendo que `jury.id` es el ID del proyecto
+    //     }
+    // };
 
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
@@ -136,20 +138,33 @@ const JuryTable = ({ currentJury, onEdit, onSave }) => {
                                             : 'N/A'}
                                     </td>
                                     <td>{formatDate(jury.updatedAt)}</td>
-                                    <td className="flex gap-4 items-center justify-center">
+                                    <td>
                                         {jury.meetRequirements ? (
-                                            <button onClick={() => Swal.fire('Paso Completado', 'Jurados designado exitosamente.', 'success')} className="btn btn-sm btn-outline-info">
-                                                Completado
-                                            </button>
+                                            <PDFDownloadButtons
+                                                documents={[
+                                                    {
+                                                        document: <PdfThreeA jury={jury} />,
+                                                        fileName: `P3 ACTA Nº ${formatNumberWithZero(jury.id)}.pdf`,
+                                                    },
+                                                    {
+                                                        document: <PdfThreeC jury={jury} />,
+                                                        fileName: `P3 CARTA Nº ${formatNumberWithZero(jury.id)}.pdf`,
+                                                    },
+                                                    {
+                                                        document: <PdfThreeCM jury={jury} />,
+                                                        fileName: `P3 CARTA MULTIPLE Nº ${formatNumberWithZero(jury.id)}.pdf`,
+                                                    },
+                                                ]}
+                                                fileName={`P3 - Designación de Jurados-${formatNumberWithZero(jury.id)}`}
+                                                label="Descargar PDF(s)"
+                                            />
                                         ) : (
-                                            <>
-                                                <button onClick={() => onEdit(jury)} className="btn btn-sm btn-outline-primary">
-                                                    Editar
-                                                </button>
-                                                {/* <button onClick={() => handleRandomJurySelection(jury)} className="btn btn-sm btn-outline-danger" disabled={isLoading}>
-                                                    {isLoading ? 'Cargando...' : 'Elegir Jurados'}
-                                                </button> */}
-                                            </>
+                                            <button
+                                                onClick={() => onEdit(jury)}
+                                                className="btn btn-sm btn-outline-primary"
+                                            >
+                                                Editar
+                                            </button>
                                         )}
                                     </td>
                                 </tr>

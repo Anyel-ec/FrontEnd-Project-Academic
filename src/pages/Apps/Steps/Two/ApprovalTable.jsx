@@ -7,6 +7,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 
 const ApprovalTable = ({ projects, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
 
     const itemsPerPage = 10;
     const totalPages = Math.ceil(projects.length / itemsPerPage);
@@ -15,12 +16,19 @@ const ApprovalTable = ({ projects, onEdit }) => {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentProjects = projects.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
 
+
     const getDownloadButton = (project) => {
         const fileName = `P2 INFORME-${formatNumberWithZero(project.id)}-Aprobación de proyecto de Tesis.pdf`;
         return (
             <PDFDownloadLink document={<PdfTwo project={project} />} fileName={fileName}>
-
-                <button type='button' className="btn btn-sm btn-outline-primary">Descargar Comprobante</button>
+                <button type='submit' onClick={() => {
+                    setIsLoading(true); 
+                    setTimeout(() => {
+                        setIsLoading(false);
+                    }, 1000);
+                }} className="btn btn-sm btn-outline-primary" disabled={isLoading}>
+                    {isLoading ? 'Cargando...' : 'Descargar Comprobante'}
+                </button>
             </PDFDownloadLink>
         );
     };
