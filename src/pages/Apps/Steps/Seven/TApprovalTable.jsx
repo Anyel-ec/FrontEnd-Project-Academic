@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import PDFDownloadButton from '../utils/PDFDownloadButtons';
+import PdfSevenC from '../pdfSteps/PdfSevenC';
 import Pagination from '../Pagination';
 import Swal from 'sweetalert2';
 import { formatDate } from '../utils/Dates';
@@ -78,14 +80,14 @@ const TApprovalTable = ({ tapprovals, onEdit }) => {
                                     <td className="flex gap-4 items-center justify-center">
                                         {
                                             tapproval.meetRequirements ? (
-                                                <button
-                                                    onClick={() =>
-                                                        Swal.fire("Paso Completado", "Tesis aprobada exitosamente.", "success")
-                                                    }
-                                                    className="btn btn-sm btn-outline-info"
-                                                >
-                                                    Completado
-                                                </button>
+                                                <PDFDownloadButton
+                                                documents={{
+                                                    document: <PdfSevenC tapproval={tapproval} />,
+                                                    fileName: `tapproval_${tapproval.id}.pdf`,
+                                                }}
+                                                fileName={`tapproval_${tapproval.id}`}
+                                                label="Descargar PDF"
+                                            />
                                             ) : (
                                                 <button
                                                     onClick={() => onEdit(tapproval)}

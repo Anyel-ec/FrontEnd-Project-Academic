@@ -9,7 +9,7 @@ const PdfTwo = ({ project }) => {
     return (
         <PdfBase commemorativeText={false}>
             <Text style={styles?.h1}>
-                INFORME Nº {project?.id}-{anio}-D. UIFI-UNAMBA
+                INFORME Nº {formatNumberWithZero(project?.id)}-{anio}-D. UIFI-UNAMBA
             </Text>
             <View style={styles?.table}>
                 {/* Row 1 */}

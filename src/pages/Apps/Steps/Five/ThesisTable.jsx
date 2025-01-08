@@ -1,6 +1,8 @@
 // ThesisTable.jsx
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import PDFDownloadButtons from '../utils/PDFDownloadButtons';
+import PdfFiveCN from '../pdfSteps/PdfFiveCN';
 import Pagination from '../Pagination';
 import ThesisUpload from './ThesisUpload';
 import Swal from 'sweetalert2';
@@ -63,14 +65,14 @@ const ThesisTable = ({ thesis, onEdit }) => {
                                     </td>
                                     <td className="flex gap-4 items-center justify-center">
                                         {thesisItem.meetsRequirements ? (
-                                            <button
-                                                onClick={() =>
-                                                    Swal.fire("Paso Completado", "Constancia de tesis exitosa.", "success")
-                                                }
-                                                className="btn btn-sm btn-outline-info"
-                                            >
-                                                Completado
-                                            </button>
+                                            <PDFDownloadButtons
+                                                documents={{
+                                                    document: <PdfFiveCN thesis={thesis} />,
+                                                    fileName: `thesis_${thesis.id}.pdf`,
+                                                }}
+                                                fileName={`thesis_${thesis.id}`}
+                                                label="Descargar PDF"
+                                            />
                                         ) : (
                                             <button
                                                 onClick={() => onEdit(thesisItem)}

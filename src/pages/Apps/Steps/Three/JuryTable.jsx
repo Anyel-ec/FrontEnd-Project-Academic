@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import Pagination from '../Pagination';
 import PDFDownloadButtons from '../utils/PDFDownloadButtons';
-import { PDFDownloadLink } from '@react-pdf/renderer';
 import PdfThreeA from '../pdfSteps/PdfThreeA';
 import PdfThreeC from '../pdfSteps/PdfThreeC';
 import PdfThreeCM from '../pdfSteps/PdfThreeCM';
@@ -17,7 +16,6 @@ const JuryTable = ({ currentJury, onEdit, onSave }) => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const jurys = currentJury.slice(indexOfFirstItem, indexOfLastItem);
-    console.log(jurys.updatedAt);
     // const elegirJurados = async (jury) => {
     //     const careerId = jury.projectApprovalStepTwo.adviser.career.id;
 
