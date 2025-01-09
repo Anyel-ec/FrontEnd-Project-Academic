@@ -1,11 +1,8 @@
-// ThesisTable.jsx
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import PDFDownloadButtons from '../utils/PDFDownloadButtons';
 import PdfFiveCN from '../pdfSteps/PdfFiveCN';
 import Pagination from '../Pagination';
 import ThesisUpload from './ThesisUpload';
-import Swal from 'sweetalert2';
 import { formatDate } from '../utils/Dates';
 
 const ThesisTable = ({ thesis, onEdit }) => {

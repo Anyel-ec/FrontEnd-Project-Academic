@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Pagination from '../Pagination';
 import Swal from 'sweetalert2';
+import PdfEightCN from '../pdfSteps/PdfEightCN';
+import PDFDownloadButton from '../utils/PDFDownloadButtons';
 import { formatDate } from '../utils/Dates';
 const PastingTable = ({ pastings, onEdit }) => {
     console.log(pastings);
@@ -62,14 +64,14 @@ const PastingTable = ({ pastings, onEdit }) => {
                                     <td className="flex gap-4 items-center justify-center">
                                         {
                                             pasting.meetRequirements ? (
-                                                <button
-                                                    onClick={() =>
-                                                        Swal.fire("Paso Completado", "Aprobación de empastados exitosa.", "success")
-                                                    }
-                                                    className="btn btn-sm btn-outline-info"
-                                                >
-                                                    Completado
-                                                </button>
+                                                <PDFDownloadButton
+                                                    documents={{
+                                                        document: <PdfEightCN pasting={pasting} />,
+                                                        fileName: `pasting_${pasting.id}.pdf`,
+                                                    }}
+                                                    fileName={`pasting_${pasting.id}`}
+                                                    label="Descargar PDF"
+                                                />
                                             ) : (
                                                 <button
                                                     onClick={() => onEdit(pasting)}

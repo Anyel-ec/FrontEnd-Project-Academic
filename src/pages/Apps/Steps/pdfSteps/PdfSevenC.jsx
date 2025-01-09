@@ -1,12 +1,11 @@
 
 import PdfBase from './PdfBase';
-import { PDFViewer, Text, View, Image } from '@react-pdf/renderer';
+import { Text, View} from '@react-pdf/renderer';
 import styles from './styles/PdfSevenCStyles';
-import { getFullWrittenDateTimeFromInput, getWrittenDate, getYear, formatNumberWithZero } from '../utils/Dates';
+import { getWrittenDateFromInput, getWrittenDate, getYear, formatNumberWithZero, formatISODateToSimpleDate } from '../utils/Dates';
 
 const PdfThreeC = ({ tapproval }) => {
     const anio = getYear();
-    const applicationDate = getFullWrittenDateTimeFromInput("2024-12-01 22:06:49");
     const actualData = getWrittenDate();
     const updatedDate = tapproval?.updatedAt ? formatISODateToSimpleDate(tapproval.updatedAt) : "Fecha no disponible";
     const requestDate = getWrittenDateFromInput(updatedDate);
@@ -23,7 +22,7 @@ de las Heroicas de Junín y Ayacucho”
 
             {/* Fecha y número de carta */}
             <Text style={styles.h1}>
-                CARTA Nº {formatNumberWithZero(thesis?.id)}-{anio}-DUI-FI-UNAMBA.
+                CARTA Nº {formatNumberWithZero(tapproval?.id)}-{anio}-DUI-FI-UNAMBA.
             </Text>
             {/* Dirigido a */}
             <Text style={{ fontSize: 12 }}>Señor:</Text>
@@ -60,7 +59,6 @@ de las Heroicas de Junín y Ayacucho”
                 <Text style={styles.text}>
                     De mi mayor consideración:                    </Text>
                 <Text>
-                    {/* <Text style={{ marginTop: 10, lineHeight: 1.2 }}> */}
                     Es grato dirigirme a su despacho, para saludarlo cordialmente, y a la vez
                     solicitar la resolución de ratificación de sustentación de tesis en merito
                     al Art.75 del Reglamento de Investigación a favor de la Bach.
