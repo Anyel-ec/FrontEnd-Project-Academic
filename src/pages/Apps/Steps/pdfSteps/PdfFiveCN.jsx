@@ -1,10 +1,10 @@
 import styles from './styles/PdfFiveCNStyles';
 import Logo from './BannerPdfFive.png';
 import { Document, Page, View, Text, Image } from '@react-pdf/renderer';
-import { getYear } from '../utils/Dates';
+import { getYear, getWrittenDate, formatNumberWithZero } from '../utils/Dates';
 
 const PdfFiveCN = ({ thesis }) => {
-    const anio = getYear(); 
+    const anio = getYear();
     const actualData = getWrittenDate();
 
     return (
@@ -19,9 +19,9 @@ const PdfFiveCN = ({ thesis }) => {
                     La Universidad Nacional Micaela Bastidas de Apurímac,
                     a través de la Unidad de Investigación de la Facultad
                     de Ingeniería declara que, la Tesis intitulada
-                    <Text style={styles.bold}> “{thesis?.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne?.title}”</Text>,
-                    presentado por el <Text style={styles.bold}> Bach. {thesis?.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne?.student?.firstNames} {thesis?.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne?.student?.middleName}{thesis?.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne?.student?.lastName}</Text>, para
-                    optar el Título de <Text style={styles.bold}> {thesis?.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne?.student?.career?.name}; </Text>
+                    <Text style={styles.bold}> “{thesis?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne?.title}”</Text>,
+                    presentado por el <Text style={styles.bold}> Bach. {thesis?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne?.student?.firstNames} {thesis?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne?.student?.middleName}{thesis?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne?.student?.lastName}</Text>, para
+                    optar el Título de <Text style={styles.bold}> {thesis?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne?.student?.career?.name}; </Text>
                     ha sido sometido a un mecanismo de evaluación y
                     verificación de similitud, a través del Software
                     COMPILATIO Magister, siendo el índice de similitud

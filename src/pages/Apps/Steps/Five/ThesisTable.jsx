@@ -67,10 +67,10 @@ const ThesisTable = ({ thesis, onEdit }) => {
                                         {thesisItem.meetsRequirements ? (
                                             <PDFDownloadButtons
                                                 documents={{
-                                                    document: <PdfFiveCN thesis={thesis} />,
-                                                    fileName: `thesis_${thesis.id}.pdf`,
+                                                    document: <PdfFiveCN thesis={thesisItem} />,
+                                                    fileName: `thesis_${thesisItem.id}.pdf`,
                                                 }}
-                                                fileName={`thesis_${thesis.id}`}
+                                                fileName={`thesis_${thesisItem.id}`}
                                                 label="Descargar PDF"
                                             />
                                         ) : (

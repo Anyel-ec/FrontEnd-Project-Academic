@@ -2,8 +2,7 @@
 import PdfBase from './PdfBase';
 import { PDFViewer, Text, View, Image } from '@react-pdf/renderer';
 import styles from './styles/PdfSevenCStyles';
-import { getFullWrittenDateTimeFromInput, getWrittenDate, getYear } from '../../utils/Dates';
-import { formatNumberWithZero } from '../utils/Dates';
+import { getFullWrittenDateTimeFromInput, getWrittenDate, getYear, formatNumberWithZero } from '../utils/Dates';
 
 const PdfThreeC = ({ tapproval }) => {
     const anio = getYear();

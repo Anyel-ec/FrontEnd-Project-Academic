@@ -58,12 +58,15 @@ const ThesisModal = ({ isOpen, onClose, onSave, thesis }) => {
         }),
         [thesis]
     );
-
     const handleSubmit = async (values, { setSubmitting }) => {
-        await onSave(thesis.id, values);
+        const normalizedValues = {
+            ...values,
+            meetsRequirements: values.meetsRequirements === 'yes', // Normaliza a booleano
+        };
+    
+        await onSave(thesis.id, normalizedValues); // Enviar valores normalizados
         setSubmitting(false);
     };
-
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" open={isOpen} onClose={onClose} className="relative z-[51]">
