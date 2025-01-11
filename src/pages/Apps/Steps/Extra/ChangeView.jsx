@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import Pagination from '../Pagination';
 import { formatDate } from '../utils/Dates';
 
-const JuryRecompositionTable = ({ recompositions, onEdit }) => {
+const ChangeView = ({ change, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
-    const totalPages = Math.ceil(recompositions.length / itemsPerPage);
+    const totalPages = Math.ceil(change.length / itemsPerPage);
     const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentRecompositions = recompositions.slice(indexOfFirstItem, indexOfLastItem);
+    const currentChange = change.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
@@ -27,39 +27,39 @@ const JuryRecompositionTable = ({ recompositions, onEdit }) => {
                         </tr>
                     </thead>
                     <tbody className="dark:text-white-dark">
-                        {currentRecompositions.length > 0 ? (
-                            currentRecompositions.map((recomposition) => (
-                                <tr key={recomposition.id}>
+                        {currentChange.length > 0 ? (
+                            currentChange.map((change) => (
+                                <tr key={change.id}>
                                     <td>
-                                        {recomposition?.projectApprovalStepTwo.titleReservationStepOne.student?.studentCode || 'N/A'}
-                                        {recomposition?.projectApprovalStepTwo.titleReservationStepOne.studentTwo && (
+                                        {change?.titleReservationStepOne.student?.studentCode || 'N/A'}
+                                        {change?.titleReservationStepOne.studentTwo && (
                                             <>
                                                 <br />
-                                                {recomposition?.projectApprovalStepTwo.titleReservationStepOne.studentTwo.studentCode || 'N/A'}
+                                                {change?.titleReservationStepOne.studentTwo.studentCode || 'N/A'}
                                             </>
                                         )}
                                     </td>
                                     <td>
-                                        {recomposition?.projectApprovalStepTwo.titleReservationStepOne.student?.firstNames ?? ''} {recomposition?.projectApprovalStepTwo.titleReservationStepOne.student?.lastName ?? ''}
-                                        {recomposition?.projectApprovalStepTwo.titleReservationStepOne.studentTwo && (
+                                        {change?.titleReservationStepOne.student?.firstNames ?? ''} {change?.titleReservationStepOne.student?.lastName ?? ''}
+                                        {change?.titleReservationStepOne.studentTwo && (
                                             <p>
-                                                {recomposition?.projectApprovalStepTwo.titleReservationStepOne.studentTwo?.firstNames ?? ''} {recomposition?.projectApprovalStepTwo.titleReservationStepOne.studentTwo?.lastName ?? ''}
+                                                {change?.titleReservationStepOne.studentTwo?.firstNames ?? ''} {change?.titleReservationStepOne.studentTwo?.lastName ?? ''}
                                             </p>
                                         )}
                                     </td>
-                                    <td>{recomposition?.projectApprovalStepTwo.titleReservationStepOne.student.career.name}</td>
-                                    <td>{recomposition?.meetRequirements ? 'Sí' : 'No'}</td>
-                                    <td>{recomposition?.observation || 'N/A'}</td>
-                                    <td>{formatDate(recomposition?.updatedAt)}</td>
+                                    <td>{change?.titleReservationStepOne.student.career.name}</td>
+                                    <td>{change?.meetRequirements ? 'Sí' : 'No'}</td>
+                                    <td>{change?.observation || 'N/A'}</td>
+                                    <td>{formatDate(change?.updatedAt)}</td>
                                     <td className="flex gap-4 items-center justify-center">
                                         <button
-                                            onClick={() => onEdit(recomposition)}
+                                            onClick={() => onEdit(change)}
                                             className="btn btn-sm btn-outline-secondary"
                                         >
                                             Aceptar
                                         </button>
                                         <button
-                                            onClick={() => onEdit(recomposition)}
+                                            onClick={() => onEdit(change)}
                                             className="btn btn-sm btn-outline-primary"
                                         >
                                             Editar
@@ -69,8 +69,8 @@ const JuryRecompositionTable = ({ recompositions, onEdit }) => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="7" className="px-4 py-2 text-center">
-                                    No hay recomposiciones disponibles
+                                <td colSpan="6" className="px-4 py-2 text-center">
+                                    No hay cambios de asesores disponibles
                                 </td>
                             </tr>
                         )}
@@ -82,4 +82,4 @@ const JuryRecompositionTable = ({ recompositions, onEdit }) => {
     );
 };
 
-export default JuryRecompositionTable;
+export default ChangeView;

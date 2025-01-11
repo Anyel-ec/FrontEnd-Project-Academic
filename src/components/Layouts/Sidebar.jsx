@@ -309,28 +309,28 @@ const Sidebar = () => {
                                             <AnimateHeight duration={300} height={currentMenu === 'extraSteps' ? 'auto' : 0}>
                                                 <ul className="sub-menu text-gray-500">
                                                     <li className="nav-item">
+                                                        <NavLink to="/apps/paso/extra/cambio-de-asesor" className="group">
+                                                            <div className="flex items-center">
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('1: Cambio de Asesor')}
+                                                                </span>
+                                                            </div>
+                                                        </NavLink>
+                                                    </li>
+                                                    <li className="nav-item">
+                                                        <NavLink to="/apps/paso/extra/ampliacion-de-proceso" className="group">
+                                                            <div className="flex items-center">
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('2: Ampliación de Proceso')}
+                                                                </span>
+                                                            </div>
+                                                        </NavLink>
+                                                    </li>
+                                                    <li className="nav-item">
                                                         <NavLink to="/apps/paso/extra/recomposicion-de-jurados" className="group">
                                                             <div className="flex items-center">
                                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                                    {t('1: Constancia de Filtro')}
-                                                                </span>
-                                                            </div>
-                                                        </NavLink>
-                                                    </li>
-                                                    <li className="nav-item">
-                                                        <NavLink to="/apps/paso/extra/constancia-de-filtro" className="group">
-                                                            <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                                    {t('2: Constancia de Filtro')}
-                                                                </span>
-                                                            </div>
-                                                        </NavLink>
-                                                    </li>
-                                                    <li className="nav-item">
-                                                        <NavLink to="/apps/paso/extra/constancia-de-filtro" className="group">
-                                                            <div className="flex items-center">
-                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                                    {t('3: Constancia de Filtro')}
+                                                                    {t('3: Recomposición de Jurado')}
                                                                 </span>
                                                             </div>
                                                         </NavLink>

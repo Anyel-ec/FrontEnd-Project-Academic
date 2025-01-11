@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import Pagination from '../Pagination';
 import { formatDate } from '../utils/Dates';
 
-const JuryRecompositionTable = ({ recompositions, onEdit }) => {
+const PassageView = ({ expansions, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
-    const totalPages = Math.ceil(recompositions.length / itemsPerPage);
+    const totalPages = Math.ceil(expansions.length / itemsPerPage);
     const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentRecompositions = recompositions.slice(indexOfFirstItem, indexOfLastItem);
+    const currentExpansions = expansions.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
         <div className="mt-5 panel p-0 border-0 overflow-hidden">
@@ -27,39 +27,39 @@ const JuryRecompositionTable = ({ recompositions, onEdit }) => {
                         </tr>
                     </thead>
                     <tbody className="dark:text-white-dark">
-                        {currentRecompositions.length > 0 ? (
-                            currentRecompositions.map((recomposition) => (
-                                <tr key={recomposition.id}>
+                        {currentExpansions.length > 0 ? (
+                            currentExpansions.map((expansion) => (
+                                <tr key={expansion.id}>
                                     <td>
-                                        {recomposition?.projectApprovalStepTwo.titleReservationStepOne.student?.studentCode || 'N/A'}
-                                        {recomposition?.projectApprovalStepTwo.titleReservationStepOne.studentTwo && (
+                                        {expansion?.titleReservationStepOne.student?.studentCode || 'N/A'}
+                                        {expansion?.titleReservationStepOne.studentTwo && (
                                             <>
                                                 <br />
-                                                {recomposition?.projectApprovalStepTwo.titleReservationStepOne.studentTwo.studentCode || 'N/A'}
+                                                {expansion?.titleReservationStepOne.studentTwo.studentCode || 'N/A'}
                                             </>
                                         )}
                                     </td>
                                     <td>
-                                        {recomposition?.projectApprovalStepTwo.titleReservationStepOne.student?.firstNames ?? ''} {recomposition?.projectApprovalStepTwo.titleReservationStepOne.student?.lastName ?? ''}
-                                        {recomposition?.projectApprovalStepTwo.titleReservationStepOne.studentTwo && (
+                                        {expansion?.titleReservationStepOne.student?.firstNames ?? ''} {expansion?.titleReservationStepOne.student?.lastName ?? ''}
+                                        {expansion?.titleReservationStepOne.studentTwo && (
                                             <p>
-                                                {recomposition?.projectApprovalStepTwo.titleReservationStepOne.studentTwo?.firstNames ?? ''} {recomposition?.projectApprovalStepTwo.titleReservationStepOne.studentTwo?.lastName ?? ''}
+                                                {expansion?.titleReservationStepOne.studentTwo?.firstNames ?? ''} {expansion?.titleReservationStepOne.studentTwo?.lastName ?? ''}
                                             </p>
                                         )}
                                     </td>
-                                    <td>{recomposition?.projectApprovalStepTwo.titleReservationStepOne.student.career.name}</td>
-                                    <td>{recomposition?.meetRequirements ? 'Sí' : 'No'}</td>
-                                    <td>{recomposition?.observation || 'N/A'}</td>
-                                    <td>{formatDate(recomposition?.updatedAt)}</td>
+                                    <td>{expansion?.titleReservationStepOne.student.career.name}</td>
+                                    <td>{expansion?.meetRequirements ? 'Sí' : 'No'}</td>
+                                    <td>{expansion?.observation || 'N/A'}</td>
+                                    <td>{formatDate(expansion?.updatedAt)}</td>
                                     <td className="flex gap-4 items-center justify-center">
                                         <button
-                                            onClick={() => onEdit(recomposition)}
+                                            onClick={() => onEdit(expansion)}
                                             className="btn btn-sm btn-outline-secondary"
                                         >
                                             Aceptar
                                         </button>
                                         <button
-                                            onClick={() => onEdit(recomposition)}
+                                            onClick={() => onEdit(expansion)}
                                             className="btn btn-sm btn-outline-primary"
                                         >
                                             Editar
@@ -69,8 +69,8 @@ const JuryRecompositionTable = ({ recompositions, onEdit }) => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="7" className="px-4 py-2 text-center">
-                                    No hay recomposiciones disponibles
+                                <td colSpan="6" className="px-4 py-2 text-center">
+                                    No hay expansiones disponibles
                                 </td>
                             </tr>
                         )}
@@ -82,4 +82,4 @@ const JuryRecompositionTable = ({ recompositions, onEdit }) => {
     );
 };
 
-export default JuryRecompositionTable;
+export default PassageView;

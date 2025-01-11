@@ -6,7 +6,6 @@ import { ProtectedRoute, StudentRoute } from '../security/ProtectedRoute';
 
 // <--Admin Imports-->
 import Constancy from '../pages/Apps/Steps/One/TitleReservation';
-import JuryRecomposition from '../pages/Apps/Steps/Extra/JuryRecomposition';
 import ProjectAproval from '../pages/Apps/Steps/Two/ProjectApproval';
 import JuryAppointment from '../pages/Apps/Steps/Three/JuryAppointment';
 import ReportReview from '../pages/Apps/Steps/Four/ReportReview';
@@ -14,6 +13,9 @@ import ConstancyThesis from '../pages/Apps/Steps/Five/ConstancyThesis';
 import JuryNotifications from '../pages/Apps/Steps/Six/JuryNotifications';
 import ThesisApproval from '../pages/Apps/Steps/Seven/ThesisApproval';
 import PastingApproval from '../pages/Apps/Steps/Eight/PastingApproval';
+import JuryRecomposition from '../pages/Apps/Steps/Extra/JuryRecomposition';
+import ChangeAdvisor from '../pages/Apps/Steps/Extra/ChangeAdvisor';
+import PassageExpansion from '../pages/Apps/Steps/Extra/PassageExpansion';
 // <--End Admin Imports-->
 
 // <--Students Imports-->
@@ -201,6 +203,22 @@ const routes = [
         element: (
             <ProtectedRoute>
                 <ReportReview />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: 'apps/paso/extra/cambio-de-asesor',
+        element: (
+            <ProtectedRoute>
+                <ChangeAdvisor />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: 'apps/paso/extra/ampliacion-de-proceso',
+        element: (
+            <ProtectedRoute>
+                <PassageExpansion />
             </ProtectedRoute>
         ),
     },
