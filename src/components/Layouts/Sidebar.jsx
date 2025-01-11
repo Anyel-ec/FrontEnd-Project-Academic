@@ -30,6 +30,7 @@ import IconMenuUsers from '../Icon/Menu/IconMenuUsers';
 import IconMenuPages from '../Icon/Menu/IconMenuPages';
 import IconMenuAuthentication from '../Icon/Menu/IconMenuAuthentication';
 import IconMenuDocumentation from '../Icon/Menu/IconMenuDocumentation';
+import IconClipboardText from '../Icon/IconClipboardText';
 import Swal from 'sweetalert2';
 const Sidebar = () => {
     const [currentMenu, setCurrentMenu] = useState('');
@@ -111,35 +112,35 @@ const Sidebar = () => {
                             <div>
                                 {isAdmin && (
                                     <>
-                                <li className="menu nav-item">
-                                    <button type="button" className={`${currentMenu === 'dashboard' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('dashboard')}>
-                                        <div className="flex items-center">
-                                            <IconMenuDashboard className="group-hover:!text-primary shrink-0" />
-                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('dashboard')}</span>
-                                        </div>
+                                        <li className="menu nav-item">
+                                            <button type="button" className={`${currentMenu === 'dashboard' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('dashboard')}>
+                                                <div className="flex items-center">
+                                                    <IconMenuDashboard className="group-hover:!text-primary shrink-0" />
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('dashboard')}</span>
+                                                </div>
 
-                                        <div className={currentMenu !== 'dashboard' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                            <IconCaretDown />
-                                        </div>
-                                    </button>
+                                                <div className={currentMenu !== 'dashboard' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                                    <IconCaretDown />
+                                                </div>
+                                            </button>
 
-                                    <AnimateHeight duration={300} height={currentMenu === 'dashboard' ? 'auto' : 0}>
-                                        <ul className="sub-menu text-gray-500">
-                                            {/* <li>
+                                            <AnimateHeight duration={300} height={currentMenu === 'dashboard' ? 'auto' : 0}>
+                                                <ul className="sub-menu text-gray-500">
+                                                    {/* <li>
                                                 <NavLink to="/">{t('sales')}</NavLink>
                                             </li> */}
-                                            <li>
-                                                <NavLink to="/progreso">{t('Progreso')}</NavLink>
-                                            </li>
-                                            {/* <li>
+                                                    <li>
+                                                        <NavLink to="/progreso">{t('Progreso')}</NavLink>
+                                                    </li>
+                                                    {/* <li>
                                                 <NavLink to="/finance">{t('finance')}</NavLink>
                                             </li>
                                             <li>
                                                 <NavLink to="/crypto">{t('crypto')}</NavLink>
                                             </li> */}
-                                        </ul>
-                                    </AnimateHeight>
-                                </li>
+                                                </ul>
+                                            </AnimateHeight>
+                                        </li>
                                         {/* Modulo de administrador ------------------------------------------ inicio */}
                                         <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                             <IconMinus className="w-4 h-5 flex-none hidden" />
@@ -293,6 +294,50 @@ const Sidebar = () => {
                                                 </ul>
                                             </AnimateHeight>
                                         </li>
+                                        <li className="menu nav-item">
+                                            <button type="button" className={`${currentMenu === 'extraSteps' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('extraSteps')}>
+                                                <div className="flex items-center">
+                                                    <IconClipboardText className="group-hover:!text-primary shrink-0" fill="true" />
+                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Pasos Extra')}</span>
+                                                </div>
+
+                                                <div className={currentMenu !== 'extraSteps' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                                    <IconCaretDown />
+                                                </div>
+                                            </button>
+
+                                            <AnimateHeight duration={300} height={currentMenu === 'extraSteps' ? 'auto' : 0}>
+                                                <ul className="sub-menu text-gray-500">
+                                                    <li className="nav-item">
+                                                        <NavLink to="/apps/paso/extra/recomposicion-de-jurados" className="group">
+                                                            <div className="flex items-center">
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('1: Constancia de Filtro')}
+                                                                </span>
+                                                            </div>
+                                                        </NavLink>
+                                                    </li>
+                                                    <li className="nav-item">
+                                                        <NavLink to="/apps/paso/extra/constancia-de-filtro" className="group">
+                                                            <div className="flex items-center">
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('2: Constancia de Filtro')}
+                                                                </span>
+                                                            </div>
+                                                        </NavLink>
+                                                    </li>
+                                                    <li className="nav-item">
+                                                        <NavLink to="/apps/paso/extra/constancia-de-filtro" className="group">
+                                                            <div className="flex items-center">
+                                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                    {t('3: Constancia de Filtro')}
+                                                                </span>
+                                                            </div>
+                                                        </NavLink>
+                                                    </li>
+                                                </ul>
+                                            </AnimateHeight>
+                                        </li>
                                     </>
                                 )}
                             </div>{' '}
@@ -300,35 +345,35 @@ const Sidebar = () => {
                             {/* modulo de pasos estudiante ------------------------------------------ inicio   */}
                             {isEstudiante && (
                                 <>
-                                 <li className="menu nav-item">
-                                    <button type="button" className={`${currentMenu === 'dashboard' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('dashboard')}>
-                                        <div className="flex items-center">
-                                            <IconMenuDashboard className="group-hover:!text-primary shrink-0" />
-                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('dashboard')}</span>
-                                        </div>
+                                    <li className="menu nav-item">
+                                        <button type="button" className={`${currentMenu === 'dashboard' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('dashboard')}>
+                                            <div className="flex items-center">
+                                                <IconMenuDashboard className="group-hover:!text-primary shrink-0" />
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('dashboard')}</span>
+                                            </div>
 
-                                        <div className={currentMenu !== 'dashboard' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                            <IconCaretDown />
-                                        </div>
-                                    </button>
+                                            <div className={currentMenu !== 'dashboard' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                                <IconCaretDown />
+                                            </div>
+                                        </button>
 
-                                    <AnimateHeight duration={300} height={currentMenu === 'dashboard' ? 'auto' : 0}>
-                                        <ul className="sub-menu text-gray-500">
-                                            {/* <li>
+                                        <AnimateHeight duration={300} height={currentMenu === 'dashboard' ? 'auto' : 0}>
+                                            <ul className="sub-menu text-gray-500">
+                                                {/* <li>
                                                 <NavLink to="/">{t('sales')}</NavLink>
                                             </li> */}
-                                            <li>
-                                                <NavLink to="/progreso-estudiante">{t('Progreso')}</NavLink>
-                                            </li>
-                                            {/* <li>
+                                                <li>
+                                                    <NavLink to="/progreso-estudiante">{t('Progreso')}</NavLink>
+                                                </li>
+                                                {/* <li>
                                                 <NavLink to="/finance">{t('finance')}</NavLink>
                                             </li>
                                             <li>
                                                 <NavLink to="/crypto">{t('crypto')}</NavLink>
                                             </li> */}
-                                        </ul>
-                                    </AnimateHeight>
-                                </li>
+                                            </ul>
+                                        </AnimateHeight>
+                                    </li>
                                     <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                         <IconMinus className="w-4 h-5 flex-none hidden" />
                                         <span>{t('Pasos')}</span>
@@ -371,7 +416,7 @@ const Sidebar = () => {
                                                         </div>
                                                     </NavLink>
                                                 </li>
-                                                
+
                                                 {/* Paso 4 */}
                                                 <li className="nav-item">
                                                     <NavLink to="/apps/paso-estudiante/revision-de-reporte" className="group">
@@ -404,7 +449,7 @@ const Sidebar = () => {
                                                         </div>
                                                     </NavLink>
                                                 </li>
-                                                
+
                                                 {/* Paso 8 */}
                                                 <li className="nav-item">
                                                     <NavLink to="/apps/paso-estudiante/aprobacion-de-empastados" className="group">
@@ -875,9 +920,8 @@ const Sidebar = () => {
                                         <li className="menu nav-item">
                                             <button
                                                 type="button"
-                                                className={`${
-                                                    errorSubMenu ? 'open' : ''
-                                                } w-full before:bg-gray-300 before:w-[5px] before:h-[5px] before:rounded ltr:before:mr-2 rtl:before:ml-2 dark:text-[#888ea8] hover:bg-gray-100 dark:hover:bg-gray-900`}
+                                                className={`${errorSubMenu ? 'open' : ''
+                                                    } w-full before:bg-gray-300 before:w-[5px] before:h-[5px] before:rounded ltr:before:mr-2 rtl:before:ml-2 dark:text-[#888ea8] hover:bg-gray-100 dark:hover:bg-gray-900`}
                                                 onClick={() => setErrorSubMenu(!errorSubMenu)}
                                             >
                                                 {t('error')}

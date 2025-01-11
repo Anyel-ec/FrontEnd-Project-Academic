@@ -6,6 +6,7 @@ import { ProtectedRoute, StudentRoute } from '../security/ProtectedRoute';
 
 // <--Admin Imports-->
 import Constancy from '../pages/Apps/Steps/One/TitleReservation';
+import JuryRecomposition from '../pages/Apps/Steps/Extra/JuryRecomposition';
 import ProjectAproval from '../pages/Apps/Steps/Two/ProjectApproval';
 import JuryAppointment from '../pages/Apps/Steps/Three/JuryAppointment';
 import ReportReview from '../pages/Apps/Steps/Four/ReportReview';
@@ -200,6 +201,14 @@ const routes = [
         element: (
             <ProtectedRoute>
                 <ReportReview />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: 'apps/paso/extra/recomposicion-de-jurados',
+        element: (
+            <ProtectedRoute>
+                <JuryRecomposition />
             </ProtectedRoute>
         ),
     },
