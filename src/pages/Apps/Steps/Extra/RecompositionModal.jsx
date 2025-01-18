@@ -1,7 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment, useMemo } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
 import IconX from '../../../../components/Icon/IconX';
 import Swal from 'sweetalert2';
 

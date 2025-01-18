@@ -9,14 +9,14 @@ export const showObservations = (observations) => {
         Swal.fire({
             title: 'Observaciones',
             text: observations,
-            icon: 'success',
+            icon: 'error',
             confirmButtonText: 'Cerrar',
         });
     } else {
         Swal.fire({
             title: 'Sin Observaciones',
             text: 'No se han encontrado observaciones asociadas.',
-            icon: 'error',
+            icon: 'success',
             confirmButtonText: 'Cerrar',
         });
     }
