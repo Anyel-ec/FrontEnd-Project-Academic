@@ -31,6 +31,7 @@ import PastingApprovalStudent from '../pages/Apps/StepsStudents/Eight/PastingApp
 
 import AuthRoute from '../security/AuthRoute ';
 // const Index = lazy(() => import('../pages/Index'));
+const Info = lazy(() => import('../pages/InstitutionalInfo'));
 const Progress = lazy(() => import('../pages/Progress'));
 const ProgressStudents = lazy(() => import('../pages/ProgressStudent'));
 const Finance = lazy(() => import('../pages/Finance'));
@@ -154,7 +155,7 @@ const routes = [
         path: '/',
         element: (
             <ProtectedRoute>
-                <Progress />
+                <Info />
             </ProtectedRoute>
         ),
     },

@@ -192,6 +192,7 @@ const TitleReservation = () => {
             };
 
             title = titleReservationData.title;
+            registrationNumber = titleReservationData.registrationNumber;
 
             if (values?.meetRequirements === 'yes') {
                 Swal.fire({

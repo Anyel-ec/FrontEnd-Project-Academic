@@ -34,6 +34,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
         meetRequirements: Yup.string().required('Selecciona una opción'),
         observation: Yup.string(),
         registrationNumber: Yup.string().required('El reg es obligatorio'),
+        commemorativeText: Yup.string().required('El nombre del año es obligatorio'),
     });
 
     const initialValues = {
@@ -45,6 +46,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
         lineOfResearch: lineOptions.find((option) => option.value === reservation?.lineOfResearch?.id) || null,
         projectSimilarity: reservation?.projectSimilarity || 0,
         registrationNumber: reservation?.registrationNumber || '',
+        commemorativeText: reservation?.commemorativeText || '',
     };
 
     const handleSubmit = async (values, { setSubmitting }) => {
@@ -140,6 +142,17 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                 <ErrorMessage name="projectSimilarity" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className="col-span-1">
+                                                <label htmlFor="registrationNumber">Reg</label>
+                                                <Field
+                                                    name="registrationNumber"
+                                                    type="text"
+                                                    id="registrationNumber"
+                                                    placeholder="Ingrese el número de registro"
+                                                    className="form-input"
+                                                />
+                                                <ErrorMessage name="registrationNumber" component="div" className="text-danger mt-1" />
+                                            </div>
+                                            <div className="col-span-1">
                                                 <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
                                                     <label>
@@ -169,17 +182,6 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                     </label>
                                                 </div>
                                                 <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" />
-                                            </div>
-                                            <div className="col-span-2">
-                                                <label htmlFor="registrationNumber">Reg</label>
-                                                <Field
-                                                    name="registrationNumber"
-                                                    type="text"
-                                                    id="registrationNumber"
-                                                    placeholder="Ingrese el número de registro"
-                                                    className="form-input"
-                                                />
-                                                <ErrorMessage name="registrationNumber" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className="col-span-2">
                                                 <label htmlFor="observation">Observaciones</label>

@@ -5,8 +5,9 @@ import { getWrittenDate, getYear } from '../utils/Dates';
 
 const Pdfone = ({ reservation }) => {
     const anio = getYear();
+    const commemorativeText = reservation?.commemorativeText;
     return (
-        <PdfBase registrationNumber={reservation.registrationNumber}>
+        <PdfBase registrationNumber={reservation?.registrationNumber} commemorativeText={commemorativeText}>
             <Text style={styles.h1}>
                 CONSTANCIA Nº {reservation.id}-{anio}-D. UIFI-UNAMBA
             </Text>

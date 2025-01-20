@@ -410,16 +410,10 @@ const Header = () => {
                         </button>
                         <ul className="sub-menu">
                             <li>
-                                <NavLink to="/">{t('sales')}</NavLink>
+                                <NavLink to="/progreso">{t('progreso')}</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/progress">{t('progress')}</NavLink>
-                            </li>
-                            <li>
-                                <NavLink to="/finance">{t('finance')}</NavLink>
-                            </li>
-                            <li>
-                                <NavLink to="/crypto">{t('crypto')}</NavLink>
+                                <NavLink to="/información-institucional">{t('Institucional')}</NavLink>
                             </li>
                         </ul>
                     </li>

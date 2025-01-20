@@ -132,6 +132,9 @@ const Sidebar = () => {
                                                     <li>
                                                         <NavLink to="/progreso">{t('Progreso')}</NavLink>
                                                     </li>
+                                                    <li>
+                                                        <NavLink to="/">{t('Información Institucional')}</NavLink>
+                                                    </li>
                                                     {/* <li>
                                                 <NavLink to="/finance">{t('finance')}</NavLink>
                                             </li>

@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import Pagination from '../Pagination';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import PdfOne from '../pdfSteps/PdfOne';
-import ConstancyVoucherTwo from './ConstancyVoucherTwo';
-import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importación es correcto
+import TitleUpload from './TitleUpload'; 
 import { getYear, formatDate } from '../utils/Dates';
 const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit, onDelete, searchTerm }) => {
     const itemsPerPage = 8;
