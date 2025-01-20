@@ -1,11 +1,12 @@
 import { Document, Page, View, Text, Image } from '@react-pdf/renderer';
 import Logo from './BANNER.png';
 import styles from './styles/PdfBaseStyles';
-
+import { formatNumberWithZero } from '../utils/Dates';
 const ConstancyVoucher = ({
     showCommemorativeText,
     commemorativeText,
-    children
+    children,
+    registrationNumber
 }) => (
     <Document>
         <Page size="A4">
@@ -23,13 +24,13 @@ const ConstancyVoucher = ({
                 {/* CONTENIDO */}
                 <View>
                     {children}
-                </View>
+                </View> 
 
                 <View style={styles.footerText}>
                     <Text>Atentamente,</Text>
                     <Text>C. c.</Text>
                     <Text>Archivo</Text>
-                    <Text>REG. N° 051</Text>
+                    <Text>REG. N° {formatNumberWithZero(registrationNumber)}</Text>
                     <View style={styles.hr} />
                     <View style={styles.footerInfo}>
                         <Text>Campus Universitario S/N, Tamburco, Abancay-Apurímac</Text>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Pagination from '../Pagination';
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import ConstancyVoucherOne from './ConstancyVoucherOne';
+import PdfOne from '../pdfSteps/PdfOne';
 import ConstancyVoucherTwo from './ConstancyVoucherTwo';
 import TitleUpload from './TitleUpload'; // Asegúrate de que el path de importación es correcto
 import { getYear, formatDate } from '../utils/Dates';
@@ -10,11 +10,10 @@ const ReservationTable = ({ titleReservations, selectedCareer, apiError, onEdit,
     const [currentPage, setCurrentPage] = useState(1);
 
     const getDownloadButton = (reservation) => {
-        const DocumentComponent = reservation.studentTwo ? ConstancyVoucherTwo : ConstancyVoucherOne;
         const fileName = `constancia-${reservation.id}-${getYear()}.pdf`;
 
         return (
-            <PDFDownloadLink document={<DocumentComponent reservation={reservation} />} fileName={fileName}>
+            <PDFDownloadLink document={<PdfOne reservation={reservation} />} fileName={fileName}>
                 {({ loading }) =>
                     loading ? (
                         'Cargando documento...'

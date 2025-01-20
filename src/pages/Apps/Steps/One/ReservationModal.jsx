@@ -1,4 +1,3 @@
-// ReservationModal.jsx
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -10,7 +9,7 @@ import { useSelector } from 'react-redux';
 import titleReservationsService from '../../../../api/titleReservationsService';
 
 const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions }) => {
-    const [pdfAvailable, setPdfAvailable] = useState(null); // Estado para manejar la disponibilidad del PDF
+    const [pdfAvailable, setPdfAvailable] = useState(null);
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
     const styles = HandleMode(isDarkMode);
 
@@ -18,14 +17,14 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
         if (isOpen && reservation?.id) {
             titleReservationsService.viewPdf(reservation.id)
                 .then((pdfData) => {
-                    setPdfAvailable(!!pdfData); // true si hay PDF, false si no
+                    setPdfAvailable(!!pdfData);
                 })
                 .catch((error) => {
                     console.error('Error al cargar el PDF:', error);
-                    setPdfAvailable(false); // Manejar el error como "No disponible"
+                    setPdfAvailable(false);
                 });
         } else {
-            setPdfAvailable(null); // Resetear el estado cuando el modal se cierra
+            setPdfAvailable(null);
         }
     }, [isOpen, reservation]);
 
@@ -34,6 +33,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
         title: Yup.string().required('El título es obligatorio'),
         meetRequirements: Yup.string().required('Selecciona una opción'),
         observation: Yup.string(),
+        registrationNumber: Yup.string().required('El reg es obligatorio'),
     });
 
     const initialValues = {
@@ -44,6 +44,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
         title: reservation?.title || '',
         lineOfResearch: lineOptions.find((option) => option.value === reservation?.lineOfResearch?.id) || null,
         projectSimilarity: reservation?.projectSimilarity || 0,
+        registrationNumber: reservation?.registrationNumber || '',
     };
 
     const handleSubmit = async (values, { setSubmitting }) => {
@@ -107,7 +108,6 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                     onChange={(e) => {
                                                         const query = e.target.value;
                                                         setFieldValue('title', query);
-                                                        // Opcional: implementar búsqueda de títulos si es necesario
                                                     }}
                                                 />
                                                 <ErrorMessage name="title" component="div" className="text-danger mt-1" />
@@ -171,6 +171,17 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                 <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" />
                                             </div>
                                             <div className="col-span-2">
+                                                <label htmlFor="registrationNumber">Reg</label>
+                                                <Field
+                                                    name="registrationNumber"
+                                                    type="text"
+                                                    id="registrationNumber"
+                                                    placeholder="Ingrese el número de registro"
+                                                    className="form-input"
+                                                />
+                                                <ErrorMessage name="registrationNumber" component="div" className="text-danger mt-1" />
+                                            </div>
+                                            <div className="col-span-2">
                                                 <label htmlFor="observation">Observaciones</label>
                                                 <Field
                                                     name="observation"
@@ -193,7 +204,7 @@ const ReservationModal = ({ isOpen, onClose, onSave, reservation, lineOptions })
                                                 <button
                                                     type="submit"
                                                     className="btn btn-primary ltr:ml-4 rtl:mr-4"
-                                                    disabled={!pdfAvailable || isSubmitting} // Deshabilita si no hay PDF o está enviando
+                                                    disabled={!pdfAvailable || isSubmitting}
                                                 >
                                                     {pdfAvailable === null
                                                         ? 'Cargando...'

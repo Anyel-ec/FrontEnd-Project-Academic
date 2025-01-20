@@ -79,7 +79,6 @@ const addTitleReservation = async (titlereservation) => {
         throw new Error('Error inesperado: ' + error.message);
     }
 };
-
 // Editar una reserva de título existente
 const editTitleReservation = async (id, titlereservation) => {
     try {

@@ -30,7 +30,7 @@ import PastingApprovalStudent from '../pages/Apps/StepsStudents/Eight/PastingApp
 // <--End Students Imports-->
 
 import AuthRoute from '../security/AuthRoute ';
-const Index = lazy(() => import('../pages/Index'));
+// const Index = lazy(() => import('../pages/Index'));
 const Progress = lazy(() => import('../pages/Progress'));
 const ProgressStudents = lazy(() => import('../pages/ProgressStudent'));
 const Finance = lazy(() => import('../pages/Finance'));
@@ -154,7 +154,7 @@ const routes = [
         path: '/',
         element: (
             <ProtectedRoute>
-                <Index />
+                <Progress />
             </ProtectedRoute>
         ),
     },

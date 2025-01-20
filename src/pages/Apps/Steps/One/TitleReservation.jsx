@@ -180,11 +180,13 @@ const TitleReservation = () => {
 
     const handleSaveReservation = async (reservationId, values) => {
         let title;
+        let registrationNumber;
         try {
             const titleReservationData = {
                 meetsRequirements: values?.meetRequirements === 'yes',
                 observations: values.observation || '',
                 title: values.title || '',
+                registrationNumber: values.registrationNumber || 'N/A',
                 projectSimilarity: parseFloat(values.projectSimilarity) || 0,
                 lineOfResearch: values.lineOfResearch ? { id: values.lineOfResearch.value } : null,
             };
