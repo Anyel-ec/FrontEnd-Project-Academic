@@ -5,6 +5,8 @@ import Select from 'react-select';
 import { HandleMode } from '../../styles/selectStyles';
 import { useSelector } from 'react-redux';
 import IconX from '../../../../components/Icon/IconX';
+import Flatpickr from 'react-flatpickr';
+import { Spanish } from 'flatpickr/dist/l10n/es.js';
 
 const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => {
     const isDarkMode = useSelector((state) => state.themeConfig.theme === 'dark');
@@ -22,9 +24,12 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
             coadviser: project?.coadviser ? { value: project.coadviser.id, label: `${project.coadviser.firstNames} ${project.coadviser.lastName}` } : null,
             engineeringFaculty: project?.engineeringFaculty ? { value: project.engineeringFaculty.id, label: `${project.engineeringFaculty.firstNames} ${project.engineeringFaculty.lastName}` } : null,
             meetRequirements: project?.meetRequirements ? 'yes' : 'no',
+            registrationNumber: project?.registrationNumber || '',
+            referenceDate: project?.referenceDate || '',
         }),
         [project, adviserOptions]
     );
+
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" open={isOpen} onClose={onClose} className="relative z-[51]">
@@ -52,7 +57,9 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                             coadviser: values.coadviser ? { id: values.coadviser.value } : null,
                                             engineeringFaculty: values.engineeringFaculty ? { id: values.engineeringFaculty.value } : null,
                                             observations: values.observation || '',
-                                            meetRequirements: values.meetRequirements === 'yes', // Conversión a booleano
+                                            meetRequirements: values.meetRequirements === 'yes',
+                                            registrationNumber: values.registrationNumber || '',
+                                            referenceDate: values.referenceDate || '',
                                         };
 
                                         console.log('Llamando a onSave con:', transformedValues);
@@ -155,7 +162,7 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                     id="observation"
                                                     placeholder="Ingrese observaciones"
                                                     className="form-input"
-                                                    disabled={values.meetRequirements === 'yes'} // Desactiva el campo si 'Sí' está seleccionado
+                                                    disabled={values.meetRequirements === 'yes'}
                                                     style={{
                                                         cursor: values.meetRequirements === 'yes' ? 'not-allowed' : 'auto',
                                                         opacity: values.meetRequirements === 'yes' ? 0.5 : 1,
@@ -163,7 +170,31 @@ const ApprovalModal = ({ isOpen, onClose, onSave, project, adviserOptions }) => 
                                                 />
                                                 <ErrorMessage name="observation" component="div" className="text-danger mt-1" />
                                             </div>
+                                            <div className="col-span-2">
+                                                <label htmlFor="registrationNumber">Número de Registro</label>
+                                                <Field
+                                                    name="registrationNumber"
+                                                    type="text"
+                                                    id="registrationNumber"
+                                                    placeholder="Ingrese el número de registro"
+                                                    className="form-input"
+                                                />
+                                                <ErrorMessage name="registrationNumber" component="div" className="text-danger mt-1" />
+                                            </div>
+                                            <div className="col-span-2">
+                                                <label htmlFor="referenceDate">Fecha de Referencia</label>
+                                                <Flatpickr
 
+                                                    placeholder="Ingrese la fecha"
+                                                    value={values.referenceDate || ''}
+                                                    options={{
+                                                        dateFormat: 'Y-m-d',
+                                                        locale: Spanish,
+                                                    }}
+                                                    className="form-input"
+                                                />
+                                                <ErrorMessage name="referenceDate" component="div" className="text-danger mt-1" />
+                                            </div>
                                             <div className="flex justify-end items-center mt-8 col-span-2">
                                                 <button type="button" className="btn btn-outline-danger" onClick={onClose}>
                                                     Cancelar

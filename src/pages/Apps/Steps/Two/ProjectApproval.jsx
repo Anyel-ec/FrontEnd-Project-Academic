@@ -7,6 +7,7 @@ import ApprovalModal from './ApprovalModal';
 import ApprovalSearch from './ApprovalSearch';
 import teacherService from '../../../../api/teacherService';
 import careerService from '../../../../api/careerService';
+import InfoService from '../../../../api/institucionalInfoService';
 import projectApprovalService from '../../../../api/projectApprovalService';
 
 const ProjectApproval = () => {
@@ -18,11 +19,24 @@ const ProjectApproval = () => {
     const [selectedCareer, setSelectedCareer] = useState(null);
     const [search, setSearch] = useState('');
     const [careerOptions, setCareerOptions] = useState([]);
+    const [info, setInfo] = useState(null);
+
     useEffect(() => {
         dispatch(setPageTitle('Comprobación de Proyecto'));
         fetchProjects();
         fetchCareers();
-    }, [dispatch]);
+        fetchInfo();
+    }, [dispatch]);    
+
+    const fetchInfo = useCallback(async () => {
+        try {
+            const response = await InfoService.getInfo();
+            setInfo(response)
+        } catch (error) {
+            setApiError('Error al cargar la información institucional.');
+        }
+    }, []);
+
     const fetchCareers = useCallback(async () => {
         try {
             const careers = await careerService.getCareers();
@@ -61,7 +75,6 @@ const ProjectApproval = () => {
 
     const handleSave = async (updatedProjectData, projectId) => {
         try {
-            // Llamada al servicio con el ID en la URL y los datos en el cuerpo
             await projectApprovalService.editProjectApproval(projectId, updatedProjectData);
             Swal.fire('Éxito', 'Proyecto actualizado correctamente.', 'success');
 
@@ -100,11 +113,10 @@ const ProjectApproval = () => {
         setIsModalOpen(false);
         setSelectedProject(null);
     };
-
     return (
         <>
             <ApprovalSearch search={search} setSearch={setSearch} careerOptions={careerOptions} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} />
-            <ApprovalTable projects={filteredProjects} onEdit={handleEdit} />
+            <ApprovalTable projects={filteredProjects} onEdit={handleEdit} info={info} />
             <ApprovalModal isOpen={isModalOpen} onClose={closeModal} project={selectedProject} onSave={handleSave} adviserOptions={advisers} />
         </>
     );

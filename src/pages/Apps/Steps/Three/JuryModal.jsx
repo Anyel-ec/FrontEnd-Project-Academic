@@ -43,7 +43,6 @@ const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions, i
                     label: `${juryAppointment.accessory.firstNames} ${juryAppointment.accessory.lastName}`,
                 }
                 : null,
-
             adviser: juryAppointment?.projectApprovalStepTwo?.adviser
                 ? {
                     value: juryAppointment?.projectApprovalStepTwo?.adviser.id,
@@ -56,15 +55,21 @@ const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions, i
                     label: `${juryAppointment?.projectApprovalStepTwo?.coadviser.firstNames} ${juryAppointment?.projectApprovalStepTwo?.coadviser.lastName}`,
                 }
                 : null,
+            hour: juryAppointment?.hour || '',
+            futDate: juryAppointment?.futDate || '',
+            numberFolio: juryAppointment?.numberFolio || '',
+            registrationNumber: juryAppointment?.registrationNumber || '',
+            numberDeanResolution: juryAppointment?.numberDeanResolution || '',
+            secondNumberDeanResolution: juryAppointment?.secondNumberDeanResolution || '',
+            deanResolution: juryAppointment?.deanResolution || '',
+            secondDeanResolution: juryAppointment?.secondDeanResolution || '',
         }),
         [juryAppointment]
     );
 
     const filterOptions = (selectedValues, currentFieldValue) => {
-        // Obtener los IDs de todos los valores seleccionados excepto el del campo actual
         const selectedIds = selectedValues.filter((val) => val && val.value !== currentFieldValue?.value).map((val) => val.value);
 
-        // Filtrar las opciones para excluir a los ya seleccionados en cualquier otro Select
         return adviserOptions
             .filter((adviser) => !selectedIds.includes(adviser.id))
             .map((adviser) => ({
@@ -95,6 +100,14 @@ const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions, i
                                             accessory: values.accessory ? { id: values.accessory.value } : null,
                                             meetRequirements: values.meetRequirements === 'yes' ? true : false,
                                             observations: values.observations || '',
+                                            hour: values.hour,
+                                            futDate: values.futDate,
+                                            numberFolio: values.numberFolio,
+                                            registrationNumber: values.registrationNumber,
+                                            numberDeanResolution: values.numberDeanResolution,
+                                            secondNumberDeanResolution: values.secondNumberDeanResolution,
+                                            deanResolution: values.deanResolution,
+                                            secondDeanResolution: values.secondDeanResolution,
                                         };
                                         console.log(values.meetRequirements);
                                         console.log('Llamando a onSave con:', transformedValues);
@@ -168,6 +181,55 @@ const JuryModal = ({ isOpen, onClose, onSave, juryAppointment, adviserOptions, i
                                                     <label htmlFor="coadviser">Coasesor</label>
                                                     <Select id="coadviser" styles={styles} value={values.coadviser} isDisabled placeholder="Coasesor seleccionado" />
                                                 </div>
+                                                
+                                                <div className="col-span-1">
+                                                    <label htmlFor="hour">Hora</label>
+                                                    <Field name="hour" type="text" id="hour" placeholder="Ingrese la hora" className="form-input" />
+                                                    <ErrorMessage name="hour" component="div" className="text-danger mt-1" />
+                                                </div>
+
+                                                <div className="col-span-1">
+                                                    <label htmlFor="futDate">Fecha FUT</label>
+                                                    <Field name="futDate" type="date" id="futDate" className="form-input" />
+                                                    <ErrorMessage name="futDate" component="div" className="text-danger mt-1" />
+                                                </div>
+
+                                                <div className="col-span-1">
+                                                    <label htmlFor="numberFolio">Número de Folio</label>
+                                                    <Field name="numberFolio" type="text" id="numberFolio" placeholder="Ingrese el número de folio" className="form-input" />
+                                                    <ErrorMessage name="numberFolio" component="div" className="text-danger mt-1" />
+                                                </div>
+
+                                                <div className="col-span-1">
+                                                    <label htmlFor="registrationNumber">Número de Registro</label>
+                                                    <Field name="registrationNumber" type="number" id="registrationNumber" placeholder="Ingrese el número de registro" className="form-input" />
+                                                    <ErrorMessage name="registrationNumber" component="div" className="text-danger mt-1" />
+                                                </div>
+
+                                                <div className="col-span-1">
+                                                    <label htmlFor="numberDeanResolution">Número de Resolución Decanal</label>
+                                                    <Field name="numberDeanResolution" type="text" id="numberDeanResolution" placeholder="Ingrese el número de resolución decanal" className="form-input" />
+                                                    <ErrorMessage name="numberDeanResolution" component="div" className="text-danger mt-1" />
+                                                </div>
+
+                                                <div className="col-span-1">
+                                                    <label htmlFor="secondNumberDeanResolution">Segundo Número de Resolución Decanal</label>
+                                                    <Field name="secondNumberDeanResolution" type="text" id="secondNumberDeanResolution" placeholder="Ingrese el segundo número de resolución decanal" className="form-input" />
+                                                    <ErrorMessage name="secondNumberDeanResolution" component="div" className="text-danger mt-1" />
+                                                </div>
+
+                                                <div className="col-span-1">
+                                                    <label htmlFor="deanResolution">Resolución Decanal</label>
+                                                    <Field name="deanResolution" type="text" id="deanResolution" placeholder="Ingrese la resolución decanal" className="form-input" />
+                                                    <ErrorMessage name="deanResolution" component="div" className="text-danger mt-1" />
+                                                </div>
+
+                                                <div className="col-span-1">
+                                                    <label htmlFor="secondDeanResolution">Segunda Resolución Decanal</label>
+                                                    <Field name="secondDeanResolution" type="text" id="secondDeanResolution" placeholder="Ingrese la segunda resolución decanal" className="form-input" />
+                                                    <ErrorMessage name="secondDeanResolution" component="div" className="text-danger mt-1" />
+                                                </div>
+
                                                 <div>
                                                     <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                     <div className="flex gap-4">

@@ -5,7 +5,7 @@ import { formatDate, formatNumberWithZero } from '../utils/Dates';
 import PdfTwo from '../pdfSteps/PdfTwo';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 
-const ApprovalTable = ({ projects, onEdit }) => {
+const ApprovalTable = ({ projects, onEdit, info }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -20,7 +20,7 @@ const ApprovalTable = ({ projects, onEdit }) => {
     const getDownloadButton = (project) => {
         const fileName = `P2 INFORME-${formatNumberWithZero(project.id)}-Aprobación de proyecto de Tesis.pdf`;
         return (
-            <PDFDownloadLink document={<PdfTwo project={project} />} fileName={fileName}>
+            <PDFDownloadLink document={<PdfTwo project={project} info={info}/>} fileName={fileName}>
                 <button type='submit' onClick={() => {
                     setIsLoading(true); 
                     setTimeout(() => {

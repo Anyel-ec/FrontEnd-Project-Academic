@@ -2,8 +2,11 @@ import PdfBase from './PdfBase';
 import { Text, View } from '@react-pdf/renderer';
 import styles from './styles/PdfTwoStyles';
 import { getWrittenDate, getYear, formatDate, formatNumberWithZero } from '../utils/Dates';
+import { useEffect, useState } from 'react';
+import InfoService from '../../../../api/institucionalInfoService'; 
 
-const PdfTwo = ({ project }) => {
+const PdfTwo = ({ project, info }) => {
+    const deanName = info.deanName;
     const anio = getYear();
     const actualData = getWrittenDate();
     return (
@@ -17,7 +20,7 @@ const PdfTwo = ({ project }) => {
                     <Text style={styles?.tableColHeader}>A</Text>
                     <View style={styles?.tableCol}>
                         <Text>
-                            <Text style={styles?.bold}>:</Text> {project?.titleReservationStepOne?.student?.career?.faculty?.deanFacultyName}
+                            <Text style={styles?.bold}>:</Text> {deanName}
                         </Text>
                         <Text>Decano de la Facultad de Ingeniería – UNAMBA</Text>
                     </View>
@@ -40,7 +43,7 @@ const PdfTwo = ({ project }) => {
                     <View style={styles?.tableCol}>
                         <Text>
                             <Text style={styles?.bold}>:</Text> SOLICITUD de
-                            <Text>{formatDate(project.updatedAt)}</Text>
+                            <Text>{getWrittenDate(project.referenceDate)}</Text>
                             <Text style={styles?.bold}>                                    Reg. N° {formatNumberWithZero(project.registrationNumber)}</Text>
                         </Text>
                         <Text>Anexo 4 (Docente Asesor)</Text>
@@ -53,7 +56,7 @@ const PdfTwo = ({ project }) => {
                     <View style={styles?.tableCol}>
                         <Text>
                             <Text style={styles?.bold}>:</Text>
-                            <Text> {actualData}</Text>
+                            <Text>Abancay, {actualData}</Text>
                         </Text>
                     </View>
                 </View>
