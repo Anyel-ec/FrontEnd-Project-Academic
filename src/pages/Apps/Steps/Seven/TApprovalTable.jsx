@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import PDFDownloadButton from '../utils/PDFDownloadButtons';
 import PdfSevenC from '../pdfSteps/PdfSevenC';
 import Pagination from '../Pagination';
-import Swal from 'sweetalert2';
 import { formatDate } from '../utils/Dates';
 
-const TApprovalTable = ({ tapprovals, onEdit }) => {
-    console.log(tapprovals);
+const TApprovalTable = ({ tapprovals, onEdit, info }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
     const totalPages = Math.ceil(tapprovals?.length / itemsPerPage);
@@ -82,7 +80,7 @@ const TApprovalTable = ({ tapprovals, onEdit }) => {
                                             tapproval.meetRequirements ? (
                                                 <PDFDownloadButton
                                                 documents={{
-                                                    document: <PdfSevenC tapproval={tapproval} />,
+                                                    document: <PdfSevenC tapproval={tapproval} info={info}/>,
                                                     fileName: `tapproval_${tapproval.id}.pdf`,
                                                 }}
                                                 fileName={`tapproval_${tapproval.id}`}

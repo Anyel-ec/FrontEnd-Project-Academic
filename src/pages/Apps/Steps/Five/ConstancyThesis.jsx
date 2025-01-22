@@ -17,16 +17,12 @@ const ConstancyThesis = () => {
     const [search, setSearch] = useState('');
     const [careerOptions, setCareerOptions] = useState([]);
     const [apiError, setApiError] = useState(null);
-    const [info, setInfo] = useState(null);
 
     useEffect(() => {
         dispatch(setPageTitle('Comprobación de Proyecto'));
         fetchCareers();
         fetchThesis();
-
     }, [dispatch]);
-
-
 
     const fetchCareers = useCallback(async () => {
         try {

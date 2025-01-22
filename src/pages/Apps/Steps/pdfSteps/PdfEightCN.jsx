@@ -1,26 +1,29 @@
 import styles from './styles/PdfEightCNStyles';
 import Logo from './BannerPdfFive.png';
 import { Document, Page, View, Text, Image } from '@react-pdf/renderer';
-import { getYear, getWrittenDate, formatNumberWithZero } from '../utils/Dates';
+import { getYear, formatNumberWithZero } from '../utils/Dates';
 
-const PdfEightCN = ({ pasting }) => {
+const PdfEightCN = ({ pasting, info }) => {
     const anio = getYear();
+    console.log(info);
+    const commemorativeText = info?.commemorativeText || '';
+    console.log(commemorativeText);
     return (
         <Document>
             <Page size="A4" style={styles.page}>
                 <View style={styles.header}>
                     <Image style={styles.logo} src={Logo} />
                     <Text style={styles.underline} Text />
-                    <Text style={styles.headerSection}>“AÑO DEL BICENTENARIO, DE LA CONSOLIDACIÓN DE NUESTRA INDEPENDENCIA, Y DE LA CONMEMORACIÓN DE LAS HEROICAS DE JUNÍN Y AYACUCHO”</Text>
+                    <Text style={styles.headerSection}>“{commemorativeText}”</Text>
                     <Text style={[styles.title, styles.bold]}>CONSTANCIA Nº {formatNumberWithZero(pasting?.id)}-{anio}-D. UIFI-UNAMBA</Text>
                 </View>
                 <Text style={[styles.textMain, { marginBottom: 15 }]}>EL DIRECTOR DE LA UNIDAD DE INVESTIGACIÓN DE LA FACULTAD DE INGENIERÍA DE LA UNIVERSIDAD NACIONAL MICAELA BASTIDAS DE APURÍMAC.</Text>
                 <Text style={[styles.textMain, { marginBottom: 5 }]}>HACE CONSTAR:</Text>
                 <Text style={styles.body}>
-                    Que, <Text style={styles.bold}>{pasting.pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.firstNames}{pasting.pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.middleName}{pasting.pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.lastName}</Text>, identificada con DNI N°{' '}
-                    <Text style={styles.bold}>{pasting.pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.dni}</Text>, y con Código N°{' '}
-                    <Text style={styles.bold}>{pasting.pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.studentCode}</Text>, Bachiller de la Escuela Académico Profesional de{' '}
-                    <Text style={styles.bold}>{pasting.pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.career.name}</Text>, de la Facultad de Ingeniería de la{' '}
+                    Que, <Text style={styles.bold}>{pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.firstNames}{pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.middleName}{pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.lastName}</Text>, identificada con DNI N°{' '}
+                    <Text style={styles.bold}>{pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.dni}</Text>, y con Código N°{' '}
+                    <Text style={styles.bold}>{pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.studentCode}</Text>, Bachiller de la Escuela Académico Profesional de{' '}
+                    <Text style={styles.bold}>{pasting?.thesisApprovalStepSeven?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour?.juryAppointmentStepThree.projectApprovalStepTwo?.titleReservationStepOne?.student.career.name}</Text>, de la Facultad de Ingeniería de la{' '}
                     <Text style={styles.bold}>Universidad Nacional Micaela Bastidas de Apurímac</Text>,{' '}
                     <Text style={styles.bold}>
                         HA CUMPLIDO CON LA PRESENTACIÓN DE 01 EMPASTADO del informe final de tesis titulado:

@@ -25,6 +25,9 @@ const PastingModal = ({ isOpen, onClose, onSave, pasting }) => {
                 '',
             meetRequirements: pasting?.meetRequirements ? 'yes' : 'no',
             observations: pasting?.observations || '',
+            deanResolution: pasting?.deanResolution || '',
+            registrationNumber: pasting?.registrationNumber || '',
+            articleNumber: pasting?.articleNumber || '',
         }),
         [pasting]
     );
@@ -48,6 +51,9 @@ const PastingModal = ({ isOpen, onClose, onSave, pasting }) => {
                                         const transformedValues = {
                                             meetRequirements: values.meetRequirements === 'yes',
                                             observations: values.observations,
+                                            deanResolution: values.deanResolution,
+                                            registrationNumber: values.registrationNumber,
+                                            articleNumber: values.articleNumber,
                                         };
 
                                         onSave(transformedValues, pasting.id);
@@ -70,6 +76,22 @@ const PastingModal = ({ isOpen, onClose, onSave, pasting }) => {
                                                 </div>
                                             )}
 
+                                            <div className="col-span-1">
+                                                <label htmlFor="deanResolution">Resolución del Decano</label>
+                                                <Field name="deanResolution" type="text" id="deanResolution" className="form-input" />
+                                                <ErrorMessage name="deanResolution" component="div" className="text-danger mt-1" />
+                                            </div>
+
+                                            <div className="col-span-2">
+                                                <label htmlFor="registrationNumber">Número de Registro</label>
+                                                <Field name="registrationNumber" type="text" id="registrationNumber" className="form-input" />
+                                                <ErrorMessage name="registrationNumber" component="div" className="text-danger mt-1" />
+                                            </div>
+                                            <div className="col-span-1">
+                                                <label htmlFor="articleNumber">Número de Artículo</label>
+                                                <Field name="articleNumber" type="text" id="articleNumber" className="form-input" />
+                                                <ErrorMessage name="articleNumber" component="div" className="text-danger mt-1" />
+                                            </div>
                                             <div>
                                                 <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
@@ -100,7 +122,6 @@ const PastingModal = ({ isOpen, onClose, onSave, pasting }) => {
                                                     }} />
                                                 <ErrorMessage name="observations" component="div" className="text-danger mt-1" />
                                             </div>
-
                                             <div className="flex justify-end items-center mt-8 col-span-2">
                                                 <button type="button" className="btn btn-outline-danger" onClick={onClose}>
                                                     Cancelar

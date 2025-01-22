@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import PdfEightCN from '../pdfSteps/PdfEightCN';
 import PDFDownloadButton from '../utils/PDFDownloadButtons';
 import { formatDate } from '../utils/Dates';
-const PastingTable = ({ pastings, onEdit }) => {
+const PastingTable = ({ pastings, onEdit, info }) => {
     console.log(pastings);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -66,7 +66,7 @@ const PastingTable = ({ pastings, onEdit }) => {
                                             pasting.meetRequirements ? (
                                                 <PDFDownloadButton
                                                     documents={{
-                                                        document: <PdfEightCN pasting={pasting} />,
+                                                        document: <PdfEightCN pasting={pasting} info={info} />,
                                                         fileName: `pasting_${pasting.id}.pdf`,
                                                     }}
                                                     fileName={`pasting_${pasting.id}`}

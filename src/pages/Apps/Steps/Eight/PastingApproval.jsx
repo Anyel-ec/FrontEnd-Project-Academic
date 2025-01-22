@@ -6,6 +6,7 @@ import TapprovalModal from './PastingModal';
 import TapprovalSearch from './PastingSearch';
 import pastingApprovalService from '../../../../api/pastingApprovalService';
 import careerService from '../../../../api/careerService';
+import InfoService from '../../../../api/institucionalInfoService';
 import Swal from 'sweetalert2';
 
 const PastingApproval = () => {
@@ -16,13 +17,24 @@ const PastingApproval = () => {
     const [search, setSearch] = useState('');
     const [careerOptions, setCareerOptions] = useState([]);
     const [pastings, setPastings] = useState([]);
-
+    const [info, setInfo] = useState(null);
+    
     useEffect(() => {
         dispatch(setPageTitle('Aprobación de Tesis'));
         fetchPastings();
         fetchCareers();
+        fetchInfo();
     }, [dispatch]);
 
+    const fetchInfo = useCallback(async () => {
+        try {
+            const response = await InfoService.getInfo();
+            setInfo(response)
+        } catch (error) {
+            setApiError('Error al cargar la información institucional.');
+        }
+    }, []);
+    
     const fetchCareers = useCallback(async () => {
         try {
             const careers = await careerService.getCareers();
@@ -107,7 +119,7 @@ const PastingApproval = () => {
                 selectedCareer={selectedCareer}
                 setSelectedCareer={setSelectedCareer}
             />
-            <TapprovalTable pastings={filteredPastings} onEdit={handleEdit} />
+            <TapprovalTable pastings={filteredPastings} onEdit={handleEdit} info={info} />
             <TapprovalModal
                 isOpen={isModalOpen}
                 pasting={selectedPasting}

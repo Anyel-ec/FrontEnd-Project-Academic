@@ -6,6 +6,7 @@ import TapprovalModal from './TApprovalModal';
 import TapprovalSearch from './TApprovalSearch';
 import thesisApprovalService from '../../../../api/thesisApprovalService';
 import careerService from '../../../../api/careerService';
+import InfoService from '../../../../api/institucionalInfoService';
 import Swal from 'sweetalert2';
 
 const ThesisApproval = () => {
@@ -16,12 +17,24 @@ const ThesisApproval = () => {
     const [search, setSearch] = useState('');
     const [careerOptions, setCareerOptions] = useState([]);
     const [tapprovals, setTapprovals] = useState([]);
+    const [info, setInfo] = useState(null);
 
     useEffect(() => {
         dispatch(setPageTitle('Aprobación de Tesis'));
         fetchTapprovals();
         fetchCareers();
+        fetchInfo();
     }, [dispatch]);
+
+    const fetchInfo = useCallback(async () => {
+        try {
+            const response = await InfoService.getInfo();
+            setInfo(response)
+        } catch (error) {
+            console.error('Error al cargar la información institucional.');
+        }
+    }, []);
+
 
     const fetchCareers = useCallback(async () => {
         try {
@@ -67,7 +80,7 @@ const ThesisApproval = () => {
             Swal.fire('Error', 'Hubo un problema al guardar la notificación.', 'error');
         }
     };
-    
+
 
     const normalizeText = (text) => {
         return text
@@ -83,10 +96,7 @@ const ThesisApproval = () => {
             const normalizedFullName = normalizeText(fullName);
             const studentCodeMatch = normalizeText(tapproval?.juryNotificationsStepSix?.constancyThesisStepFive.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne.student.studentCode).includes(normalizedSearch);
             const matchesSearch = normalizedFullName.includes(normalizedSearch) || studentCodeMatch;
-
-            // Filtrar por carrera si `selectedCareer` está seleccionado
             const matchesCareer = selectedCareer ? tapproval?.juryNotificationsStepSix?.constancyThesisStepFive.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne.student.career.id === selectedCareer.value : true;
-
             return matchesSearch && matchesCareer;
         });
     }, [tapprovals, search, selectedCareer]);
@@ -107,7 +117,7 @@ const ThesisApproval = () => {
                 selectedCareer={selectedCareer}
                 setSelectedCareer={setSelectedCareer}
             />
-            <TapprovalTable tapprovals={filteredTapprovals} onEdit={handleEdit} />
+            <TapprovalTable tapprovals={filteredTapprovals} onEdit={handleEdit} info={info}/>
             <TapprovalModal
                 isOpen={isModalOpen}
                 tapproval={selectedTapproval}

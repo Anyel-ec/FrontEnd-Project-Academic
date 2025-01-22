@@ -7,12 +7,13 @@ import { getWrittenDateFromInput, getWrittenDate, getYear, formatNumberWithZero,
 const PdfThreeC = ({ tapproval, info }) => {
     const anio = getYear();
     const actualData = getWrittenDate();
-    const updatedDate = tapproval?.updatedAt ? formatISODateToSimpleDate(tapproval.updatedAt) : "Fecha no disponible";
+    const updatedDate = tapproval?.updatedAt + 1 ? formatISODateToSimpleDate(tapproval.updatedAt) : "Fecha no disponible";
     const requestDate = getWrittenDateFromInput(updatedDate);
-    const commemorativeText = info.commemorativeText;
+    const commemorativeText = info?.commemorativeText;
+    console.log("info", info);
     const deanName = info?.deanName;
     return (
-        <PdfBase showCommemorativeText={true} commemorativeText={commemorativeText}>
+        <PdfBase  commemorativeText={commemorativeText}>
 
             <Text style={styles.textHeader}>
                 Tamburco, {requestDate}
