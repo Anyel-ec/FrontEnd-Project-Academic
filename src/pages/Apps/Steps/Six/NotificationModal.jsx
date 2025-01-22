@@ -92,31 +92,11 @@ const NotificationModal = ({ isOpen, onClose, onSave, notification }) => {
                                                 </div>
                                                 <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" />
                                             </div>
-                                            <div className={submitCount && errors.thesisDate ? 'has-error' : 'col-span-1'}>
-                                                <label htmlFor="thesisDate">Fecha de Nacimiento</label>
-                                                <Field name="thesisDate">
-                                                    {({ field, form }) => (
-                                                        <Flatpickr
-                                                            {...field}
-                                                            placeholder="Ingrese la fecha"
-                                                            value={field.value || ''}
-                                                            options={{
-                                                                dateFormat: 'Y-m-d',
-                                                                position: 'auto left',
-                                                                locale: Spanish,
-                                                                maxDate: maxDateAllowed.toISOString().split('T')[0],
-                                                            }}
-                                                            className="form-input"
-                                                            onChange={(date) => {
-                                                                // Usar formato local para evitar desfases
-                                                                const formattedDate = date[0].toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
-                                                                form.setFieldValue('thesisDate', formattedDate);
-                                                            }}
-                                                        />
-                                                    )}
-                                                </Field>
-                                                <ErrorMessage name="thesisDate" component="div" className="text-danger mt-1" />
-                                            </div>
+                                            <div className="col-span-1">
+                                                    <label htmlFor="thesisDate">Fecha de Tesis</label>
+                                                    <Field name="thesisDate" type="date" id="thesisDate" className="form-input" />
+                                                    <ErrorMessage name="thesisDate" component="div" className="text-danger mt-1" />
+                                                </div>
                                             <div className="col-span-2">
                                                 <label htmlFor="observations">Observaciones</label>
                                                 <Field

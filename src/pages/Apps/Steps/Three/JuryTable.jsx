@@ -86,7 +86,7 @@ const JuryTable = ({ currentJury, onEdit, onSave, info }) => {
                                                         fileName: `P3 ACTA Nº ${formatNumberWithZero(jury.id)}.pdf`,
                                                     },
                                                     {
-                                                        document: <PdfThreeC jury={jury} />,
+                                                        document: <PdfThreeC jury={jury} info={info} />,
                                                         fileName: `P3 CARTA Nº ${formatNumberWithZero(jury.id)}.pdf`,
                                                     },
                                                     {

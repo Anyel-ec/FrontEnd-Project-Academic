@@ -1,24 +1,27 @@
 
 import PdfBase from './PdfBase';
-import { PDFViewer, Text, View, Image } from '@react-pdf/renderer';
-import Firm from './FirmStepThree.png';
+import { Text, View } from '@react-pdf/renderer';
 import styles from './styles/PdfThreeCStyles';
 import { formatISODateToSimpleDate, formatNumberWithZero, getWrittenDateFromInput, getYear } from '../utils/Dates';
 
-const PdfThreeC = ({ jury }) => {
+const PdfThreeC = ({ jury, info }) => {
     const anio = getYear();
-
 
     const updatedDate = jury?.updatedAt ? formatISODateToSimpleDate(jury.updatedAt) : "Fecha no disponible";
     const requestDate = getWrittenDateFromInput(updatedDate);
     const fut = getWrittenDateFromInput(jury.futDate);
     const createdAt = getWrittenDateFromInput(jury.createdAt);
+    const firstStudent = jury?.projectApprovalStepTwo?.titleReservationStepOne?.student;
+    const secondStudent = jury?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo;
+
+    const studentsText = secondStudent
+        ? `Bachilleres ${firstStudent?.firstNames || "Nombre no disponible"} ${firstStudent?.middleName || ""} ${firstStudent?.lastName || "Apellido no disponible"} y ${secondStudent?.firstNames || "Nombre no disponible"
+        } ${secondStudent?.middleName || ""} ${secondStudent?.lastName || "Apellido no disponible"}`
+        : `Bachiller ${firstStudent?.firstNames || "Nombre no disponible"} ${firstStudent?.middleName || ""} ${firstStudent?.lastName || "Apellido no disponible"}`;
+
+    const commemorativeText = info.commemorativeText;
     return (
-
-
-        <PdfBase showCommemorativeText={true} commemorativeText={`“Año del Bicentenario, de la consolidación de nuestra Independencia, y de la conmemoración 
-de las Heroicas de Junín y Ayacucho”
-`}>
+        <PdfBase showCommemorativeText={true} commemorativeText={commemorativeText} registrationNumber={jury.registrationNumber}>
 
             <Text style={styles.textHeader}>
                 Tamburco, {requestDate}
@@ -65,9 +68,9 @@ de las Heroicas de Junín y Ayacucho”
                 <Text style={{ marginTop: 10, lineHeight: 1.2 }}>
                     Es grato dirigirme a su despacho, para saludarlo cordialmente,
                     y a la vez solicitar la resolución de ratificación de designación
-                    de jurados a favor del Bachillere <Text style={styles.bold}> {jury?.projectApprovalStepTwo?.adviser?.firstNames || ""} {jury?.projectApprovalStepTwo?.adviser?.middleName || ""} {jury?.projectApprovalStepTwo?.adviser?.lastName || ""}
+                    de jurados a favor del Bachiller <Text style={styles.bold}> {jury?.projectApprovalStepTwo?.adviser?.firstNames || ""} {jury?.projectApprovalStepTwo?.adviser?.middleName || ""} {jury?.projectApprovalStepTwo?.adviser?.lastName || ""}
                     </Text>del Proyecto de tesis denominado:
-                    <Text style={styles.bold}>{jury?.projectApprovalStepTwo?.titleReservationStepOne?.title || "Título no disponible"},</Text> y en
+                    <Text style={styles.bold}>{studentsText},</Text> y en
                     reunión llevada a cabo el día {createdAt} con la Comisión
                     de Investigación de la <Text style={styles.bold}>EAP. {jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.career.name}</Text>, se realizó el
                     respectivo sorteo para la ratificación de <Text style={styles.bold}>Designación de Jurados</Text>

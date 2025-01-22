@@ -1,4 +1,3 @@
-// ThesisModal.jsx
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment, useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -42,6 +41,8 @@ const ThesisModal = ({ isOpen, onClose, onSave, thesis }) => {
         title: Yup.string().required('El título es obligatorio'),
         meetsRequirements: Yup.string().required('Selecciona una opción'),
         observations: Yup.string(),
+        aplicationNumber: Yup.string().required('El número de aplicación es obligatorio'),
+        registrationNumber: Yup.string().required('El número de registro es obligatorio'),
     });
 
     const initialValues = React.useMemo(
@@ -55,9 +56,12 @@ const ThesisModal = ({ isOpen, onClose, onSave, thesis }) => {
                 ? { value: thesis.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.lineOfResearch.id, label: thesis.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.lineOfResearch.name }
                 : null,
             projectSimilarity: thesis?.projectSimilarity || 0,
+            aplicationNumber: thesis?.aplicationNumber || '',
+            registrationNumber: thesis?.registrationNumber || '',
         }),
         [thesis]
     );
+
     const handleSubmit = async (values, { setSubmitting }) => {
         const normalizedValues = {
             ...values,
@@ -67,6 +71,7 @@ const ThesisModal = ({ isOpen, onClose, onSave, thesis }) => {
         await onSave(thesis.id, normalizedValues); // Enviar valores normalizados
         setSubmitting(false);
     };
+
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" open={isOpen} onClose={onClose} className="relative z-[51]">
@@ -119,7 +124,28 @@ const ThesisModal = ({ isOpen, onClose, onSave, thesis }) => {
                                                 </div>
                                             )}
 
-                                            
+                                            <div className={submitCount && errors.aplicationNumber ? 'has-error' : ''}>
+                                                <label htmlFor="aplicationNumber">Número de Aplicación</label>
+                                                <Field
+                                                    name="aplicationNumber"
+                                                    type="text"
+                                                    id="aplicationNumber"
+                                                    className="form-input"
+                                                />
+                                                <ErrorMessage name="aplicationNumber" component="div" className="text-danger mt-1" />
+                                            </div>
+
+                                            <div className={submitCount && errors.registrationNumber ? 'has-error' : ''}>
+                                                <label htmlFor="registrationNumber">Número de Registro</label>
+                                                <Field
+                                                    name="registrationNumber"
+                                                    type="text"
+                                                    id="registrationNumber"
+                                                    className="form-input"
+                                                />
+                                                <ErrorMessage name="registrationNumber" component="div" className="text-danger mt-1" />
+                                            </div>
+
                                             <div className="col-span-1">
                                                 <label htmlFor="meetsRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">

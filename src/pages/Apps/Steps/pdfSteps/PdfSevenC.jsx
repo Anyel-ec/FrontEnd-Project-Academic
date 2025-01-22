@@ -4,17 +4,15 @@ import { Text, View} from '@react-pdf/renderer';
 import styles from './styles/PdfSevenCStyles';
 import { getWrittenDateFromInput, getWrittenDate, getYear, formatNumberWithZero, formatISODateToSimpleDate } from '../utils/Dates';
 
-const PdfThreeC = ({ tapproval }) => {
+const PdfThreeC = ({ tapproval, info }) => {
     const anio = getYear();
     const actualData = getWrittenDate();
     const updatedDate = tapproval?.updatedAt ? formatISODateToSimpleDate(tapproval.updatedAt) : "Fecha no disponible";
     const requestDate = getWrittenDateFromInput(updatedDate);
+    const commemorativeText = info.commemorativeText;
+    const deanName = info?.deanName;
     return (
-
-
-        <PdfBase showCommemorativeText={true} commemorativeText={`“Año del Bicentenario, de la consolidación de nuestra Independencia, y de la conmemoración 
-de las Heroicas de Junín y Ayacucho”
-`}>
+        <PdfBase showCommemorativeText={true} commemorativeText={commemorativeText}>
 
             <Text style={styles.textHeader}>
                 Tamburco, {requestDate}
@@ -26,7 +24,7 @@ de las Heroicas de Junín y Ayacucho”
             </Text>
             {/* Dirigido a */}
             <Text style={{ fontSize: 12 }}>Señor:</Text>
-            <Text style={{ fontSize: 11 }}>{tapproval?.juryNotificationsStepSix?.constancyThesisStepFive?.reportReviewStepFour.juryAppointmentStepThree.projectApprovalStepTwo.titleReservationStepOne?.student?.career?.faculty?.deanFacultyName}</Text>
+            <Text style={{ fontSize: 11 }}>{deanName}</Text>
             <Text style={[styles.bold, { fontSize: 12 }]}>Decano de la Facultad de Ingeniería – UNAMBA</Text>
             <Text><Text style={[styles.underline, { fontSize: 9 }]}>CIUDAD</Text>.-.</Text>
             <View style={styles.semiTable}>

@@ -25,6 +25,9 @@ const TApprovalModal = ({ isOpen, onClose, onSave, tapproval }) => {
                 '',
             meetRequirements: tapproval?.meetRequirements ? 'yes' : 'no',
             observations: tapproval?.observations || '',
+            registrationNumber: tapproval?.registrationNumber || '',
+            reportNumber: tapproval?.reportNumber || '',
+            multipleMemorandumNumber: tapproval?.multipleMemorandumNumber || '',
         }),
         [tapproval]
     );
@@ -49,6 +52,9 @@ const TApprovalModal = ({ isOpen, onClose, onSave, tapproval }) => {
                                         const transformedValues = {
                                             meetRequirements: values.meetRequirements === 'yes',
                                             observations: values.observations,
+                                            registrationNumber: values.registrationNumber,
+                                            reportNumber: values.reportNumber,
+                                            multipleMemorandumNumber: values.multipleMemorandumNumber,
                                         };
 
                                         onSave(transformedValues, tapproval.id);
@@ -70,7 +76,44 @@ const TApprovalModal = ({ isOpen, onClose, onSave, tapproval }) => {
                                                     <ErrorMessage name="studentTwoCode" component="div" className="text-danger mt-1" />
                                                 </div>
                                             )}
+                                            {/* Campo de Número de Registro */}
+                                            <div className="col-span-1">
+                                                <label htmlFor="registrationNumber">Número de Registro</label>
+                                                <Field
+                                                    name="registrationNumber"
+                                                    type="text"
+                                                    id="registrationNumber"
+                                                    placeholder="Ingrese número de registro"
+                                                    className="form-input"
+                                                />
+                                                <ErrorMessage name="registrationNumber" component="div" className="text-danger mt-1" />
+                                            </div>
 
+                                            {/* Campo de Número de Informe */}
+                                            <div className="col-span-2">
+                                                <label htmlFor="reportNumber">Número de Informe</label>
+                                                <Field
+                                                    name="reportNumber"
+                                                    type="text"
+                                                    id="reportNumber"
+                                                    placeholder="Ingrese número de informe"
+                                                    className="form-input"
+                                                />
+                                                <ErrorMessage name="reportNumber" component="div" className="text-danger mt-1" />
+                                            </div>
+
+                                            {/* Campo de Número de Memorándum Múltiple */}
+                                            <div className="col-span-1">
+                                                <label htmlFor="multipleMemorandumNumber">Número de Memorándum</label>
+                                                <Field
+                                                    name="multipleMemorandumNumber"
+                                                    type="text"
+                                                    id="multipleMemorandumNumber"
+                                                    placeholder="Ingrese número de memorándum múltiple"
+                                                    className="form-input"
+                                                />
+                                                <ErrorMessage name="multipleMemorandumNumber" component="div" className="text-danger mt-1" />
+                                            </div>
                                             <div>
                                                 <label htmlFor="meetRequirements">Cumple Requisitos</label>
                                                 <div className="flex gap-4">
@@ -102,7 +145,6 @@ const TApprovalModal = ({ isOpen, onClose, onSave, tapproval }) => {
                                                 </div>
                                                 <ErrorMessage name="meetRequirements" component="div" className="text-danger mt-1" />
                                             </div>
-
                                             {/* Campo de Observaciones */}
                                             <div className="col-span-2">
                                                 <label htmlFor="observations">Observaciones</label>

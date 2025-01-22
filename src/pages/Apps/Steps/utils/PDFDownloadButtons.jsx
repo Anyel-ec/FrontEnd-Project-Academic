@@ -5,7 +5,6 @@ import { saveAs } from 'file-saver';
 
 const PDFDownloadButton = ({ documents, fileName, label = 'Descargar PDF(s)' }) => {
     const [isLoading, setIsLoading] = useState(false);
-
     const handleDownload = async () => {
         setIsLoading(true);
 
