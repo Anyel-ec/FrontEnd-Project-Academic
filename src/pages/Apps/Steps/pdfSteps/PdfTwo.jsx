@@ -1,9 +1,7 @@
 import PdfBase from './PdfBase';
 import { Text, View } from '@react-pdf/renderer';
 import styles from './styles/PdfTwoStyles';
-import { getWrittenDate, getYear, formatDate, formatNumberWithZero } from '../utils/Dates';
-import { useEffect, useState } from 'react';
-import InfoService from '../../../../api/institucionalInfoService'; 
+import { getWrittenDate, getYear, formatNumberWithZero } from '../utils/Dates';
 
 const PdfTwo = ({ project, info }) => {
     const deanName = info.deanName;

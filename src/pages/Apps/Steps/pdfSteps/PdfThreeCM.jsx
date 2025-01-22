@@ -1,20 +1,17 @@
 import PdfBase from './PdfBase';
-import { PDFViewer, Text, View, Image } from '@react-pdf/renderer';
-import Firm from './FirmStepThree.png';
+import { Text, View } from '@react-pdf/renderer';
 import styles from './styles/PdfThreeCMStyles';
-import { formatNumberWithZero, getWrittenDate, getYear, getWrittenDateFromInput } from '../utils/Dates';
+import { formatNumberWithZero, getYear, getWrittenDateFromInput } from '../utils/Dates';
 
-const PdfThreeCM = ({ jury }) => {
+const PdfThreeCM = ({ jury, info }) => {
     const anio = getYear();
     const createdAt = getWrittenDateFromInput(jury.createdAt);
-
+    const commemorativeText = info?.commemorativeText || '';
     return (
-        <PdfBase showCommemorativeText={true} commemorativeText={`“Año del Bicentenario, de la consolidación de nuestra Independencia, y de la conmemoración 
-de las Heroicas de Junín y Ayacucho”
-`}>
+        <PdfBase showCommemorativeText={true} commemorativeText={commemorativeText} registrationNumber={jury.registrationNumber}>
 
             <Text style={styles.textHeader}>
-                Tamburco, {jury.registrationNumber}
+                Tamburco, {createdAt}
             </Text>
 
             {/* Fecha y número de carta */}
@@ -101,7 +98,6 @@ de las Heroicas de Junín y Ayacucho”
                     <Text style={styles.underline}>“Una vez recibido los trabajos de investigación o tesis, por los jurados evaluadores, se procederá a evaluar en forma y fondo en un plazo máximo de 15 días hábiles. Los miembros del jurado están obligados a participar en las diferentes etapas de la revisión del informe”; su incumplimiento constituye falta sujeta a sanción prevista en el estatuto de la UNAMBA y normas conexas. </Text>
                 </Text>
                 <Text>Sin otro en particular, aprovecho la oportunidad para expresarle las muestras de mi especial consideración y deferencia personal.</Text>
-
             </View>
         </PdfBase>
     );

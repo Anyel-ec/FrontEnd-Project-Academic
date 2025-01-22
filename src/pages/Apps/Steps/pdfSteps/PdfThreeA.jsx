@@ -5,7 +5,6 @@ import styles from './styles/PdfThreeAStyles';
 import { getFullWrittenDateTimeFromInput, getWrittenDateFromInput, formatISODateToSimpleDate, getYear } from '../utils/Dates';
 
 const PdfThreeA = ({ jury }) => {
-    // Validación de entrada para evitar errores
     if (!jury) {
         console.error("El objeto 'jury' no se recibió correctamente");
         return (
@@ -23,9 +22,19 @@ const PdfThreeA = ({ jury }) => {
     const requestDate = getWrittenDateFromInput(updatedDate);
 
     const anio = getYear();
+    const reg = jury?.registrationNumber;
+
+    // Extraer datos de los estudiantes
+    const firstStudent = jury?.projectApprovalStepTwo?.titleReservationStepOne?.student;
+    const secondStudent = jury?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo;
+
+    const studentsText = secondStudent
+        ? `Bachilleres ${firstStudent?.firstNames || "Nombre no disponible"} ${firstStudent?.middleName || ""} ${firstStudent?.lastName || "Apellido no disponible"} y ${secondStudent?.firstNames || "Nombre no disponible"
+        } ${secondStudent?.middleName || ""} ${secondStudent?.lastName || "Apellido no disponible"}`
+        : `Bachiller ${firstStudent?.firstNames || "Nombre no disponible"} ${firstStudent?.middleName || ""} ${firstStudent?.lastName || "Apellido no disponible"}`;
 
     return (
-        <PdfBase commemorativeText={false}>
+        <PdfBase commemorativeText={false} registrationNumber={reg}>
             <Text style={styles.h1}>ACTA DE DESIGNACIÓN DE JURADOS DE TESIS</Text>
 
             <View style={styles.section}>
@@ -33,8 +42,8 @@ const PdfThreeA = ({ jury }) => {
                     En fecha {applicationDate}, reunidas de manera presencial, el director de la Unidad de Investigación de la Facultad de Ingeniería,
                     <Text style={styles.bold}> Dr. Lintol Contreras Salas</Text>, y miembros de la Comisión de Investigación de la
                     <Text style={styles.bold}> Escuela Académico Profesional de {jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.career?.name || "Carrera no disponible"}</Text>,
-                    conformado por el Mgt. {jury?.projectApprovalStepTwo?.adviser?.firstNames || ""} {jury?.projectApprovalStepTwo?.adviser?.middleName || ""} {jury?.projectApprovalStepTwo?.adviser?.lastName || ""} y demás miembros de la comisión y en atención a la solicitud s/n presentado por el
-                    <Text style={styles.bold}> Bachiller {jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.firstName} {jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.middleName} {jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.lastName}</Text>,
+                    conformado por el Mgt. {jury?.projectApprovalStepTwo?.adviser?.firstNames || ""} {jury?.projectApprovalStepTwo?.adviser?.middleName || ""} {jury?.projectApprovalStepTwo?.adviser?.lastName || ""} y demás miembros de la comisión y en atención a la solicitud s/n presentado por los
+                    <Text style={styles.bold}> {studentsText}</Text>,
                     de fecha {requestDate}, peticionando la designación de jurados para revisión del informe final de tesis denominado
                     <Text style={styles.bold}>: “{jury?.projectApprovalStepTwo?.titleReservationStepOne?.title || "Título no disponible"}",</Text> aprobado mediante
                     <Text style={styles.bold}> RESOLUCIÓN DECANAL N° {jury.id}-{anio}-DFI-UNAMBA</Text>.

@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     },
     sectionFinal:
     {
-        marginBottom: 170,
+        marginBottom: 220,
     },
     bold: {
         fontFamily: 'Times-Bold',

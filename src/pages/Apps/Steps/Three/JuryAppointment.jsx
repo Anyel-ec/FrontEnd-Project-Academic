@@ -1,10 +1,10 @@
-// JuryAppoiment.jsx
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../../store/themeConfigSlice';
 import juryAppointmentService from '../../../../api/juryAppointmentService';
 import careerService from '../../../../api/careerService';
 import teacherService from '../../../../api/teacherService';
+import InfoService from '../../../../api/institucionalInfoService';
 import JuryTable from './JuryTable';
 import JuryModal from './JuryModal';
 import JurySearch from './JurySearch';
@@ -21,12 +21,24 @@ const JuryAppoiment = () => {
     const [search, setSearch] = useState('');
     const [careerOptions, setCareerOptions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [info, setInfo] = useState(null);
 
     useEffect(() => {
         dispatch(setPageTitle('Designación de Jurados'));
         fetchJuryAppointment();
         fetchCareers();
+        fetchInfo();
     }, [dispatch]);
+
+    const fetchInfo = useCallback(async () => {
+        try {
+            const response = await InfoService.getInfo();
+            setInfo(response)
+        } catch (error) {
+            setApiError('Error al cargar la información institucional.');
+        }
+    }, []);
+
     const fetchCareers = useCallback(async () => {
         try {
             const careers = await careerService.getCareers();
@@ -110,7 +122,7 @@ const JuryAppoiment = () => {
     return (
         <>
             <JurySearch search={search} setSearch={setSearch} careerOptions={careerOptions} selectedCareer={selectedCareer} setSelectedCareer={setSelectedCareer} />
-            <JuryTable currentJury={filteredJurys} onEdit={handleEdit} onSave={handleSave} adviserOptions={advisers} />
+            <JuryTable currentJury={filteredJurys} onEdit={handleEdit} onSave={handleSave} adviserOptions={advisers} info={info} />
             <JuryModal juryAppointment={selectedJury} isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} isLoading={isLoading} adviserOptions={advisers} />
         </>
     );
