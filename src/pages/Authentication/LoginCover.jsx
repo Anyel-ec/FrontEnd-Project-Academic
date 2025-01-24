@@ -22,6 +22,7 @@ const LoginCover = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         const isSuccess = await AuthService.login(username, password);
+        console.log('isSuccess:', isSuccess);
         if (isSuccess) {
             navigate('/');
         }

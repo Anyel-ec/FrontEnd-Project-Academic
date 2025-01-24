@@ -21,6 +21,8 @@ const login = async (username, password) => {
             const userResponse = await axios.get(`${USER_API_URL}${username}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            console.log('Datos del usuario:', userResponse.data);
+            console.log('Datos del usuario:', userResponse.data.result.firstLogin);
 
             if (userResponse.data.success) {
                 const { password: _, ...userWithoutPassword } = userResponse.data.result; // Cambiado a 'result'
