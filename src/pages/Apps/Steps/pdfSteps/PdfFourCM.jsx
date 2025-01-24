@@ -1,14 +1,15 @@
 import PdfBase from './PdfBase';
 import { Text, View } from '@react-pdf/renderer';
-import styles from './styles/PdfThreeCMStyles';
+import styles from './styles/PdfFourCMStyles';
 import { formatNumberWithZero, getYear, getWrittenDateFromInput } from '../utils/Dates';
 
-const PdfThreeCM = ({ jury, info }) => {
+const PdfFourCM = ({ jury, info }) => {
     const anio = getYear();
     const createdAt = getWrittenDateFromInput(jury.createdAt);
     const commemorativeText = info?.commemorativeText || '';
     const student = `${jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.firstNames} ${jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.middleName} ${jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.lastName}`;
     const studentTwo = `${jury?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.firstNames} ${jury?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.middleName} ${jury?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.lastName}`;
+    console.log(jury.projectApprovalStepTwo.adviser);
     return (
         <PdfBase showCommemorativeText={true} commemorativeText={commemorativeText} registrationNumber={jury.registrationNumber}>
 
@@ -51,13 +52,28 @@ const PdfThreeCM = ({ jury, info }) => {
                             <Text>Segundo Miembro</Text>
                         </View>
                     </View>
+
+                    {/* Row 4 */}
+                    <View style={styles.tableRow}>
+                        <Text style={styles.tableColHeader}>{jury?.accessory?.firstNames || ""} {jury?.accessory?.middleName || ""} {jury?.accessory?.lastName || ""}</Text>
+                        <View style={styles.tableCol}>
+                            <Text>Accesitario</Text>
+                        </View>
+                    </View>
+                    {/* Row 5 */}
+                    <View style={styles.tableRow}>
+                        <Text style={styles.tableColHeader}>{jury?.projectApprovalStepTwo?.adviser?.firstNames || ""} {jury?.projectApprovalStepTwo?.adviser?.middleName || ""} {jury?.projectApprovalStepTwo?.adviser?.lastName || ""}</Text>
+                        <View style={styles.tableCol}>
+                            <Text>Asesor</Text>
+                        </View>
+                    </View>
                 </View>
             </View>
 
             <View style={styles.semiTable}>
                 {/* Row 1 */}
                 <View style={[styles.semiTableRow, { marginVertical: 10 }]}>
-                    <Text style={styles.semiTableColHeader}>ASUNTO:</Text>
+                    <Text style={[styles.semiTableColHeader, styles.bold]}>ASUNTO:</Text>
                     <View style={styles.semiTableCol}>
                         <Text>
                             <Text style={styles.bold}> Remito Informe de Tesis del Bach. {student} {studentTwo ? `y Bach. ${studentTwo}` : ''}, para su PRIMERA revisión.</Text>
@@ -74,34 +90,50 @@ const PdfThreeCM = ({ jury, info }) => {
                             <Text style={styles.bold}>                                         REG. Nº {formatNumberWithZero(jury.registrationNumber)}</Text>
                         </Text>
                         <Text>RESOLUCIÓN DECANAL N° {jury?.deanResolution}-DFI-UNAMBA</Text>
-                        <Text>RESOLUCIÓN DECANAL Nº {jury?.secondDeanResolution}-DFI-UNAMBA</Text>
                     </View>
                 </View>
             </View>
 
-            {/* Cuerpo del texto */}
             <View style={styles.section}>
                 <Text style={[styles.text, { marginTop: 10 }]}>
-                    Por el presente comunico a ustedes que, en cumplimiento del Art 30 del Reglamento de Investigación vigente, se remite los documentos y las Resoluciones de la referencia y un ejemplar de la tesis titulada:
+                    Por el presente comunico a ustedes que, en cumplimiento del Art 47 del Reglamento de
+                    Investigación vigente, se remite los documentos y las Resoluciones de la referencia
+                    y un ejemplar de la tesis titulada:
                 </Text>
-                <Text style={styles.bold}>
+                <Text style={[styles.bold, { marginVertical: 10 }]}>
                     "{jury?.projectApprovalStepTwo?.titleReservationStepOne?.title}".
                 </Text>
-                <Text style={{ margin: '10px 0' }}>
-                    <Text >
-                        En ese sentido, remito dicho expediente para su
-                    </Text>
-                    <Text style={styles.bold}> PRIMERA </Text>
+                <Text>
+                    <Text>En ese sentido, remito dicho expediente para su</Text>
+                    <Text>revisión conforme indica el</Text>
+                    <Text style={styles.bold}> Art 47, 48 y 49 del Reglamento de Investigación </Text>
+                    <Text>aprobado con resolución</Text>
+                    <Text style={styles.bold}> N° {jury?.deanResolution}-CU-UNAMBA.</Text>
                     <Text>
-                        revisión conforme indica el
+                        al mismo tiempo, debo manifestar para su conocimiento que en <Text style={styles.bold}>Capítulo XIII </Text>
+                        DISPOSICIONES TRANSISTORIAS y FINALES, en la segunda y tercera se indica literal
+                        <Text style={styles.italic}>"La vigencia del presente es inmediata a su publicación dejando sin efecto el anterior reglamento" </Text>
+                        <Text style={styles.italic}>"deróguese toda norma que se contraponga al presente reglamento a partir del día de su publicación" </Text>
                     </Text>
-                    <Text style={styles.bold}> Art 31 del Reglamento de Investigación. </Text>
-                    <Text style={styles.underline}>“Una vez recibido los trabajos de investigación o tesis, por los jurados evaluadores, se procederá a evaluar en forma y fondo en un plazo máximo de 15 días hábiles. Los miembros del jurado están obligados a participar en las diferentes etapas de la revisión del informe”; su incumplimiento constituye falta sujeta a sanción prevista en el estatuto de la UNAMBA y normas conexas. </Text>
+
                 </Text>
-                <Text>Sin otro en particular, aprovecho la oportunidad para expresarle las muestras de mi especial consideración y deferencia personal.</Text>
+                <Text style={{ marginTop: 3 }}>
+                    Por lo que; en atención al presente reglamento
+                    sirvase revisar con forme indica el Reglamento
+                    de la investigación vigente.
+                </Text>
+            </View>
+
+            {/* Cierre */}
+            <View style={styles.section}>
+                <Text style={{ marginTop: 12 }}>
+                    Sin otro particular, aprovecho la oportunidad para expresarles las muestras de mi especial
+                    consideración y deferencia personal.
+                </Text>
+                <Text style={[styles.sectionSign, { marginTop: 20, marginBottom: 80 }]}>Atentamente,</Text>
             </View>
         </PdfBase>
     );
 };
 
-export default PdfThreeCM;
+export default PdfFourCM;

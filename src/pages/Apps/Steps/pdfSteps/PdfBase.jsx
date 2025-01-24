@@ -27,7 +27,7 @@ const ConstancyVoucher = ({
                 </View> 
 
                 <View style={styles.footerText}>
-                    <Text>Atentamente,</Text>
+                    {/* <Text>Atentamente,</Text> TODO:componente con este apartado condicional */}
                     <Text>C. c.</Text>
                     <Text>Archivo</Text>
                     <Text>REG. N° {formatNumberWithZero(registrationNumber)}</Text>

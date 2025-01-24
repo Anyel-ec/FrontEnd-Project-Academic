@@ -13,10 +13,8 @@ const login = async (username, password) => {
         if (response.data.success) {
             const token = response.data.result;
             console.log('Token recibido:', token);
-
             // Guardar el token en localStorage
             localStorage.setItem('token', token);
-
             // Verificar los datos del usuario
             const userResponse = await axios.get(`${USER_API_URL}${username}`, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -25,7 +23,7 @@ const login = async (username, password) => {
             console.log('Datos del usuario:', userResponse.data.result.firstLogin);
 
             if (userResponse.data.success) {
-                const { password: _, ...userWithoutPassword } = userResponse.data.result; // Cambiado a 'result'
+                const { password: _, ...userWithoutPassword } = userResponse.data.result;
                 localStorage.setItem('user', JSON.stringify(userWithoutPassword));
                 return true;
             } else {
