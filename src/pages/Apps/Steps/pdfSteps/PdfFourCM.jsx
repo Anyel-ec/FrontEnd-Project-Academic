@@ -130,7 +130,7 @@ const PdfFourCM = ({ jury, info }) => {
                     Sin otro particular, aprovecho la oportunidad para expresarles las muestras de mi especial
                     consideración y deferencia personal.
                 </Text>
-                <Text style={[styles.sectionSign, { marginTop: 20, marginBottom: 80 }]}>Atentamente,</Text>
+                <Text style={[styles.sectionSign, { marginTop: 20, marginBottom: 75 }]}>Atentamente,</Text>
             </View>
         </PdfBase>
     );

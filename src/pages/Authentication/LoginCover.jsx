@@ -15,7 +15,6 @@ const LoginCover = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
-
     useEffect(() => {
         dispatch(setPageTitle('Iniciar Sesión'));
     }, [dispatch]);

@@ -4,7 +4,7 @@ import styles from './styles/PdfTwoStyles';
 import { getWrittenDate, getYear, formatNumberWithZero } from '../utils/Dates';
 
 const PdfTwo = ({ project, info }) => {
-    const deanName = info.deanName;
+    const deanName = info?.deanName;
     const anio = getYear();
     const actualData = getWrittenDate();
     return (

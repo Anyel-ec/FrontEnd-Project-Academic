@@ -1,11 +1,11 @@
-import { StyleSheet } from "@react-pdf/renderer";
+import { StyleSheet } from '@react-pdf/renderer';
 const styles = StyleSheet.create({
     h1: {
         textAlign: 'center',
         fontSize: 14,
         marginVertical: 12,
         textDecoration: 'underline',
-        fontFamily: 'Times-Bold'
+        fontFamily: 'Times-Bold',
     },
     textHeader: {
         textAlign: 'right',
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
 
     tableCol: {
         width: '55%',
-        padding: 1
+        padding: 1,
     },
     // End Table Styles
 
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
 
     semiTableCol: {
         width: '89%',
-        padding: 1
+        padding: 1,
     },
     // End semiTable Styles
     sectionSign: {
@@ -81,5 +81,5 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 10,
     },
-})
-export default styles; 
+});
+export default styles;

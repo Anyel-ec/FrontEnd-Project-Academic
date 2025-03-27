@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Pagination from '../Pagination'; // Asegúrate de ajustar la ruta si es necesario
-import { getReportDetails, formatDate } from '../utils/ReportUtils'; // Ajusta la ruta si es necesario
+import Pagination from '../Pagination';
+import { getReportDetails, formatDate } from '../utils/ReportUtils';
+import PDFDownloadButton from '../utils/PDFDownloadButtons';
+import PdfFourCM from '../pdfSteps/PdfFourCM';
 import Swal from 'sweetalert2';
+import PdfThreeCM from '../pdfSteps/PdfThreeCM';
 const ReportTable = ({ reports, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -63,19 +66,15 @@ const ReportTable = ({ reports, onEdit }) => {
                                         <td className="flex gap-4 items-center justify-center">
                                             {
                                                 report.meetRequirements ? (
-                                                    <button
-                                                        onClick={() =>
-                                                            Swal.fire(
-                                                                "Paso Completado",
-                                                                "Reporte revisado exitosamente.",
-                                                                "success"
-                                                            )
-                                                        }
-
-                                                        className="btn btn-sm btn-outline-info"
-                                                    >
-                                                        Completado
-                                                    </button>
+                                                    <PDFDownloadButton
+                                                        documents={{
+                                                            // info={info}
+                                                            document: <PdfThreeCM report={currentReports} />,
+                                                            fileName: `Report${report.id}.pdf`,
+                                                        }}
+                                                        fileName={`report_${report?.id}`}
+                                                        label="Descargar PDF"
+                                                    />
                                                 ) : (
                                                     <button
                                                         onClick={() => onEdit(report)}

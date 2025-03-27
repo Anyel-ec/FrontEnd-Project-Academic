@@ -3,14 +3,15 @@ import { Text, View } from '@react-pdf/renderer';
 import styles from './styles/PdfThreeCMStyles';
 import { formatNumberWithZero, getYear, getWrittenDateFromInput } from '../utils/Dates';
 
-const PdfThreeCM = ({ jury, info }) => {
+const PdfThreeCM = ({ report, info }) => {
     const anio = getYear();
-    const createdAt = getWrittenDateFromInput(jury.createdAt);
+    console.log(report.juryAppointmentStepThree)
+    const createdAt = getWrittenDateFromInput(report?.createdAt);
     const commemorativeText = info?.commemorativeText || '';
-    const student = `${jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.firstNames} ${jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.middleName} ${jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.lastName}`;
-    const studentTwo = `${jury?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.firstNames} ${jury?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.middleName} ${jury?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.lastName}`;
+    const student = `${report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.firstNames} ${report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.middleName} ${report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.lastName}`;
+    const studentTwo = `${report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.firstNames} ${report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.middleName} ${report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.studentTwo?.lastName}`;
     return (
-        <PdfBase showCommemorativeText={true} commemorativeText={commemorativeText} registrationNumber={jury.registrationNumber}>
+        <PdfBase showCommemorativeText={true} commemorativeText={commemorativeText} registrationNumber={report?.registrationNumber}>
 
             <Text style={styles.textHeader}>
                 Tamburco, {createdAt}
@@ -18,17 +19,17 @@ const PdfThreeCM = ({ jury, info }) => {
 
             {/* Fecha y número de carta */}
             <Text style={styles.h1}>
-                CARTA MULTIPLE Nº {jury.id}-{anio}-D. UI-FI-UNAMBA.
+                CARTA MULTIPLE Nº {report?.id}-{anio}-D. UI-FI-UNAMBA.
             </Text>
             {/* Dirigido a */}
             <View style={styles.section}>
                 <Text style={[styles.bold, styles.textTableHeader]}>
-                    SEÑORES: Jurados Evaluadores de Tesis de la EAP. {jury?.projectApprovalStepTwo?.titleReservationStepOne?.student?.career.name}
+                    SEÑORES: Jurados Evaluadores de Tesis de la EAP. {report?.juryAppointmentStepThree?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.career.name}
                 </Text>
                 <View style={styles.table}>
                     {/* Row 1 */}
                     <View style={styles.tableRow}>
-                        <Text style={styles.tableColHeader}>{jury?.president?.firstNames || ""} {jury?.president?.middleName || ""} {jury?.president?.lastName || ""}</Text>
+                        <Text style={styles.tableColHeader}>{report?.juryAppointmentStepThree?.president?.firstNames || ""} {report?.juryAppointmentStepThree?.president?.middleName || ""} {report?.juryAppointmentStepThree?.president?.lastName || ""}</Text>
                         <View style={styles.tableCol}>
                             <Text>
                                 <Text>Presidente</Text>
@@ -38,7 +39,7 @@ const PdfThreeCM = ({ jury, info }) => {
 
                     {/* Row 2 */}
                     <View style={styles.tableRow}>
-                        <Text style={styles.tableColHeader}>{jury?.firstMember?.firstNames || ""} {jury?.firstMember?.middleName || ""} {jury?.firstMember?.lastName || ""}</Text>
+                        <Text style={styles.tableColHeader}>{report?.juryAppointmentStepThree?.firstMember?.firstNames || ""} {report?.juryAppointmentStepThree?.firstMember?.middleName || ""} {report?.juryAppointmentStepThree?.firstMember?.lastName || ""}</Text>
                         <View style={styles.tableCol}>
                             <Text>Primer Miembro</Text>
                         </View>
@@ -46,7 +47,7 @@ const PdfThreeCM = ({ jury, info }) => {
 
                     {/* Row 3 */}
                     <View style={styles.tableRow}>
-                        <Text style={styles.tableColHeader}>{jury?.secondMember?.firstNames || ""} {jury?.secondMember?.middleName || ""} {jury?.secondMember?.lastName || ""}</Text>
+                        <Text style={styles.tableColHeader}>{report?.juryAppointmentStepThree?.secondMember?.firstNames || ""} {report?.juryAppointmentStepThree?.secondMember?.middleName || ""} {report?.juryAppointmentStepThree?.secondMember?.lastName || ""}</Text>
                         <View style={styles.tableCol}>
                             <Text>Segundo Miembro</Text>
                         </View>
@@ -71,10 +72,10 @@ const PdfThreeCM = ({ jury, info }) => {
                     <View style={styles.semiTableCol}>
                         <Text>
                             <Text>SOLICITUD de fecha {createdAt}</Text>
-                            <Text style={styles.bold}>                                         REG. Nº {formatNumberWithZero(jury.registrationNumber)}</Text>
+                            <Text style={styles.bold}>                                         REG. Nº {formatNumberWithZero(report?.registrationNumber)}</Text>
                         </Text>
-                        <Text>RESOLUCIÓN DECANAL N° {jury?.deanResolution}-DFI-UNAMBA</Text>
-                        <Text>RESOLUCIÓN DECANAL Nº {jury?.secondDeanResolution}-DFI-UNAMBA</Text>
+                        <Text>RESOLUCIÓN DECANAL N° {report?.deanResolution}-DFI-UNAMBA</Text>
+                        <Text>RESOLUCIÓN DECANAL Nº {report?.secondDeanResolution}-DFI-UNAMBA</Text>
                     </View>
                 </View>
             </View>
@@ -85,7 +86,7 @@ const PdfThreeCM = ({ jury, info }) => {
                     Por el presente comunico a ustedes que, en cumplimiento del Art 30 del Reglamento de Investigación vigente, se remite los documentos y las Resoluciones de la referencia y un ejemplar de la tesis titulada:
                 </Text>
                 <Text style={styles.bold}>
-                    "{jury?.projectApprovalStepTwo?.titleReservationStepOne?.title}".
+                    "{report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.title}".
                 </Text>
                 <Text style={{ margin: '10px 0' }}>
                     <Text >
