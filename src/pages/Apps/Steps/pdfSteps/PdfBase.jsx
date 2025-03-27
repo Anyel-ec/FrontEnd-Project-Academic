@@ -2,6 +2,7 @@ import { Document, Page, View, Text, Image } from '@react-pdf/renderer';
 import Logo from './BANNER.png';
 import styles from './styles/PdfBaseStyles';
 import { formatNumberWithZero } from '../utils/Dates';
+
 const ConstancyVoucher = ({
     showCommemorativeText,
     commemorativeText,

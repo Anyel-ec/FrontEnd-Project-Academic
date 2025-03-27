@@ -12,20 +12,29 @@ const InstitucionalInfo = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Cargar la información al montar el componente
     const fetchInfo = useCallback(async () => {
         try {
             setLoading(true);
             const response = await InfoService.getInfo();
-            setInfo(response);
+
+            if (!response || Object.keys(response).length === 0) {
+                // No hay datos aún
+                setInfo({
+                    id: null,
+                    deanName: '',
+                    commemorativeText: '',
+                });
+            } else {
+                setInfo(response);
+            }
         } catch (err) {
             console.error("Error al cargar la información institucional:", err);
-            setError("No se pudo cargar la información institucional.");
+            setError("Error inesperado al cargar la información institucional.");
         } finally {
             setLoading(false);
         }
     }, []);
-    console.log(info);
+
 
     // Manejar cambios en los campos del formulario
     const handleChange = (e) => {
@@ -40,32 +49,34 @@ const InstitucionalInfo = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const updatedInfo = await InfoService.updateInfo({
-                id: info.id,
+            const payload = {
                 deanName: info.deanName.trim(),
                 commemorativeText: info.commemorativeText.trim(),
-            });
-            console.log("Información actualizada:", updatedInfo);
-
-            // SweetAlert para éxito
+            };
+    
+            const updatedInfo = info.id
+                ? await InfoService.updateInfo({ id: info.id, ...payload })
+                : await InfoService.createInfo(payload); // 💥 asegúrate de tener este método en tu servicio
+    
+            setInfo(updatedInfo);
+    
             Swal.fire({
                 icon: "success",
-                title: "¡Actualización exitosa!",
-                text: "La información institucional se actualizó correctamente.",
+                title: info.id ? "¡Actualización exitosa!" : "¡Información guardada!",
+                text: "La información institucional se " + (info.id ? "actualizó" : "registró") + " correctamente.",
                 confirmButtonText: "Aceptar",
             });
         } catch (error) {
-            console.error("Error al actualizar la información:", error);
-
-            // SweetAlert para error
+            console.error("Error al guardar la información:", error);
             Swal.fire({
                 icon: "error",
-                title: "Error al actualizar",
-                text: "No se pudo actualizar la información institucional.",
+                title: "Error al guardar",
+                text: "No se pudo guardar la información institucional.",
                 confirmButtonText: "Intentar nuevamente",
             });
         }
     };
+    
 
     useEffect(() => {
         dispatch(setPageTitle("Información de la Institución"));
@@ -73,8 +84,6 @@ const InstitucionalInfo = () => {
     }, [dispatch, fetchInfo]);
 
     if (loading) return <p>Cargando...</p>;
-    if (error) return <p>{error}</p>;
-
     return (
         <div className="pt-5">
             <div className="grid grid-cols-1 mb-5">
