@@ -5,7 +5,7 @@ import { formatNumberWithZero, getYear, getWrittenDateFromInput } from '../utils
 
 const PdfThreeCM = ({ report, info }) => {
     const anio = getYear();
-    console.log(report.juryAppointmentStepThree)
+    console.log(report)
     const createdAt = getWrittenDateFromInput(report?.createdAt);
     const commemorativeText = info?.commemorativeText || '';
     const student = `${report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.firstNames} ${report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.middleName} ${report?.juryAppointmentStepThree?.projectApprovalStepTwo?.titleReservationStepOne?.student?.lastName}`;

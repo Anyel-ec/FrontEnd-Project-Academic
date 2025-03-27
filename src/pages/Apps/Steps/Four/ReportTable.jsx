@@ -69,7 +69,7 @@ const ReportTable = ({ reports, onEdit }) => {
                                                     <PDFDownloadButton
                                                         documents={{
                                                             // info={info}
-                                                            document: <PdfThreeCM report={currentReports} />,
+                                                            document: <PdfThreeCM report={report} />,
                                                             fileName: `Report${report.id}.pdf`,
                                                         }}
                                                         fileName={`report_${report?.id}`}
