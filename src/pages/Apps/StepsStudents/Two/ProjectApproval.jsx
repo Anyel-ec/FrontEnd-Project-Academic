@@ -8,28 +8,28 @@ import { useUserContext } from "../../../../store/userContext";
 const ProjectApproval = () => {
     const dispatch = useDispatch();
     const [project, setProject] = useState([]);
-    const username = useUserContext();
+    const user = useUserContext();
 
     const fetchProjects = useCallback(async () => {
-        if (!username) {
-            console.error('No se encontró un username válido');
+        if (!user) {
+            console.error('No se encontró un user válido');
             return;
         }
         try {
-            const projectResponse = await projectApprovalService.getProjectByStudentCode(username);
+            const projectResponse = await projectApprovalService.getProjectByStudentCode(user.user.username);
             setProject(projectResponse);
             console.log('Proyectos obtenidos:', projectResponse);
         } catch (error) {
             console.error('Error al obtener los proyectos:', error);
         }
-    }, [username]);
+    }, [user]);
 
     useEffect(() => {
         dispatch(setPageTitle('Aprobación de Proyecto'));
-        if (username) {
+        if (user) {
             fetchProjects();
         }
-    }, [dispatch, username, fetchProjects]);
+    }, [dispatch, user, fetchProjects]);
 
     return (
         <>

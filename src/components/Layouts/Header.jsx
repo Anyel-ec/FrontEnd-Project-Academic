@@ -55,11 +55,13 @@ const Header = () => {
                 }
             }
         }
+
         const userData = JSON.parse(localStorage.getItem('user'));
-        if (userData) {
+        if (userData && JSON.stringify(userData) !== JSON.stringify(user)) {
             setUser(userData);
         }
     }, [location]);
+
 
     const navigate = useNavigate();
 

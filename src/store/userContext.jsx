@@ -1,30 +1,43 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import userService from '../api/userService'; // Asegúrate de importar el servicio correcto.
+import userService from '../api/userService';
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-    const [username, setUsername] = useState('');
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchUsername = async () => {
-            try {
-                const storedUser = JSON.parse(localStorage.getItem('user'));
-                if (storedUser && storedUser.username) {
-                    const userData = await userService.getUser(storedUser.username);
-                    setUsername(userData?.username || ''); // Asegúrate de manejar datos nulos.
-                } else {
-                    console.error('No se encontró un usuario en localStorage');
-                }
-            } catch (error) {
-                console.error('Error al obtener el username del usuario:', error);
-            }
-        };
+  useEffect(() => {
+    const fetchUser = async () => {
+      console.log('🔄 Buscando usuario en localStorage...');
+      try {
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        console.log('📦 Usuario almacenado:', storedUser);
 
-        fetchUsername();
-    }, []);
+        if (storedUser?.username) {
+          const userData = await userService.getUser(storedUser.username);
+          console.log('📡 Usuario desde API:', userData);
 
-    return <UserContext.Provider value={username}>{children}</UserContext.Provider>;
+          if (!user || userData.id !== user?.id) {
+            setUser(userData);
+          }
+        }
+      } catch (error) {
+        console.error('❌ Error al obtener usuario:', error);
+      } finally {
+        setLoading(false);
+        console.log('✅ Finalizó carga de usuario');
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  return (
+    <UserContext.Provider value={{ user, loading }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 export const useUserContext = () => useContext(UserContext);

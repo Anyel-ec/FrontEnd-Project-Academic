@@ -18,7 +18,6 @@ const InstitucionalInfo = () => {
             const response = await InfoService.getInfo();
 
             if (!response || Object.keys(response).length === 0) {
-                // No hay datos aún
                 setInfo({
                     id: null,
                     deanName: '',
@@ -35,8 +34,6 @@ const InstitucionalInfo = () => {
         }
     }, []);
 
-
-    // Manejar cambios en los campos del formulario
     const handleChange = (e) => {
         const { name, value } = e.target;
         setInfo((prevInfo) => ({
@@ -45,7 +42,6 @@ const InstitucionalInfo = () => {
         }));
     };
 
-    // Actualizar la información
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -53,13 +49,13 @@ const InstitucionalInfo = () => {
                 deanName: info.deanName.trim(),
                 commemorativeText: info.commemorativeText.trim(),
             };
-    
+
             const updatedInfo = info.id
                 ? await InfoService.updateInfo({ id: info.id, ...payload })
-                : await InfoService.createInfo(payload); // 💥 asegúrate de tener este método en tu servicio
-    
+                : await InfoService.updateInfo(payload);
+
             setInfo(updatedInfo);
-    
+
             Swal.fire({
                 icon: "success",
                 title: info.id ? "¡Actualización exitosa!" : "¡Información guardada!",
@@ -76,7 +72,7 @@ const InstitucionalInfo = () => {
             });
         }
     };
-    
+
 
     useEffect(() => {
         dispatch(setPageTitle("Información de la Institución"));
@@ -113,7 +109,6 @@ const InstitucionalInfo = () => {
                             </div>
                         </div>
 
-                        {/* Campo para el Texto Conmemorativo */}
                         <div className="mb-5">
                             <label htmlFor="commemorativeText">
                                 Nombre del Año Académico
@@ -133,7 +128,6 @@ const InstitucionalInfo = () => {
                             </div>
                         </div>
 
-                        {/* Botón de Actualizar */}
                         <button
                             type="submit"
                             className="btn btn-primary py-[6px] px-[10px]"

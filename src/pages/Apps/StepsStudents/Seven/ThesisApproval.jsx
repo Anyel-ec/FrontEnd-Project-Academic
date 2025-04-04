@@ -6,32 +6,30 @@ import thesisApprovalService from '../../../../api/thesisApprovalService';
 import { useUserContext } from "../../../../store/userContext";
 
 const ThesisApproval = () => {
-    const username = useUserContext(); // Obtiene el username desde el contexto
+    const user = useUserContext();
     const dispatch = useDispatch();
     const [thesis, setThesis] = useState([]);
-    const [loading, setLoading] = useState(true); // Estado para manejar la carga de datos
+    const [loading, setLoading] = useState(true);
 
     const fetchThesis = useCallback(async () => {
         try {
-            setLoading(true); // Inicia la carga
-            const thesisResponse = await thesisApprovalService.getThesisByStudentCode(username);
+            setLoading(true);
+            const thesisResponse = await thesisApprovalService.getThesisByStudentCode(user.user.username);
             setThesis(thesisResponse);
         } catch (error) {
             console.error('Error al obtener los proyectos:', error);
         } finally {
-            setLoading(false); // Finaliza la carga
+            setLoading(false);
         }
-    }, [username]);
+    }, [user]);
     useEffect(() => {
         dispatch(setPageTitle('Aprobación de Tesis'));
 
-        // Llama a fetchThesis solo si `username` está disponible
-        if (username) {
+        if (user) {
             fetchThesis();
         }
-    }, [dispatch, username, fetchThesis]);
+    }, [dispatch, user, fetchThesis]);
 
-    // Renderización condicional mientras los datos se cargan
     if (loading) {
         return <div>Cargando datos...</div>;
     }

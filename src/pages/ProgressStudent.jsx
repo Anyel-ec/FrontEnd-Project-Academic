@@ -7,14 +7,14 @@ const ProgressStudent = () => {
     const dispatch = useDispatch();
     const [progress, setProgress] = useState([]);
     // const [apiError, setApiError] = useState(null);
-    const username = useUserContext();
+    const user = useUserContext();
 
     useEffect(() => {
         dispatch(setPageTitle('Progreso de Pasos'));
-        if (username) {
+        if (user) {
             fetchProgress();
         }
-    }, [dispatch, username]);
+    }, [dispatch, user]);
 
     // const format = (dateString) => {
     //     if (!dateString) return 'N/A';
@@ -23,14 +23,16 @@ const ProgressStudent = () => {
     // };
     const fetchProgress = useCallback(async () => {
         try {
-            const reservations = await progressService.getProgresByStudentCode(username);
+            console.log("ajdksjad", user)
+            console.log("username", user.user.username)
+            const reservations = await progressService.getProgresByStudentCode(user.user.username);
             setProgress(reservations);
             // setApiError(null);
         } catch (error) {
             console.error('Error fetching title reservations:', error);
             // setApiError('Failed to load title reservations.');
         }
-    }, [username]);
+    }, []);
     console.log(progress)
     return (
         <div className="pt-5">

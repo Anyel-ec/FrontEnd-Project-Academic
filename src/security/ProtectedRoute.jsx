@@ -1,39 +1,44 @@
 import { Navigate } from 'react-router-dom';
+import { useUserContext } from '../store/userContext';
 
-// Componente para rutas protegidas solo para administradores
 const ProtectedRoute = ({ children }) => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const { user, loading } = useUserContext();
 
+    if (loading) {
+        return <div>Cargando...</div>;
+    }
     if (!user) {
-        // Redirigir a la página de inicio de sesión si no hay datos del usuario
-        return <Navigate to="/auth/inicio-sesion" />;
+        return <Navigate to="/auth/inicio-sesion" replace />;
     }
 
-    if (user.rol?.name !== 'admin') {
-        // Redirigir a la página principal si el usuario no es admin
-        return <Navigate to="/" />;
-    }
-
-    // Si el usuario es admin, permitir acceso al contenido protegido
     return children;
 };
 
-// Componente para rutas protegidas solo para estudiantes
+const RoleRoute = ({ children, allowedRole }) => {
+    const { user, loading } = useUserContext();
+
+    if (loading) return null;
+
+    if (!user) {
+        return <Navigate to="/auth/inicio-sesion" replace />;
+    }
+
+    if (user.rol?.name !== allowedRole) {
+        return <Navigate to="/" replace />;
+    }
+
+    return children;
+};
+
+
 const StudentRoute = ({ children }) => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const { user, loading } = useUserContext();
 
-    if (!user) {
-        // Redirigir a la página de inicio de sesión si no hay datos del usuario
-        return <Navigate to="/auth/inicio-sesion" />;
-    }
+    if (loading) return null;
 
-    if (user.rol?.name !== 'estudiante') {
-        // Redirigir a la página principal si el usuario no es estudiante
-        return <Navigate to="/" />;
-    }
+    if (!user) return <Navigate to="/auth/inicio-sesion" replace />;
 
-    // Si el usuario es estudiante, permitir acceso al contenido protegido
     return children;
 };
 
-export { ProtectedRoute, StudentRoute };
+export { RoleRoute, ProtectedRoute, StudentRoute };

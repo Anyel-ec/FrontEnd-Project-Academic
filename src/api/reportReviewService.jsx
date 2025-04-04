@@ -2,18 +2,13 @@ import axios from 'axios';
 import AppEnvironments from '../config/AppEnvironments';
 
 const REPORTREVIEW_API_URL = `${AppEnvironments.baseUrl}api/v1/revision_reporte`;
-
-// Función para obtener el token almacenado en localStorage
 const getAuthToken = () => localStorage.getItem('token');
-
-// Configuración de cabeceras de autorización
 const getAuthHeaders = () => ({
     headers: {
         Authorization: `Bearer ${getAuthToken()}`,
     },
 });
 
-// Obtener todas las revisiones de reporte
 const getReportReview = async () => {
     try {
         const response = await axios.get(REPORTREVIEW_API_URL, getAuthHeaders());

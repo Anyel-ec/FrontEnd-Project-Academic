@@ -6,7 +6,7 @@ import pastingApprovalService from '../../../../api/pastingApprovalService';
 import { useUserContext } from "../../../../store/userContext";
 
 const PastingApproval = () => {
-    const username = useUserContext(); // Obtiene el username desde el contexto
+    const user = useUserContext(); // Obtiene el user desde el contexto
     const dispatch = useDispatch();
     const [pasting, setPasting] = useState([]);
     const [loading, setLoading] = useState(true); // Estado para manejar la carga de datos
@@ -14,22 +14,22 @@ const PastingApproval = () => {
     const fetchPasting = useCallback(async () => {
         try {
             setLoading(true); // Inicia la carga
-            const pastingResponse = await pastingApprovalService.getPastingByStudentCode(username);
+            const pastingResponse = await pastingApprovalService.getPastingByStudentCode(user.user.username);
             setPasting(pastingResponse);
         } catch (error) {
             console.error('Error al obtener los proyectos:', error);
         } finally {
             setLoading(false); // Finaliza la carga
         }
-    }, [username]);
+    }, [user]);
     useEffect(() => {
         dispatch(setPageTitle('Aprobación de Proyecto'));
 
-        // Llama a fetchPasting solo si `username` está disponible
-        if (username) {
+        // Llama a fetchPasting solo si `user` está disponible
+        if (user) {
             fetchPasting();
         }
-    }, [dispatch, username, fetchPasting]);
+    }, [dispatch, user, fetchPasting]);
 
     // Renderización condicional mientras los datos se cargan
     if (loading) {

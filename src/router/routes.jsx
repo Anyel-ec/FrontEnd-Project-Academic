@@ -30,6 +30,7 @@ import PastingApprovalStudent from '../pages/Apps/StepsStudents/Eight/PastingApp
 // <--End Students Imports-->
 
 import AuthRoute from '../security/AuthRoute ';
+import Unauthorized from '../security/Unauthorized';
 // const Index = lazy(() => import('../pages/Index'));
 const Info = lazy(() => import('../pages/InstitutionalInfo'));
 const Progress = lazy(() => import('../pages/Progress'));
@@ -137,6 +138,10 @@ const routes = [
             </AuthRoute>
         ),
         layout: 'blank',
+    },
+    {
+        path: '/unauthorized',
+        element: <Unauthorized />,
     },
     {
         path: '/auth/cambiar-contrasena',

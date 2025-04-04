@@ -8,27 +8,27 @@ import { useUserContext } from '../../../../store/userContext';
 const ConstancyThesis = () => {
     const dispatch = useDispatch();
     const [currentThesis, setCurrentThesis] = useState([]);
-    const [loading, setLoading] = useState(true); // Estado para manejar la carga de datos
-    const username = useUserContext();
+    const [loading, setLoading] = useState(true);           
+    const user = useUserContext();
 
     const fetchThesis = useCallback(async () => {
         try {
-            setLoading(true); // Inicia la carga
-            const thesis = await constancyThesisService.getConstancyByStudentCode(username);
+            setLoading(true);
+            const thesis = await constancyThesisService.getConstancyByStudentCode(user.user.username);
             setCurrentThesis(thesis);
         } catch (error) {
             console.error('Error al obtener los thesies:', error);
         } finally {
-            setLoading(false); // Finaliza la carga
+            setLoading(false);
         }
-    }, [username]);
+    }, [user]);
 
     useEffect(() => {
         dispatch(setPageTitle('Constancia de Tesis'));
-        if (username) {
+        if (user) {
             fetchThesis();
         }
-    }, [dispatch, username, fetchThesis]);
+    }, [dispatch, user, fetchThesis]);
 
 
     if (loading) {

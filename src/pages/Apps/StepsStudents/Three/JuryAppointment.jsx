@@ -5,30 +5,30 @@ import JuryTable from './JuryTable';
 import juryAppointmentService from '../../../../api/juryAppointmentService';
 import { useUserContext } from '../../../../store/userContext';
 const JuryAppointment = () => {
+
   const dispatch = useDispatch();
   const [jury, setJury] = useState([]);
-  const username = useUserContext();
-  const [loading, setLoading] = useState(true); // Estado para manejar la carga de datos
-  console.log(username);
+  const user = useUserContext();
+  const [loading, setLoading] = useState(true);
+
   const fetchJurys = useCallback(async () => {
 
     try {
-      setLoading(true); // Inicia la carga
-      const juryResponse = await juryAppointmentService.getJuryByStudentCode(username);
+      setLoading(true);
+      const juryResponse = await juryAppointmentService.getJuryByStudentCode(user.user.username);
       setJury(juryResponse);
     } catch (error) {
       console.error('Error al obtener los proyectos:', error);
     } finally {
-      setLoading(false); // Finaliza la carga
+      setLoading(false);
     }
-  }, [username]);
-  console.log("principal", jury);
+  }, [user]);
   useEffect(() => {
     dispatch(setPageTitle('Aprobación de Proyecto'));
-    if (username) {
+    if (user) {
       fetchJurys();
     }
-  }, [dispatch, username, fetchJurys]);
+  }, [dispatch, user, fetchJurys]);
   if (loading) {
     return <div>Cargando datos...</div>;
   }

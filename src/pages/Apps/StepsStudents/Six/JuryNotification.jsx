@@ -6,33 +6,30 @@ import juryNotificationService from '../../../../api/juryNotificationService';
 import { useUserContext } from "../../../../store/userContext";
 
 const JuryNotification = () => {
-    const username = useUserContext(); // Obtiene el username desde el contexto
+    const user = useUserContext();
     const dispatch = useDispatch();
     const [jury, setJury] = useState([]);
-    const [loading, setLoading] = useState(true); // Estado para manejar la carga de datos
+    const [loading, setLoading] = useState(true);
 
     const fetchjury = useCallback(async () => {
         try {
-            setLoading(true); // Inicia la carga
-            const juryResponse = await juryNotificationService.getJuryByStudentCode(username);
+            setLoading(true);
+            const juryResponse = await juryNotificationService.getJuryByStudentCode(user.user.username);
             setJury(juryResponse);
         } catch (error) {
             console.error('Error al obtener los proyectos:', error);
         } finally {
-            setLoading(false); // Finaliza la carga
+            setLoading(false);
         }
-    }, [username]);
-    
+    }, [user]);
+
     useEffect(() => {
         dispatch(setPageTitle('Notificación de Jurados'));
-
-        // Llama a fetchjury solo si `username` está disponible
-        if (username) {
+        if (user) {
             fetchjury();
         }
-    }, [dispatch, username, fetchjury]);
+    }, [dispatch, user, fetchjury]);
 
-    // Renderización condicional mientras los datos se cargan
     if (loading) {
         return <div>Cargando datos...</div>;
     }
