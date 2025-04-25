@@ -5,7 +5,7 @@ import { toggleSidebar } from '../../store/themeConfigSlice';
 import Footer from './Footer';
 import Header from './Header';
 import Setting from './Setting';
-import Sidebar from './Sidebar';
+import Sidebar from '../Sidebar/Sidebar';
 import Portals from '../../components/Portals';
 import { UserProvider } from '../../store/userContext';
 
